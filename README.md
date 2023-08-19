@@ -25,7 +25,7 @@ pip-sync dev-requirements.txt
 
 ```bash
 source venv/bin/activate
-dotenv run -- python -m wheel_of_fortune
+python -m wheel_of_fortune
 ```
  
 ## Build

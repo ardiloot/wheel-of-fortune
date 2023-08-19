@@ -1,0 +1,54 @@
+version: '3.8'
+services:
+
+  backend:
+    container_name: backend
+    image: backend
+    build: ./backend
+    env_file: ./.secrets/backend.env
+    volumes:
+      - /sys:/sys           # required to control GPIO
+    devices:
+      - /dev/snd:/dev/snd   # for playing sound
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.backend.rule=PathPrefix(`/api`)"
+      - "traefik.http.routers.backend.priority=100"
+    networks:
+      - backend
+    restart: unless-stopped
+
+  frontend:
+    container_name: frontend
+    image: frontend
+    build: ./frontend
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.frontend.rule=PathPrefix(`/`)"
+      - "traefik.http.routers.frontend.priority=50"
+    networks:
+      - frontend
+    restart: unless-stopped
+
+  proxy:
+    container_name: proxy
+    image: traefik:v2.9.8
+    command:
+      - --api.insecure=true
+      - --providers.docker
+      - --providers.docker.exposedByDefault=false
+      - --providers.file.filename=/config/dynamic_conf.yml
+    ports:
+      - 80:80
+      - 8080:8080
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ${LOCAL_WORKSPACE_FOLDER:-.}/proxy/config:/config
+    networks:
+      - backend
+      - frontend
+    restart: unless-stopped
+
+networks:
+  backend:
+  frontend:

@@ -1,0 +1,12 @@
+{
+    "python.linting.flake8Enabled": true,
+    "python.linting.enabled": true,
+    "python.linting.flake8Args": [
+        "--max-line-length=120",
+        "--ignore=E124,E128,E261,W293,W504,F722,F403,F401",
+    ],
+    "python.analysis.typeCheckingMode": "basic",
+    "[typescriptreact]": {
+        "editor.tabSize": 2
+    }
+}

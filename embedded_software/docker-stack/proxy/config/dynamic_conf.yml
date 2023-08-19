@@ -1,0 +1,10 @@
+http:
+  services:
+    wled:
+      loadBalancer:
+        servers:
+          - url: "http://192.168.242.3/"
+  routers:
+    wled:
+      rule: "Host(`wled.orangepi.int.manoir.xyz`) || Host(`wled.orangepi-dev.int.manoir.xyz`)"
+      service: wled

@@ -1,0 +1,9 @@
+[Unit]
+Description=GPIO input for poweroff signal
+
+[Service]
+ExecStart=/opt/power_watch/watch_power_status.sh
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

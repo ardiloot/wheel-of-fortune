@@ -1,5 +1,6 @@
 import asyncio
 import logging
+from ._config import Config
 from ._utils import AsyncTimer, decode_grey_code, encode_gray_code
 from ._telemetry import Point
 
@@ -12,7 +13,8 @@ __all__ = [
 
 class Encoder:
 
-    def __init__(self, num_sectors, gpio, callback, telemetry):
+    def __init__(self, config, gpio, callback, telemetry):
+        self._config: Config = config
         self._gpio = gpio
         self._callback = callback
         self._telemetry = telemetry
@@ -20,7 +22,7 @@ class Encoder:
         
         self._encoder_pins = ["PH3", "PH4", "PH6", "PH5"]
         self._speed_pin = "PL10"
-        self._sectors_per_rev = num_sectors
+        self._sectors_per_rev = self._config.num_sectors
         self._pulses_per_rev = 128.0
 
         self._encoder_state = []

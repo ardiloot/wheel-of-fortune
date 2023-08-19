@@ -1,28 +1,26 @@
-import os
 import socket
 import asyncio
 import logging
 from influxdb_client.client.influxdb_client_async import InfluxDBClientAsync
 from influxdb_client import Point
+from ._config import Config
 
 _LOGGER = logging.getLogger(__name__)
-
-INFLUXDB_URL = os.environ["INFLUXDB_URL"]
-INFLUXDB_TOKEN = os.environ["INFLUXDB_TOKEN"]
-INFLUXDB_ORG = os.environ["INFLUXDB_ORG"]
-INFLUXDB_BUCKET = os.environ["INFLUXDB_BUCKET"]
 
 
 class Telemetry:
 
-    def __init__(self, name):
-        self._name = name
+    def __init__(self, config: Config):
+        self._config: Config = config
         self._hostname = socket.gethostname()
-        self._influxdb = InfluxDBClientAsync(url=INFLUXDB_URL, token=INFLUXDB_TOKEN)
+        self._influxdb = InfluxDBClientAsync(
+            url=config.influxdb.url,
+            token=config.influxdb.token,
+        )
         self._background_tasks = set()
 
     async def open(self):
-        _LOGGER.info("open, name: %s, hostname: %s" % (self._name, self._hostname))
+        _LOGGER.info("open, name: %s, hostname: %s" % (self._config.name, self._hostname))
         # influxdb_ready = await self._influxdb.ping()
         # _LOGGER.info("InfluxDB ready: %s" % (influxdb_ready))
 
@@ -34,11 +32,13 @@ class Telemetry:
         pass
 
     def report_point(self, point):
-        point.tag("name", self._name)
+        point.tag("name", self._config.name)
         point.tag("host", self._hostname)
 
         write_api = self._influxdb.write_api()
-        task = asyncio.create_task(write_api.write(INFLUXDB_BUCKET, INFLUXDB_ORG, point))
+        task = asyncio.create_task(
+            write_api.write(self._config.influxdb.bucket, self._config.influxdb.org, point)
+        )
         self._background_tasks.add(task)
         task.add_done_callback(self._task_finished)
 

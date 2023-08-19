@@ -1,6 +1,7 @@
 import asyncio
 import aiohttp
 import logging
+from ._config import Config
 from ._settings import Settings
 
 
@@ -124,22 +125,20 @@ class LedSegment:
 
 class LedController:
 
-    def __init__(self, settings):
+    def __init__(self, config, settings):
+        self._config: Config = config
         self._settings: Settings = settings
         self._brightness = 0.5
-        self._segments = {
-            "ambilight": LedSegment(0, 133),
-            "logo": LedSegment(133, 170),
-            "wheel": LedSegment(170, 205),
-            "left_servo": LedSegment(42, 54),
-            "right_servo": LedSegment(78, 90),
-            "bottom_servo_1": LedSegment(0, 6),
-            "bottom_servo_2": LedSegment(127, 133),
-        }
+        self._segments = {}
+        for segment in config.wled_segments:
+            self._segments[segment.name] = LedSegment(segment.start, segment.stop)
 
-    async def open(self, url: str):
+    async def open(self):
         _LOGGER.info("open")
-        self._session = aiohttp.ClientSession(base_url=url, raise_for_status=True)
+        self._session = aiohttp.ClientSession(
+            base_url=self._config.wled_url,
+            raise_for_status=True,
+        )
         if "brightness" in self._settings:
             self._brightness = self._settings["brightness"]
             

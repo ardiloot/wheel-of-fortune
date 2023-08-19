@@ -21,8 +21,12 @@ class InfluxdbConfig(BaseSettings):
 
 class Config(BaseSettings):
     name: str = "wheel-of-fortune"
+    data_dir: str = "./data"
+    num_sectors: int = 16
+
     wled_url: str | None = None
     wled_segments: list[WLedSegmentConfig] = []
+    
     influxdb: InfluxdbConfig | None = None
 
     model_config = SettingsConfigDict(

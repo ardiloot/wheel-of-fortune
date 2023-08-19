@@ -1,6 +1,7 @@
 import asyncio
 import aiohttp
 import logging
+from ._config import Config
 
 
 _LOGGER = logging.getLogger(__name__)
@@ -8,7 +9,10 @@ _LOGGER = logging.getLogger(__name__)
 
 class ServoController:
 
-    async def open(self, url):
+    def __init__(self, config):
+        self._config: Config = config
+
+    async def open(self):
         _LOGGER.info("open")
         self._id_map = {
             "bottom": "0",
@@ -19,7 +23,10 @@ class ServoController:
         self._idle_duty = 0.087
         self._erect_duty = 0.0516
         # self._mount_duty = 0.047352
-        self._session = aiohttp.ClientSession(base_url=url, raise_for_status=True)
+        self._session = aiohttp.ClientSession(
+            base_url=self._config.wled_url,
+            raise_for_status=True,
+        )
             
     async def close(self):
         _LOGGER.info("close")

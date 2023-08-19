@@ -1,6 +1,7 @@
 import os
 import asyncio
 import logging
+from ._config import Config
 from ._settings import SettingsManager, Settings
 from ._encoder import Encoder
 from ._leds import LedController
@@ -56,40 +57,37 @@ class Sector:
 
 class Wheel:
     
-    def __init__(self, name, gpio, wled_url, data_dir, num_sectors: int = 16):
+    def __init__(self, config, gpio):
 
         self._loop = asyncio.get_running_loop()
-        self._name: str = name
         self._gpio = gpio
-        self._wled_url: str = wled_url
-        self._data_dir: str = data_dir
         self._subscriptions = []
 
         self._poweroff_pin = "PL8"
         self._gpio.setup(self._poweroff_pin, self._gpio.IN, pull_up_down=self._gpio.PUD_OFF)
 
-        settings_file = os.path.join(self._data_dir, "settings.json")
+        settings_file = os.path.join(config.data_dir, "settings.json")
         self._settings_mgr = SettingsManager(settings_file)
         self._settings = self._settings_mgr.get_subsettings("wheel")
 
-        self._telemetry = Telemetry(self._name)
-        self._encoder = Encoder(num_sectors, self._gpio, self._encoder_event, self._telemetry)
-        self._leds = LedController(self._settings_mgr.get_subsettings("leds"))
-        self._servos = ServoController()
-        self._sound = Sound(self._settings_mgr.get_subsettings("sound"))
+        self._telemetry = Telemetry(config)
+        self._encoder = Encoder(config, self._gpio, self._encoder_event, self._telemetry)
+        self._leds = LedController(config, self._settings_mgr.get_subsettings("leds"))
+        self._servos = ServoController(config)
+        self._sound = Sound(config, self._settings_mgr.get_subsettings("sound"))
 
         self._active_task: asyncio.Task | None = None
         self._next_task_name: str = "startup"
 
-        themes_file = os.path.join(self._data_dir, "themes.yaml")
+        themes_file = os.path.join(config.data_dir, "themes.yaml")
         self._themes = load_themes(themes_file)
         self._theme: Theme = list(self._themes.values())[0]
 
-        effects_file = os.path.join(self._data_dir, "effects.yaml")
+        effects_file = os.path.join(config.data_dir, "effects.yaml")
         self._effects = load_effects(effects_file)
 
         self._sectors: list[Sector] = []
-        for i in range(num_sectors):
+        for i in range(config.num_sectors):
             sector_settings = self._settings.get_subsettings("sectors").get_subsettings("%d" % (i))
             self._sectors.append(Sector(i, sector_settings, self._effects))
         
@@ -111,8 +109,8 @@ class Wheel:
         # Open connections
         await self._telemetry.open()
         await self._encoder.open()
-        await self._leds.open(self._wled_url)
-        await self._servos.open(self._wled_url)
+        await self._leds.open()
+        await self._servos.open()
         await self._sound.open()
 
     async def close(self):

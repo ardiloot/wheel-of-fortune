@@ -1,7 +1,7 @@
-import os
 import sys
 import asyncio
 import logging
+from ._config import Config
 from ._wheel import Wheel
 import OPi.GPIO as GPIO
 from fastapi import WebSocket, WebSocketDisconnect
@@ -187,16 +187,14 @@ async def startup_event():
     global maintain_wheel_task
     global ws_manager
     if wheel is None:
+        config = Config()
+    
         gpio = GPIO
         gpio.setwarnings(False)
         gpio.setmode(GPIO.SUNXI)
-        name = os.environ["WHEEL_NAME"]
-        wled_url = os.environ["WLED_URL"]
-        data_dir = os.environ["DATA_DIR"]
-        wheel = Wheel(name, gpio, wled_url, data_dir)
-
+    
+        wheel = Wheel(config, gpio)
         ws_manager = WsManager(wheel)
-
         maintain_wheel_task = asyncio.create_task(maintain_wheel())
 
 

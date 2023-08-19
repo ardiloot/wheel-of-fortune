@@ -3,6 +3,7 @@ import time
 import asyncio
 import logging
 import pygame
+from ._config import Config
 from ._settings import Settings
 
 _LOGGER = logging.getLogger(__name__)
@@ -14,7 +15,8 @@ __all__ = [
 
 class Sound:
 
-    def __init__(self, settings):
+    def __init__(self, config, settings):
+        self._config: Config = config
         self._settings: Settings = settings
         self._volume = 0.5
 

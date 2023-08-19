@@ -26,7 +26,7 @@ class Sound:
 
         # Decrypt and load sounds
         self._sounds = {}
-        sounds_dir = os.path.join(os.path.dirname(__file__), "..", "data", "sounds")
+        sounds_dir = os.path.join(config.data_dir, "sounds")
         _LOGGER.info("sounds_dir: %s" % (sounds_dir))
 
         suffix = ".mp3"

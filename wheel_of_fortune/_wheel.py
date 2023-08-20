@@ -325,7 +325,7 @@ class Wheel:
 
     async def _task_poweroff(self):
         await self._sound.fadeout_all()
-        await self._leds.set_preset(self._theme.poweroff_led_preset)
+        await self._leds.set_state(segments=self._theme.poweroff_led_preset)
         while True:
             await asyncio.sleep(5.0)
 

@@ -1,6 +1,7 @@
 [build-system]
 requires = [
-    "setuptools>=62"
+    "setuptools>=62",
+    "setuptools_scm"
 ]
 build-backend = "setuptools.build_meta"
 
@@ -27,7 +28,7 @@ dependencies = [
     "pyyaml",
     "pydantic-settings",
 ]
-version = "0.1.0"
+dynamic = ["version"]
 
 [project.optional-dependencies]
 dev = [
@@ -40,3 +41,5 @@ dev = [
 
 [tool.setuptools.packages.find]
 include = ["wheel_of_fortune*"]
+
+[tool.setuptools_scm]

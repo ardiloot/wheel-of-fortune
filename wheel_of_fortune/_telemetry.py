@@ -14,8 +14,8 @@ class Telemetry:
         self._config: Config = config
         self._hostname = socket.gethostname()
         self._influxdb = InfluxDBClientAsync(
-            url=config.influxdb.url,
-            token=config.influxdb.token,
+            url=config.influxdb_url,
+            token=config.influxdb_token,
         )
         self._background_tasks = set()
 
@@ -37,7 +37,7 @@ class Telemetry:
 
         write_api = self._influxdb.write_api()
         task = asyncio.create_task(
-            write_api.write(self._config.influxdb.bucket, self._config.influxdb.org, point)
+            write_api.write(self._config.influxdb_bucket, self._config.influxdb_org, point)
         )
         self._background_tasks.add(task)
         task.add_done_callback(self._task_finished)

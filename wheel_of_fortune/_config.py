@@ -12,13 +12,6 @@ class WLedSegmentConfig(BaseSettings):
     stop: int
 
 
-class InfluxdbConfig(BaseSettings):
-    url: str | None = None
-    token: str | None = None
-    org: str | None = None
-    bucket: str | None = None
-
-
 class Config(BaseSettings):
     name: str = "wheel-of-fortune"
     data_dir: str = "./data"
@@ -27,7 +20,10 @@ class Config(BaseSettings):
     wled_url: str | None = None
     wled_segments: list[WLedSegmentConfig] = []
     
-    influxdb: InfluxdbConfig | None = None
+    influxdb_url: str | None = None
+    influxdb_token: str | None = None
+    influxdb_org: str | None = None
+    influxdb_bucket: str | None = None
 
     model_config = SettingsConfigDict(
         env_prefix="wheel_",

@@ -34,6 +34,13 @@ RUN pip install --user --no-cache-dir dist/*.whl
 FROM python:3.11.4-slim
 WORKDIR /app
 
+RUN apt-get update \
+    && apt-get install -y libglib2.0-0 libasound2 --no-install-recommends \
+    && rm -rf \
+        /tmp/* \
+        /var/{cache,log}/* \
+        /var/lib/apt/lists/*
+
 ARG PUID=1000
 ARG PGID=1000
 RUN groupadd -g ${PGID} -o user \

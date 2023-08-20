@@ -21,8 +21,8 @@ class ServoController:
             "left": "2",
         }
         self._name_map = {v: k for k, v in self._id_map.items()}
-        self._idle_duty = 0.087
-        self._erect_duty = 0.0516
+        self._zero_duty = 0.087
+        self._full_duty = 0.0516
         # self._mount_duty = 0.047352
         self._session = aiohttp.ClientSession(
             base_url=self._config.wled_url,
@@ -89,9 +89,9 @@ class ServoController:
     def _pos_to_duty(self, pos):
         if pos is None:
             return 0.0
-        return pos * (self._erect_duty - self._idle_duty) + self._idle_duty
+        return pos * (self._full_duty - self._zero_duty) + self._zero_duty
 
     def _duty_to_pos(self, duty):
         if duty == 0.0:
             return None
-        return (duty - self._idle_duty) / (self._erect_duty - self._idle_duty)
+        return (duty - self._zero_duty) / (self._full_duty - self._zero_duty)

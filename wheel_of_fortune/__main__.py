@@ -1,6 +1,7 @@
 import os
 import logging
 import coloredlogs
+import importlib.metadata
 from .dependencies import startup_event, shutdown_event
 from .routers import encoder
 from .routers import servos
@@ -15,7 +16,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
 _LOGGER = logging.getLogger(__name__)
-
+_VERSION = importlib.metadata.version("wheel_of_fortune")
 
 app = FastAPI(
     docs_url="/api/v1/docs",
@@ -38,12 +39,12 @@ app.add_middleware(
 )
 
 frontend_path = os.path.join(os.path.dirname(__file__), "frontend", "dist")
-_LOGGER.info("frontend path: %s" % (frontend_path))
 app.mount("/", StaticFiles(directory=frontend_path, html=True), name="frontend")
 
 
 @app.on_event("startup")
 async def api_startup_event():
+    _LOGGER.info("version: %s" % (_VERSION))
     _LOGGER.info("startup_event")
     await startup_event()
 

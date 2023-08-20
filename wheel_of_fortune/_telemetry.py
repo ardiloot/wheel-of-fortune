@@ -13,18 +13,27 @@ class Telemetry:
     def __init__(self, config):
         self._config: Config = config
         self._hostname = socket.gethostname()
-        self._influxdb = InfluxDBClientAsync(
-            url=config.influxdb_url,
-            token=config.influxdb_token,
-        )
+        self._influxdb = None
+        if (
+            config.influxdb_url is not None and
+            config.influxdb_token is not None
+        ):
+            self._influxdb = InfluxDBClientAsync(
+                url=config.influxdb_url,
+                token=config.influxdb_token,
+            )
         self._background_tasks = set()
 
     async def open(self):
+        if self._influxdb is None:
+            return
         _LOGGER.info("open, name: %s, hostname: %s" % (self._config.name, self._hostname))
-        # influxdb_ready = await self._influxdb.ping()
-        # _LOGGER.info("InfluxDB ready: %s" % (influxdb_ready))
+        influxdb_ready = await self._influxdb.ping()
+        _LOGGER.info("InfluxDB ready: %s" % (influxdb_ready))
 
     async def close(self):
+        if self._influxdb is None:
+            return
         _LOGGER.info("close")
         await self._influxdb.close()
 
@@ -32,6 +41,11 @@ class Telemetry:
         pass
 
     def report_point(self, point):
+        if self._influxdb is None:
+            return
+        if self._config.influxdb_bucket is None or self._config.influxdb_org is None:
+            return
+        
         point.tag("name", self._config.name)
         point.tag("host", self._hostname)
 

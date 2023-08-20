@@ -1,5 +1,6 @@
 import asyncio
 import logging
+from typing import Callable
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -10,7 +11,7 @@ __all__ = [
 ]
 
 
-def decode_grey_code(num):
+def decode_grey_code(num: int) -> int:
     res = num
     mask = res >> 1
     while mask > 0:
@@ -19,16 +20,16 @@ def decode_grey_code(num):
     return res
 
 
-def encode_gray_code(num):
+def encode_gray_code(num: int) -> int:
     return num ^ (num >> 1)
 
 
 class AsyncTimer:
 
-    def __init__(self, timeout, callback):
-        self._callback = callback
-        self._timeout = timeout
-        self._task = None
+    def __init__(self, timeout: float, callback):
+        self._callback: Callable[[], None] = callback
+        self._timeout: float = timeout
+        self._task: asyncio.Task | None = None
 
     def start(self):
         self.cancel()

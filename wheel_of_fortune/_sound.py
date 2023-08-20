@@ -18,13 +18,11 @@ class Sound:
     def __init__(self, config, settings):
         self._config: Config = config
         self._settings: Settings = settings
-        self._volume = 0.5
+        self._volume: float = 0.5
 
-        start = time.time()
         pygame.mixer.init()
-        _LOGGER.info("init %.3f ms" % (1e3 * (time.time() - start)))
 
-        # Decrypt and load sounds
+        # Load sounds
         self._sounds = {}
         sounds_dir = os.path.join(config.data_dir, "sounds")
         _LOGGER.info("sounds_dir: %s" % (sounds_dir))
@@ -41,8 +39,6 @@ class Sound:
             name = fname[:-len(suffix)]
             self._sounds[name] = sound
 
-        _LOGGER.info("init + load %.3f ms" % (1e3 * (time.time() - start)))
-
     async def open(self):
         _LOGGER.info("open")
         if "volume" in self._settings:
@@ -52,26 +48,26 @@ class Sound:
         _LOGGER.info("close")
         pygame.mixer.quit()
 
-    async def set_volume(self, volume: float, save=True):
+    async def set_volume(self, volume: float, save: bool = True):
         self._volume = volume
         for sound in self._sounds.values():
             sound.set_volume(self._volume)
         if save:
             self._settings["volume"] = volume
 
-    async def play_sound(self, name):
+    async def play_sound(self, name: str):
         start = time.time()
         res = self._sounds[name].play()
         _LOGGER.info("play %s in %.3f ms" % (name, 1e3 * (time.time() - start)))
         return res
 
-    async def stop_sound(self, name):
+    async def stop_sound(self, name: str):
         start = time.time()
         res = self._sounds[name].stop()
         _LOGGER.info("stop %s in %.3f ms" % (name, 1e3 * (time.time() - start)))
         return res
 
-    async def fadeout_all(self, timeout_ms=300):
+    async def fadeout_all(self, timeout_ms: float = 300):
         start = time.time()
         pygame.mixer.fadeout(timeout_ms)
         _LOGGER.info("fadeout_all %.3f ms" % (1e3 * (time.time() - start)))

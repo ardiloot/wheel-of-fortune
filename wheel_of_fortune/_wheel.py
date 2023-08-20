@@ -57,7 +57,7 @@ class Sector:
 
 class Wheel:
     
-    def __init__(self, config, gpio):
+    def __init__(self, config: Config, gpio):
 
         self._loop = asyncio.get_running_loop()
         self._gpio = gpio
@@ -336,7 +336,7 @@ class Wheel:
     async def __aexit__(self, *args):
         await self.close()
 
-    def _encoder_event(self, event_name):
+    def _encoder_event(self, event_name: Sector):
         _LOGGER.debug("encoder event: %s" % (event_name))
         if event_name == "spinning":
             self._schedule_task("spinning")

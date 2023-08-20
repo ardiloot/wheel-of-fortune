@@ -19,7 +19,7 @@ class SettingsManager:
     def __init__(self, filename):
         self._filename: str = filename
         self._data: dict[str, Any] = {}
-        self._saved = False
+        self._saved: bool = False
         self._lock = asyncio.Lock()
 
     async def open(self):

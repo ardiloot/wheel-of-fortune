@@ -17,8 +17,8 @@ class EncoderState(BaseModel):
 
 
 class EncoderTestParams(BaseModel):
-    initial_speed: float = Field(ge=0.0, le=100, example=20)
-    drag_factor: float = Field(ge=0.0, le=100, example=0.1)
+    initial_speed: float = Field(ge=0.0, le=100, examples=[20])
+    drag_factor: float = Field(ge=0.0, le=100, examples=[0.1])
 
 
 class ServoName(str, Enum):
@@ -28,8 +28,8 @@ class ServoName(str, Enum):
 
 
 class ServoStateIn(BaseModel):
-    pos: float | None = Field(ge=-0.3, le=1.3, example=0.5)
-    detached: bool | None = Field(example=False)
+    pos: float | None = Field(ge=-0.3, le=1.3, examples=[0.5])
+    detached: bool | None = Field(examples=[False])
 
 
 class ServoState(BaseModel):
@@ -73,7 +73,7 @@ class LedSegmentStateIn(BaseModel):
 
 
 class LedsStateIn(BaseModel):
-    brightness: float | None = Field(default=None, ge=0.0, le=1.0, example=0.5)
+    brightness: float | None = Field(default=None, ge=0.0, le=1.0, examples=[0.5])
     segments: dict[str, LedSegmentStateIn] | None = None
 
 
@@ -92,7 +92,7 @@ class SoundSystemState(BaseModel):
 
 
 class SoundSystemStateIn(BaseModel):
-    volume: float | None = Field(default=None, ge=0.0, le=1.0, example=0.5)
+    volume: float | None = Field(default=None, ge=0.0, le=1.0, examples=[0.5])
 
 
 class SectorState(BaseModel):

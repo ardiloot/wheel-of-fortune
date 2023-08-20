@@ -281,7 +281,7 @@ class Wheel:
             end_time = self._loop.time()
             duration = end_time - start_time
             total_sectors = end_sector_count - start_sector_count
-            avg_rpm = total_sectors / self._encoder.sectors_per_rev / duration * 60.0
+            avg_rpm = total_sectors / self._encoder.num_sectors / duration * 60.0
 
             _LOGGER.info("Spin: sector: %d -> %d, total_sectors: %d -> %d (%d), duration %.1fs, avg_rpm: %.2f" % (
                 start_sector, end_sector, start_sector_count, end_sector_count, total_sectors, duration, avg_rpm))
@@ -336,8 +336,8 @@ class Wheel:
     async def __aexit__(self, *args):
         await self.close()
 
-    def _encoder_event(self, event_name, event_data):
-        _LOGGER.debug("encoder event: %s %s" % (event_name, event_data))
+    def _encoder_event(self, event_name):
+        _LOGGER.debug("encoder event: %s" % (event_name))
         if event_name == "spinning":
             self._schedule_task("spinning")
         elif event_name == "standstill":

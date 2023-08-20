@@ -12,7 +12,7 @@ class EncoderState(BaseModel):
     total_revs: float
     total_sectors: int
     missed_sector_count: int
-    sectors_per_rev: int
+    num_sectors: int
     standstill: bool
 
 

@@ -1,8 +1,9 @@
 import asyncio
 import logging
+from typing import Callable
 from ._config import Config
 from ._utils import AsyncTimer, decode_grey_code, encode_gray_code
-from ._telemetry import Point
+from ._telemetry import Telemetry, Point
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -16,23 +17,23 @@ class Encoder:
     def __init__(self, config, gpio, callback, telemetry):
         self._config: Config = config
         self._gpio = gpio
-        self._callback = callback
-        self._telemetry = telemetry
+        self._callback: Callable[[str], None] = callback
+        self._telemetry: Telemetry = telemetry
         self._loop = asyncio.get_running_loop()
         
-        self._encoder_pins = ["PH3", "PH4", "PH6", "PH5"]
-        self._speed_pin = "PL10"
-        self._sectors_per_rev = self._config.num_sectors
-        self._pulses_per_rev = 128.0
+        self._encoder_pins: list[str] = ["PH3", "PH4", "PH6", "PH5"]
+        self._speed_pin: str = "PL10"
+        self._pulses_per_rev: float = 128.0
+        self._standstill_timeout = 3.5
 
-        self._encoder_state = []
-        self._total_sector_count = 0
-        self._missed_sector_count = 0
+        self._encoder_state: list[bool] = []
+        self._total_sector_count: int = 0
+        self._missed_sector_count: int = 0
 
-        self._speed_pulse_count = 0
-        self._last_speed_pulse_count = 0
-        self._rpm = 0.0
-        self._last_rpm_update = self._loop.time()
+        self._speed_pulse_count: int = 0
+        self._last_speed_pulse_count: int = 0
+        self._rpm: float = 0.0
+        self._last_rpm_update: float = self._loop.time()
 
         # Position interrupt
         for pin in self._encoder_pins:
@@ -47,7 +48,7 @@ class Encoder:
 
         # Standstill timer
         self._is_standstill = True
-        self._standstill_timer = AsyncTimer(3.5, self._standstill_detected)
+        self._standstill_timer = AsyncTimer(self._standstill_timeout, self._standstill_detected)
 
     async def open(self):
         pass
@@ -88,7 +89,7 @@ class Encoder:
         cur_sector = self.sector
         while abs(1.0 / cur_speed) < 1.0:
             # Update sector
-            cur_sector = (cur_sector + 1) % self._sectors_per_rev
+            cur_sector = (cur_sector + 1) % self._config.num_sectors
             gray_code = encode_gray_code(cur_sector)
             for j in range(len(self._encoder_state) - 1, -1, -1):
                 self._encoder_state[j] = gray_code % 2 != 0
@@ -100,7 +101,11 @@ class Encoder:
             # Update speed
             cur_speed = cur_speed - drag_factor * cur_speed
 
-            _LOGGER.info("test %d -> %d, speed %.2f, time per sector: %.1f" % (cur_sector, self.sector, cur_speed, 1.0 / cur_speed))
+            _LOGGER.info("test %d -> %d, speed %.2f, time per sector: %.1f" % (
+                cur_sector,
+                self.sector,
+                cur_speed, 1.0 / cur_speed
+            ))
         _LOGGER.info("test finished.")
 
     def get_state(self):
@@ -110,7 +115,7 @@ class Encoder:
             total_revs=self.total_revs,
             total_sectors=self.total_sectors,
             missed_sector_count=self.missed_sector_count,
-            sectors_per_rev=self.sectors_per_rev,
+            num_sectors=self.num_sectors,
             standstill=self.standstill
         )
 
@@ -135,8 +140,8 @@ class Encoder:
         return self._missed_sector_count
 
     @property
-    def sectors_per_rev(self):
-        return self._sectors_per_rev
+    def num_sectors(self):
+        return self._config.num_sectors
     
     @property
     def standstill(self):
@@ -144,7 +149,7 @@ class Encoder:
 
     def _standstill_detected(self):
         self._is_standstill = True
-        self._callback("standstill", {"sector": self.sector})
+        self._callback("standstill")
 
     def _decode_sector(self):
         res = 0
@@ -166,7 +171,7 @@ class Encoder:
                 return
 
             self._total_sector_count += 1
-            n = self._sectors_per_rev
+            n = self._config.num_sectors
             if (old_sector + 1) % n != new_sector and (old_sector - 1 + n) % n != new_sector:
                 _LOGGER.warn("WARN: skipped sector %d -> %d" % (old_sector, new_sector))
                 self._missed_sector_count += 1
@@ -174,7 +179,7 @@ class Encoder:
             self._sector = new_sector
             self._is_standstill = False
             self._standstill_timer.start()
-            self._callback("spinning", {"sector": new_sector})
+            self._callback("spinning")
         except Exception:
             _LOGGER.exception("error in encoder update")
 

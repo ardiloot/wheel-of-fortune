@@ -181,7 +181,7 @@ class LedController:
             
     async def _sync_state(self, sync_segments=True):
         if self._session is None:
-            raise ValueError("Cannot sync, session is closed")
+            raise ConnectionError("Session is not opened.")
         
         int_brightness = int(round(255 * self._brightness))
         state = {

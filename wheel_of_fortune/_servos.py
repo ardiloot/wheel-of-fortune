@@ -11,6 +11,7 @@ class ServoController:
 
     def __init__(self, config):
         self._config: Config = config
+        self._session: aiohttp.ClientSession | None = None
 
     async def open(self):
         _LOGGER.info("open")
@@ -29,12 +30,16 @@ class ServoController:
         )
             
     async def close(self):
+        if self._session is None:
+            return
         _LOGGER.info("close")
         await self._session.close()
         _LOGGER.info("close done.")
 
     async def set_pos(self, pos, names=None):
         _LOGGER.info("set_servo_pos: %s %s" % (names, pos))
+        if self._session is None:
+            return ConnectionError("Session is not opened")
         duty = self._pos_to_duty(pos)
 
         pwm_data = {}
@@ -53,6 +58,9 @@ class ServoController:
 
     async def get_state(self):
         _LOGGER.info("get_state")
+        if self._session is None:
+            return ConnectionError("Session is not opened")
+        
         resp = await self._session.get("/json/state")
         data = await resp.json()
 
@@ -68,6 +76,8 @@ class ServoController:
         return res
 
     async def _update_state(self, state):
+        if self._session is None:
+            return ConnectionError("Session is not opened")
         await self._session.post("/json/state", json=state)
 
     async def maintain(self):

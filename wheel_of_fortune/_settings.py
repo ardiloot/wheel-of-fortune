@@ -46,11 +46,14 @@ class SettingsManager:
             await self.save()
             await asyncio.sleep(10.0)
 
-    def get_subsettings(self, name):
+    def subsettings(self, name):
         return Settings(self, base_key=[name])
 
     def invalidate(self):
         self._saved = False
+
+    def __getitem__(self, key):
+        return self.subsettings(key)
 
     @property
     def data(self):
@@ -84,7 +87,7 @@ class Settings:
         self.data[key] = value
         self._manager.invalidate()
 
-    def get_subsettings(self, name):
+    def subsettings(self, name):
         return Settings(self._manager, base_key=self._base_key + [name])
     
     def invalidate(self):

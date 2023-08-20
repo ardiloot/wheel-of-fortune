@@ -68,13 +68,13 @@ class Wheel:
 
         settings_file = os.path.join(config.data_dir, "settings.json")
         self._settings_mgr = SettingsManager(settings_file)
-        self._settings = self._settings_mgr.get_subsettings("wheel")
+        self._settings = self._settings_mgr["wheel"]
 
         self._telemetry = Telemetry(config)
         self._encoder = Encoder(config, self._gpio, self._encoder_event, self._telemetry)
-        self._leds = LedController(config, self._settings_mgr.get_subsettings("leds"))
+        self._leds = LedController(config, self._settings_mgr["leds"])
         self._servos = ServoController(config)
-        self._sound = Sound(config, self._settings_mgr.get_subsettings("sound"))
+        self._sound = Sound(config, self._settings_mgr["sound"])
 
         self._active_task: asyncio.Task | None = None
         self._next_task_name: str = "startup"
@@ -88,7 +88,7 @@ class Wheel:
 
         self._sectors: list[Sector] = []
         for i in range(config.num_sectors):
-            sector_settings = self._settings.get_subsettings("sectors").get_subsettings("%d" % (i))
+            sector_settings = self._settings.subsettings("sectors").subsettings("%d" % (i))
             self._sectors.append(Sector(i, sector_settings, self._effects))
         
         self._theme_sound_channel = None

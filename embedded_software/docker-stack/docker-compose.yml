@@ -1,33 +1,29 @@
 version: '3.8'
 services:
 
-  backend:
-    container_name: backend
-    image: backend
-    build: ./backend
-    env_file: ./.secrets/backend.env
+  wheel_of_fortune:
+    container_name: wheel_of_fortune
+    image: wheel_of_fortune
     volumes:
       - /sys:/sys           # required to control GPIO
+      - ${DATA_DIR}:/app/data
     devices:
       - /dev/snd:/dev/snd   # for playing sound
+    environment:
+      - WHEEL_NAME=${WHEEL_NAME}
+      - WHEEL_NUM_SECTORS=${WHEEL_NUM_SECTORS}
+      - WHEEL_DATA_DIR=/app/data
+      - WHEEL_WLED_URL=${WHEEL_WLED_URL}
+      - WHEEL_WLED_SEGMENTS=${WHEEL_WLED_SEGMENTS}
+      - WHEEL_INFLUXDB__URL=${WHEEL_INFLUXDB__URL}
+      - WHEEL_INFLUXDB__TOKEN=${WHEEL_INFLUXDB__TOKEN}
+      - WHEEL_INFLUXDB__ORG=${WHEEL_INFLUXDB__ORG}
+      - WHEEL_INFLUXDB__BUCKET=${WHEEL_INFLUXDB__BUCKET}
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.backend.rule=PathPrefix(`/api`)"
-      - "traefik.http.routers.backend.priority=100"
+      - "traefik.http.routers.backend.rule=PathPrefix(`/`)"
     networks:
       - backend
-    restart: unless-stopped
-
-  frontend:
-    container_name: frontend
-    image: frontend
-    build: ./frontend
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.frontend.rule=PathPrefix(`/`)"
-      - "traefik.http.routers.frontend.priority=50"
-    networks:
-      - frontend
     restart: unless-stopped
 
   proxy:
@@ -43,7 +39,10 @@ services:
       - 8080:8080
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - ${LOCAL_WORKSPACE_FOLDER:-.}/proxy/config:/config
+      - ./proxy/config:/config
+    environment:
+      - DOMAIN=${DOMAIN}
+      - WLED_URL=${WHEEL_WLED_URL}
     networks:
       - backend
       - frontend

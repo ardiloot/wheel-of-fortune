@@ -3,8 +3,8 @@ http:
     wled:
       loadBalancer:
         servers:
-          - url: "http://192.168.242.3/"
+          - url: "{{ env "WLED_URL" }}"
   routers:
     wled:
-      rule: "Host(`wled.orangepi.int.manoir.xyz`) || Host(`wled.orangepi-dev.int.manoir.xyz`)"
+      rule: "Host(`wled.{{ env "DOMAIN" }}`)"
       service: wled

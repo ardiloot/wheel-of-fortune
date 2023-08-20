@@ -128,10 +128,13 @@ class LedController:
     def __init__(self, config, settings):
         self._config: Config = config
         self._settings: Settings = settings
-        self._brightness = 0.5
-        self._segments = {}
+        self._brightness: float = 0.5
+        self._segments: dict[str, LedSegment] = {}
+
         for segment in config.wled_segments:
             self._segments[segment.name] = LedSegment(segment.start, segment.stop)
+        
+        self._session: aiohttp.ClientSession | None = None
 
     async def open(self):
         _LOGGER.info("open")
@@ -143,6 +146,8 @@ class LedController:
             self._brightness = self._settings["brightness"]
             
     async def close(self):
+        if self._session is None:
+            return
         _LOGGER.info("close")
         await self._session.close()
         _LOGGER.info("close done.")
@@ -168,12 +173,16 @@ class LedController:
 
     async def maintain(self):
         while True:
-            resp = await self._session.get("/json/state")
-            state = await resp.json()
-            _LOGGER.info("led state: %s" % (state))
+            if self._session:
+                resp = await self._session.get("/json/state")
+                state = await resp.json()
+                _LOGGER.info("led state: %s" % (state))
             await asyncio.sleep(100.0)
             
     async def _sync_state(self, sync_segments=True):
+        if self._session is None:
+            raise ValueError("Cannot sync, session is closed")
+        
         int_brightness = int(round(255 * self._brightness))
         state = {
             "on": int_brightness > 0,

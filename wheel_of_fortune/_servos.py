@@ -25,8 +25,8 @@ class ServoController:
         self._full_duty = 0.0516
         # self._mount_duty = 0.047352
         self._session = aiohttp.ClientSession(
-            base_url=self._config.wled_url,
-            raise_for_status=True,
+            base_url=self._config.wled_url,  # type: ignore
+            raise_for_status=True,  # type: ignore
         )
             
     async def close(self):

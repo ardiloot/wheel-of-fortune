@@ -72,10 +72,10 @@ class LedSegment:
 
     def compile_state(self):
 
-        def to_rgb(h):
+        def to_rgb(h: str) -> tuple[int, int, int]:
             return tuple(int(h[i:i + 2], 16) for i in (1, 3, 5))
 
-        def normalize(v):
+        def normalize(v: float) -> int:
             return int(max(0, min(255, round(255 * v))))
 
         pallete_id = PALLETE_MAP[self._pallete]
@@ -139,8 +139,8 @@ class LedController:
     async def open(self):
         _LOGGER.info("open")
         self._session = aiohttp.ClientSession(
-            base_url=self._config.wled_url,
-            raise_for_status=True,
+            base_url=self._config.wled_url,  # type: ignore
+            raise_for_status=True,  # type: ignore
         )
         if "brightness" in self._settings:
             self._brightness = self._settings["brightness"]

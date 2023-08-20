@@ -67,7 +67,7 @@ class Sound:
         _LOGGER.info("stop %s in %.3f ms" % (name, 1e3 * (time.time() - start)))
         return res
 
-    async def fadeout_all(self, timeout_ms: float = 300):
+    async def fadeout_all(self, timeout_ms: int = 300):
         start = time.time()
         pygame.mixer.fadeout(timeout_ms)
         _LOGGER.info("fadeout_all %.3f ms" % (1e3 * (time.time() - start)))

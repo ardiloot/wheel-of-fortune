@@ -57,8 +57,8 @@ class Sector:
 
 class Wheel:
     
-    def __init__(self, config: Config, gpio):
-
+    def __init__(self, config, gpio):
+        self._config: Config = config
         self._loop = asyncio.get_running_loop()
         self._gpio = gpio
         self._subscriptions = []
@@ -66,7 +66,7 @@ class Wheel:
         self._poweroff_pin = "PL8"
         self._gpio.setup(self._poweroff_pin, self._gpio.IN, pull_up_down=self._gpio.PUD_OFF)
 
-        settings_file = os.path.join(config.data_dir, "settings.json")
+        settings_file = os.path.join(self._config.data_dir, "settings.json")
         self._settings_mgr = SettingsManager(settings_file)
         self._settings = self._settings_mgr["wheel"]
 

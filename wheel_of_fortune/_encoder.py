@@ -61,7 +61,7 @@ class Encoder:
         while True:
             now = self._loop.time()
             dpulses = self._speed_pulse_count - self._last_speed_pulse_count
-            dtime = now - self._last_rpm_update 
+            dtime = now - self._last_rpm_update
             self._rpm = dpulses / dtime / self._pulses_per_rev * 60.0
             self._last_speed_pulse_count = self._speed_pulse_count
             self._last_rpm_update = now

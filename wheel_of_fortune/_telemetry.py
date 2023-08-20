@@ -10,7 +10,7 @@ _LOGGER = logging.getLogger(__name__)
 
 class Telemetry:
 
-    def __init__(self, config: Config):
+    def __init__(self, config):
         self._config: Config = config
         self._hostname = socket.gethostname()
         self._influxdb = InfluxDBClientAsync(

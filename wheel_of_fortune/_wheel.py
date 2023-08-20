@@ -302,16 +302,18 @@ class Wheel:
             await self._servos.set_pos(1.0)
             await asyncio.sleep(1.0)
 
-            self._theme_sound_channel.set_volume(0.2)
-            await asyncio.sleep(0.2)
+            if self._theme_sound_channel is not None:
+                self._theme_sound_channel.set_volume(0.2)
+                await asyncio.sleep(0.2)
 
             await self._leds.set_state(segments=effect.leds_preset)
             await self._sound.play_sound(effect.effect_sound)
             await asyncio.sleep(2.0)
 
-            for i in range(2, 11, 1):
-                self._theme_sound_channel.set_volume(i / 10)
-                await asyncio.sleep(0.1)
+            if self._theme_sound_channel is not None:
+                for i in range(2, 11, 1):
+                    self._theme_sound_channel.set_volume(i / 10)
+                    await asyncio.sleep(0.1)
 
             await asyncio.sleep(4.0)
 

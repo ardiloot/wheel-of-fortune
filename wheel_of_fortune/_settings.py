@@ -1,3 +1,4 @@
+import os
 import json
 import asyncio
 import logging
@@ -24,6 +25,13 @@ class SettingsManager:
     async def open(self):
         async with self._lock:
             _LOGGER.info("Open settings (%s)" % (self._filename))
+
+            if not os.path.isfile(self._filename):
+                _LOGGER.warn("Settings file not found: %s", self._filename)
+                self._data = {}
+                self._saved = True
+                return
+
             async with aiofiles.open(self._filename, mode="r") as f:
                 contents = await f.read()
             self._data = json.loads(contents)

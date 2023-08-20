@@ -44,3 +44,9 @@ Build python package:
 ```bash
 python -m build
 ```
+
+Build docker image:
+
+```bash
+docker build -t wheel_of_fortune .
+```

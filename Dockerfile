@@ -23,10 +23,10 @@ USER user
 
 COPY --chown=user:user ./ ./
 COPY --from=node_builder --chown=user:user /app/dist/ wheel_of_fortune/frontend/dist/
-RUN pip install --user --no-cache-dir build \
+RUN pip install --user --no-cache-dir --no-warn-script-location build \
     && python -m build --wheel
-RUN pip install --user -r requirements.txt --no-cache-dir
-RUN pip install --user --no-cache-dir dist/*.whl
+RUN pip install --user -r requirements.txt --no-cache-dir --no-warn-script-location
+RUN pip install --user --no-cache-dir --no-warn-script-location dist/*.whl
 
 
 FROM python:3.11.4-slim

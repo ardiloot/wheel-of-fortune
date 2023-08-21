@@ -21,9 +21,7 @@ RUN groupadd -g ${PGID} -o user \
     && chown -R user:user /app
 USER user
 
-COPY requirements.txt setup.py pyproject.toml MANIFEST.in README.md .gitignore ./
-COPY wheel_of_fortune/ wheel_of_fortune/
-COPY .git/ .git/
+COPY --chown=user:user ./ ./
 COPY --from=node_builder --chown=user:user /app/dist/ wheel_of_fortune/frontend/dist/
 RUN pip install --user --no-cache-dir build \
     && python -m build
@@ -50,7 +48,6 @@ RUN groupadd -g ${PGID} -o user \
 USER user
 
 COPY --from=python_builder /home/user/.local/ /home/user/.local/
-COPY --from=python_builder /app/dist/ ./
 
 EXPOSE 8000
 ENV PYTHONUNBUFFERED=1

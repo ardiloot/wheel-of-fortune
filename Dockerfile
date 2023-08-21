@@ -24,7 +24,7 @@ USER user
 COPY --chown=user:user ./ ./
 COPY --from=node_builder --chown=user:user /app/dist/ wheel_of_fortune/frontend/dist/
 RUN pip install --user --no-cache-dir build \
-    && python -m build
+    && python -m build --wheel
 RUN pip install --user -r requirements.txt --no-cache-dir
 RUN pip install --user --no-cache-dir dist/*.whl
 

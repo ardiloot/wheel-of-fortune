@@ -10,7 +10,7 @@ The aim of this server is to collect logs & telemetry and provide VPN network fo
  4. VPN network for remote access (WireGuard)
 
 Following services are exposed through Traefik reverse proxy:
-  * https://traefik.int.example.com - Traefik internal dasboard (basic HTTP auth)
+  * https://traefik.int.example.com - Traefik internal dashboard (basic HTTP auth)
   * https://influxdb.int.example.com - Influxdb admin panel
   * https://loki.int.example.com - Loki API
   * https://grafana.int.example.com - Grafana dashboards
@@ -48,7 +48,11 @@ Follow steps in: [Installing docker on Ubuntu](https://docs.docker.com/engine/in
 
 Follow steps from [Digital Ocean](https://www.digitalocean.com/community/tutorials/how-to-set-up-wireguard-on-ubuntu-22-04) tutorial.
 
-Remember to allow WireGuard port (`51820/udp`) through firewall and allow traffic from developer VPN clients to Wheel of Fourtune for remote access.
+Remember to allow WireGuard port (`51820/udp`) through firewall and allow traffic from developer VPN clients to Wheel of Fortune for remote access:
+
+```bash
+sudo ufw route allow in on wg0 out on wg0 to 192.168.241.2
+```
 
 As an example, WireGuard could use subnet `192.168.241.0/24`:
   1. `192.168.241.1` - current server
@@ -65,7 +69,7 @@ int.example.com             A   192.168.241.1
 wheel.int.example.com       A   192.168.241.2
 ```
 
-Subdomain `*.int.example.com` correspond to resources accesible over VPN.
+Subdomain `*.int.example.com` correspond to resources accessible over VPN.
 
 ## Setup metrics stack
 

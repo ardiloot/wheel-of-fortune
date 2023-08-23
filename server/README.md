@@ -93,18 +93,27 @@ docker compose up -d
 
 https://influxdb.int.example.com/
 
-Username: admin
-Organization: wheelmetrics
-Bucket name: telegraf
+Initial setup:
+  * Username: admin
+  * Organization: wheelmetrics
+  * Bucket name: telegraf
 
-Add API token for telegraf: Generate API token -> Custom API token 
+Add API token for telegraf: (Generate API token -> Custom API token)
   * Description: Server's telegraf write token
   * Permissions: Add write permissions to telegraf bucket
-Add generated token to `.env` file.
 
-Add API token for Grafana: Generate API token -> Custom API token 
+Add bucket for Wheel of Fortune telemetry: (Buckets -> Create bucket)
+  * Name: wheel-of-fortune
+
+Add API token for wheel-of-fortune: (Generate API token -> Custom API token)
+  * Description: Wheel of Fortune write token
+  * Permissions: Add write permissions to wheel-of-fortune bucket
+
+Add API token for Grafana: (Generate API token -> Custom API token)
   * Description: Grafana all read
   * Permissions: Read all buckets.
+
+Add generated telegraf token to `.env` file (`TELEGRAF_INFLUXDB_TOKEN`).
 
 
 ## Configure Grafana
@@ -113,18 +122,23 @@ https://grafana.int.example.com
 
 Default user/password: admin/admin
 
-Add influxdb data source: Administration -> Data sources -> Add data source -> InfluxDB:
+Add telegraf data source: Administration -> Data sources -> Add data source -> InfluxDB:
   * Name: Telegraf
   * Query language: InfluxQL
   * URL: http://influxdb:8086
   * Custom HTTP Headers, select Add Header. Set header to `Authorization` and value to `Token [token]` (previously generated read Token for Grafana)
   * Database: telegraf
 
-More info at: https://docs.influxdata.com/influxdb/v2.0/tools/grafana/?t=InfluxQL#configure-grafana-to-use-influxql
+Add wheel-of-fortune data source: Administration -> Data sources -> Add data source -> InfluxDB:
+  * Name: Wheel of Fortune
+  * Query language: InfluxQL
+  * URL: http://influxdb:8086
+  * Custom HTTP Headers, select Add Header. Set header to `Authorization` and value to `Token [token]` (previously generated read Token for Grafana)
+  * Database: wheel-of-fortune
 
 Add dashboards for Telegraf metrics. For example: https://grafana.com/grafana/dashboards/928-telegraf-system-dashboard/
 
-Add influxdb data source: Administration -> Data sources -> Add data source -> Loki:
+Add Loki data source: Administration -> Data sources -> Add data source -> Loki:
 
   * Name: Loki
   * URL: http://loki:3100

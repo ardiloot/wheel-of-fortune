@@ -1,0 +1,148 @@
+version: '3'
+services:
+
+  traefik:
+    image: "traefik:v2.10.3"
+    container_name: "traefik"
+    command:
+      - "--log.level=INFO"
+      # Dashboard
+      - "--api.dashboard=true"
+      # Docker
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      # Certificate resolvers
+      - "--certificatesresolvers.letsencrypt.acme.dnschallenge=true"
+      - "--certificatesresolvers.letsencrypt.acme.dnschallenge.provider=cloudflare"
+      - "--certificatesresolvers.letsencrypt.acme.email=${LETSENCRYPT_EMAIL}"
+      - "--certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json"
+      # HTTP redirect
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
+      # HTTPS
+      - "--entrypoints.websecure.address=:443"
+      - "--entrypoints.websecure.http.tls=true"
+      - "--entrypoints.websecure.http.tls.certResolver=letsencrypt"
+      - "--entrypoints.websecure.http.tls.domains[0].main=$DOMAIN_NAME"
+      - "--entrypoints.websecure.http.tls.domains[0].sans=*.$DOMAIN_NAME"
+      # Access logs
+      - "--accesslog=true"
+      - "--accesslog.filePath=/logs/access.log"
+      - "--accesslog.fields.headers.names.User-Agent=keep"
+      - "--accesslog.fields.headers.names.Authorization=keep"
+      - "--accesslog.fields.headers.names.Content-Type=keep"
+    environment:
+      - CLOUDFLARE_EMAIL=${CLOUDFLARE_EMAIL}
+      - CLOUDFLARE_DNS_API_TOKEN=${CLOUDFLARE_DNS_API_TOKEN}
+    ports:
+      - "443:443"
+      - "80:80"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - ${DATA_DIR}/traefik/letsencrypt:/letsencrypt
+      - ${DATA_DIR}/traefik/logs:/logs
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.traefik-dashboard.rule=Host(`traefik.$DOMAIN_NAME`)"
+      - "traefik.http.routers.traefik-dashboard.entrypoints=websecure"
+      - "traefik.http.routers.traefik-dashboard.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.traefik-dashboard.service=api@internal"
+      - "traefik.http.routers.traefik-dashboard.middlewares=dashboard-auth"
+      - "traefik.http.middlewares.dashboard-auth.basicauth.users=${TRAEFIK_DASHBOARD_AUTH}"
+    restart: unless-stopped
+
+  librespeed:
+    image: ghcr.io/linuxserver/librespeed:5.2.5
+    container_name: librespeed
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.librespeed.rule=Host(`librespeed.$DOMAIN_NAME`)"
+      - "traefik.http.routers.librespeed.entrypoints=websecure"
+      - "traefik.http.routers.librespeed.tls.certresolver=letsencrypt"
+    restart: unless-stopped
+    
+  influxdb:
+    image: influxdb:2.7.1
+    container_name: influxdb
+    volumes:
+      - ${DATA_DIR}/influxdb2/data:/var/lib/influxdb2
+      - ${DATA_DIR}/influxdb2/config:/etc/influxdb2
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.influxdb.rule=Host(`influxdb.$DOMAIN_NAME`)"
+      - "traefik.http.routers.influxdb.entrypoints=websecure"
+      - "traefik.http.routers.influxdb.tls.certresolver=letsencrypt"
+    restart: unless-stopped
+
+  loki:
+    container_name: loki
+    image: grafana/loki:2.8.2
+    volumes:
+      - ./config/loki/config.yaml:/etc/loki/loki-config.yaml
+      - ${DATA_DIR}/loki:/loki
+    command: -config.file=/etc/loki/loki-config.yaml
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.loki.rule=Host(`loki.$DOMAIN_NAME`)"
+      - "traefik.http.routers.loki.entrypoints=websecure"
+      - "traefik.http.routers.loki.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.loki.middlewares=loki-auth"
+      - "traefik.http.middlewares.loki-auth.basicauth.users=${LOKI_AUTH}"
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana:10.0.2
+    container_name: grafana
+    volumes:
+      - ${DATA_DIR}/grafana:/var/lib/grafana
+    environment:
+      - GF_SERVER_DOMAIN=grafana.$DOMAIN_NAME
+    depends_on:
+      - influxdb
+      - loki
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.grafana.rule=Host(`grafana.$DOMAIN_NAME`)"
+      - "traefik.http.routers.grafana.entrypoints=websecure"
+      - "traefik.http.routers.grafana.tls.certresolver=letsencrypt"
+    restart: unless-stopped
+
+  promtail:
+    container_name: promtail
+    image: grafana/promtail:2.8.2 
+    volumes:
+      - /var/log:/var/log:ro
+      - ./config/promtail/config.yml:/etc/promtail/promtail-config.yml
+    command: -config.file=/etc/promtail/promtail-config.yml -config.expand-env
+    environment:
+      - LOKI_URL=http://loki:3100/loki/api/v1/push
+      - HOSTNAME=${HOSTNAME}
+    depends_on:
+      - loki
+    restart: unless-stopped
+
+  telegraf:
+    container_name: telegraf
+    image: telegraf:1.27.2
+    user: "0:281"
+    volumes:
+      - ./config/telegraf/telegraf.conf:/etc/telegraf/telegraf.conf:ro
+      - /:/hostfs:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      - influxdb
+    network_mode: host # To monitor network interfaces
+    environment:
+      - HOST_ETC=/hostfs/etc
+      - HOST_PROC=/hostfs/proc
+      - HOST_SYS=/hostfs/sys
+      - HOST_VAR=/hostfs/var
+      - HOST_RUN=/hostfs/run
+      - HOST_MOUNT_PREFIX=/hostfs
+      - HOSTNAME=${HOSTNAME}
+      - INFLUXDB_URL=https://influxdb.${DOMAIN_NAME}
+      - INFLUXDB_TOKEN=${TELEGRAF_INFLUXDB_TOKEN}
+      - INFLUXDB_ORG=${TELEGRAF_INFLUXDB_ORG}
+      - INFLUXDB_BUCKET=${TELEGRAF_INFLUXDB_BUCKET}
+    restart: unless-stopped

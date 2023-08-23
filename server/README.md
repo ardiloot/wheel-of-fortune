@@ -69,22 +69,21 @@ Subdomain `*.int.example.com` correspond to resources accesible over VPN.
 
 ## Setup metrics stack
 
-Download / Clone metrics stack to `/docker/stacks`:
+Clone repository:
 
 ```bash
 cd ~
 git clone https://github.com/ardiloot/wheel-of-fortune.git
-
 ```
 
 Copy environment file from the example and fill in values:
 ```bash
-cd ~/docker/stacks/metrics
+cd ~/wheel-of-fortune/server/metrics
 cp env.example .env
 nano .env
 ```
 
-Start stack:
+Start metrics stack:
 ```bash
 docker compose up -d
 ```
@@ -142,6 +141,3 @@ Add Loki data source: Administration -> Data sources -> Add data source -> Loki:
 
   * Name: Loki
   * URL: http://loki:3100
-
-
-

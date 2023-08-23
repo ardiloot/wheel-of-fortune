@@ -16,7 +16,7 @@ Following services are exposed through Traefik reverse proxy:
   * https://grafana.int.example.com - Grafana dashboards
   * https://librespeed.int.example.com - Speedtest for testing connection
 
-Throughout this document, `example.com` is use as a example domain name.
+Throughout this document, `example.com` is use as a example domain name. All services are accessible only over VPN.
 
 ## Setup compute instance
 
@@ -48,9 +48,10 @@ Follow steps in: [Installing docker on Ubuntu](https://docs.docker.com/engine/in
 
 Follow steps from [Digital Ocean](https://www.digitalocean.com/community/tutorials/how-to-set-up-wireguard-on-ubuntu-22-04) tutorial.
 
-Remember to allow WireGuard port (`51820/udp`) through firewall and allow traffic from developer VPN clients to Wheel of Fortune for remote access:
+Remember to allow WireGuard port (`51820/udp`) through firewall(s) and allow traffic from developer VPN clients to Wheel of Fortune for remote access:
 
 ```bash
+sudo ufw allow 51820/udp
 sudo ufw route allow in on wg0 out on wg0 to 192.168.241.2
 ```
 
@@ -69,7 +70,7 @@ int.example.com             A   192.168.241.1
 wheel.int.example.com       A   192.168.241.2
 ```
 
-Subdomain `*.int.example.com` correspond to resources accessible over VPN.
+Subdomain `*.int.example.com` correspond to resources accessible over VPN (everything in this case).
 
 ## Setup metrics stack
 
@@ -80,16 +81,24 @@ cd ~
 git clone https://github.com/ardiloot/wheel-of-fortune.git
 ```
 
-Copy environment file from the example and fill in values:
+Copy environment file from the example and fill in values :
 ```bash
 cd ~/wheel-of-fortune/server/metrics
 cp env.example .env
 nano .env
 ```
+PS: `TELEGRAF_INFLUXDB_*` variables can be filled in later
 
 Start metrics stack:
 ```bash
 docker compose up -d
+```
+
+If getting permission errors from Grafana or Loki, run to fix permissions:
+
+```bash
+sudo chown 10001:10001  ~/data/loki/
+sudo chown 472:472  ~/data/grafana/
 ```
 
 ## Configure influxdb
@@ -101,20 +110,20 @@ Initial setup:
   * Organization: wheelmetrics
   * Bucket name: telegraf
 
-Add API token for telegraf: (Generate API token -> Custom API token)
+API token for telegraf: (Generate API token -> Custom API token)
   * Description: Server's telegraf write token
   * Permissions: Add write permissions to telegraf bucket
 
-Add bucket for Wheel of Fortune telemetry: (Buckets -> Create bucket)
+Create bucket for Wheel of Fortune telemetry: (Buckets -> Create bucket)
   * Name: wheel-of-fortune
 
-Add API token for wheel-of-fortune: (Generate API token -> Custom API token)
+API token for Wheel of Fortune: (Generate API token -> Custom API token)
   * Description: Wheel of Fortune write token
   * Permissions: Add write permissions to wheel-of-fortune bucket
 
-Add API token for Grafana: (Generate API token -> Custom API token)
-  * Description: Grafana all read
-  * Permissions: Read all buckets.
+API token for Grafana: (Generate API token -> Custom API token)
+  * Description: Grafana read all token
+  * Permissions: Read all buckets
 
 Add generated telegraf token to `.env` file (`TELEGRAF_INFLUXDB_TOKEN`).
 

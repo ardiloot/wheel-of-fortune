@@ -17,7 +17,6 @@ jobs:
         key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
         restore-keys: |
           ${{ runner.os }}-pip-
-      working-directory: embedded_software/WLED
     - uses: actions/setup-python@v4
       with:
         python-version: '3.9'
@@ -50,18 +49,15 @@ jobs:
         key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
         restore-keys: |
           ${{ runner.os }}-pip-
-      working-directory: embedded_software/WLED
     - name: Cache PlatformIO
       uses: actions/cache@v3
       with:
         path: ~/.platformio
         key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
-      working-directory: embedded_software/WLED
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
         python-version: '3.9'
-      working-directory: embedded_software/WLED
     - name: Install PlatformIO
       run: pip install -r requirements.txt
       working-directory: embedded_software/WLED

@@ -1,4 +1,4 @@
-name: PlatformIO CI
+name: WLED CI
 
 on: [push, pull_request]
 
@@ -76,8 +76,7 @@ jobs:
       if: startsWith(github.ref, 'refs/tags/')
       with:
         name: firmware-release
-        path: build_output/release/*.bin
-      working-directory: embedded_software/WLED
+        path: embedded_software/build_output/release/*.bin
   release:
     name: Create Release
     runs-on: ubuntu-latest

@@ -1,7 +1,8 @@
 FROM node:20.5.0-slim AS node_builder
 WORKDIR /app
-COPY wheel_of_fortune/frontend/ /app
+COPY wheel_of_fortune/frontend/package.json wheel_of_fortune/frontend/package-lock.json /app/
 RUN npm ci
+COPY wheel_of_fortune/frontend/ /app
 RUN npm run build
 
 
@@ -21,12 +22,14 @@ RUN groupadd -g ${PGID} -o user \
     && chown -R user:user /app
 USER user
 
+COPY --chown=user:user requirements.txt ./
+RUN pip install --user -r requirements.txt --no-cache-dir --no-warn-script-location \
+    && pip install --user --no-cache-dir --no-warn-script-location build
+
 COPY --chown=user:user ./ ./
 COPY --from=node_builder --chown=user:user /app/dist/ wheel_of_fortune/frontend/dist/
-RUN pip install --user --no-cache-dir --no-warn-script-location build \
-    && python -m build --wheel
-RUN pip install --user -r requirements.txt --no-cache-dir --no-warn-script-location
-RUN pip install --user --no-cache-dir --no-warn-script-location dist/*.whl
+RUN python -m build --wheel \
+    && pip install --user --no-cache-dir --no-warn-script-location dist/*.whl
 
 
 FROM python:3.11.4-slim
@@ -47,8 +50,8 @@ RUN groupadd -g ${PGID} -o user \
     && chown -R user:user /app
 USER user
 
-COPY --from=python_builder /home/user/.local/ /home/user/.local/
-
 EXPOSE 8000
 ENV PYTHONUNBUFFERED=1
+
+COPY --from=python_builder /home/user/.local/ /home/user/.local/
 CMD python -u -m wheel_of_fortune

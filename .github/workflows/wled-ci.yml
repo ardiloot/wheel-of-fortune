@@ -1,7 +1,10 @@
 name: WLED CI
 
-on: [push, pull_request]
-
+on:
+  pull_request:
+  push:
+    tags:
+      - "v*.*.*"
 
 jobs:
 
@@ -89,7 +92,7 @@ jobs:
     - name: Create draft release
       uses: softprops/action-gh-release@v1
       with:
-        draft: True
+        # draft: True
         files: |
           *.bin
       env:

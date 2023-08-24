@@ -4,7 +4,6 @@
 
 ## Setup development environment
 
-
 ```bash
 python -m venv venv
 source venv/bin/activate

@@ -45,6 +45,11 @@ jobs:
           echo "PKG_VERSION: ${PKG_VERSION}"
           echo "Docker tags: ${{ steps.meta.outputs.tags }}"
           echo "PKG_VERSION=${PKG_VERSION}" >> $GITHUB_ENV
+      - name: Cache register
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
         with:
@@ -52,7 +57,7 @@ jobs:
           push: true
           provenance: false
           platforms: linux/amd64,linux/arm64
-          cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:buildcache
-          cache-to: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:buildcache,mode=max
           tags: ${{ steps.meta.outputs.tags }},${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.PKG_VERSION }}
           labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache

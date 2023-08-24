@@ -2,7 +2,6 @@
 
 # Local development
 
-
 ## Setup development environment
 
 ```bash

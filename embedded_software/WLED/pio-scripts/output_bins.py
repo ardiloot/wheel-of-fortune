@@ -38,6 +38,7 @@ def bin_rename_copy(source, target, env):
         _create_dirs(["release"])
         version = _get_cpp_define_value(env, "WLED_VERSION")
         release_file = "{}release{}WLED_{}_{}.bin".format(OUTPUT_DIR, os.path.sep, version, release_name)
+        print("release_file", release_file)
         shutil.copy(str(target[0]), release_file)
 
     # check if new target files exist and remove if necessary

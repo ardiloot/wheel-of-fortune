@@ -1,0 +1,91 @@
+version: '3.8'
+services:
+
+  traefik:
+    container_name: traefik
+    image: traefik:v2.9.8
+    command:
+      - "--log.level=INFO"
+      # Dashboard
+      - "--api.dashboard=true"
+      # Docker
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      # Dynamic conf
+      - "--providers.file.filename=/config/dynamic_conf.yml"
+       # Certificate resolvers
+      - "--certificatesresolvers.letsencrypt.acme.dnschallenge=true"
+      - "--certificatesresolvers.letsencrypt.acme.dnschallenge.provider=cloudflare"
+      - "--certificatesresolvers.letsencrypt.acme.email=${LETSENCRYPT_EMAIL}"
+      - "--certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json"
+      # HTTP redirect
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
+      # HTTPS
+      - "--entrypoints.websecure.address=:443"
+      - "--entrypoints.websecure.http.tls=true"
+      - "--entrypoints.websecure.http.tls.certResolver=letsencrypt"
+      - "--entrypoints.websecure.http.tls.domains[0].main=$DOMAIN_NAME"
+      - "--entrypoints.websecure.http.tls.domains[0].sans=*.$DOMAIN_NAME"
+      # Access logs
+      - "--accesslog=true"
+      - "--accesslog.filePath=/logs/access.log"
+      - "--accesslog.fields.headers.names.User-Agent=keep"
+      - "--accesslog.fields.headers.names.Authorization=keep"
+      - "--accesslog.fields.headers.names.Content-Type=keep"
+    environment:
+      - DOMAIN_NAME=${DOMAIN_NAME}
+      - WLED_URL=${WHEEL_WLED_URL}
+      - CLOUDFLARE_EMAIL=${CLOUDFLARE_EMAIL}
+      - CLOUDFLARE_DNS_API_TOKEN=${CLOUDFLARE_DNS_API_TOKEN}
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./config/traefik:/config
+      - ${DATA_DIR}/traefik/letsencrypt:/letsencrypt
+      - ${DATA_DIR}/traefik/logs:/logs
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.traefik-dashboard.rule=Host(`traefik.$DOMAIN_NAME`)"
+      - "traefik.http.routers.traefik-dashboard.entrypoints=websecure"
+      - "traefik.http.routers.traefik-dashboard.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.traefik-dashboard.service=api@internal"
+      - "traefik.http.routers.traefik-dashboard.middlewares=ui-auth@file"
+    networks:
+      - backend
+      - frontend
+    restart: unless-stopped
+
+  wheel_of_fortune:
+    container_name: wheel_of_fortune
+    image: ghcr.io/ardiloot/wheel-of-fortune:v0.1.2
+    volumes:
+      - /sys:/sys           # required to control GPIO
+      - ${DATA_DIR}/wheel-of-fortune:/app/data
+    devices:
+      - /dev/snd:/dev/snd   # for playing sound
+    environment:
+      - WHEEL_DATA_DIR=/app/data
+      - WHEEL_NAME=${WHEEL_NAME}
+      - WHEEL_WLED_URL=${WHEEL_WLED_URL}
+      - WHEEL_WLED_SEGMENTS=${WHEEL_WLED_SEGMENTS}
+      - WHEEL_INFLUXDB_URL=${WHEEL_INFLUXDB_URL}
+      - WHEEL_INFLUXDB_TOKEN=${WHEEL_INFLUXDB_TOKEN}
+      - WHEEL_INFLUXDB_ORG=${WHEEL_INFLUXDB_ORG}
+      - WHEEL_INFLUXDB_BUCKET=${WHEEL_INFLUXDB_BUCKET}
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.wheel-of-fortune.rule=Host(`$DOMAIN_NAME`)"
+      - "traefik.http.routers.wheel-of-fortune.entrypoints=websecure"
+      - "traefik.http.routers.wheel-of-fortune.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.wheel-of-fortune.middlewares=ui-auth@file"
+    networks:
+      - backend
+    restart: unless-stopped
+
+networks:
+  backend:
+  frontend:

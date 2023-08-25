@@ -1,0 +1,20 @@
+http:
+  services:
+    wled:
+      loadBalancer:
+        servers:
+          - url: "{{ env "WLED_URL" }}"
+  middlewares:
+    ui-auth:
+      basicAuth:
+        usersFile: /config/usersfile
+
+  routers:
+    wled:
+      entryPoints:
+        - websecure
+      rule: "Host(`wled.{{ env "DOMAIN_NAME" }}`)"
+      service: wled
+      middlewares:
+        - ui-auth
+  

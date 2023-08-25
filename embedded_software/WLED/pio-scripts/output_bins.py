@@ -7,7 +7,7 @@ OUTPUT_DIR = "build_output{}".format(os.path.sep)
 
 def _get_cpp_define_value(env, define):
     define_list = [item[-1] for item in env["CPPDEFINES"] if item[0] == define]
-    print(define_list)
+
     if define_list:
         return define_list[0]
 
@@ -23,7 +23,6 @@ def _create_dirs(dirs=["firmware", "map"]):
             os.mkdir("{}{}".format(OUTPUT_DIR, d))
 
 def bin_rename_copy(source, target, env):
-    print(str(source[0]), str(target[0]), env.Dump())
     _create_dirs()
     variant = env["PIOENV"]
 
@@ -32,13 +31,11 @@ def bin_rename_copy(source, target, env):
     bin_file = "{}firmware{}{}.bin".format(OUTPUT_DIR, os.path.sep, variant)
 
     release_name = _get_cpp_define_value(env, "WLED_RELEASE_NAME")
-    print("release name", release_name)
 
     if release_name:
         _create_dirs(["release"])
         version = _get_cpp_define_value(env, "WLED_VERSION")
         release_file = "{}release{}WLED_{}_{}.bin".format(OUTPUT_DIR, os.path.sep, version, release_name)
-        print("release_file", release_file)
         shutil.copy(str(target[0]), release_file)
 
     # check if new target files exist and remove if necessary

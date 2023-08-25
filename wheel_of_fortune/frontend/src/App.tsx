@@ -11,8 +11,14 @@ import { useLocalStorage } from '@mantine/hooks';
 import { IconCheck, IconX } from '@tabler/icons-react';
 
 
-const API_URL = import.meta.env.VITE_API_URL ?? window.location.protocol + '//' + window.location.host + '/api/v1';
-const WS_URL = import.meta.env.VITE_WS_URL ?? 'ws://' + window.location.host + '/api/v1/ws';
+const API_URL = (
+  import.meta.env.VITE_API_URL ?? 
+  window.location.protocol + '//' + window.location.host + '/api/v1'
+);
+const WS_URL = (
+  import.meta.env.VITE_WS_URL ?? 
+  (window.location.protocol === 'http:' ? 'ws://' : 'wss://') + window.location.host + '/api/v1/ws'
+);
 
 export default function App() {
   const [colorScheme, setColorScheme] = useLocalStorage<ColorScheme>({

@@ -186,7 +186,7 @@ export default function Wheel({ apiUrl, encoderState, wheelState } : {apiUrl: st
               alignmentBaseline="middle"
               fontWeight="bold"
             >
-              SALONG
+              -LOGO-
             </text>
           </mask>
         </defs>

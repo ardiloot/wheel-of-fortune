@@ -34,6 +34,14 @@ services:
       - "--accesslog.fields.headers.names.User-Agent=keep"
       - "--accesslog.fields.headers.names.Authorization=keep"
       - "--accesslog.fields.headers.names.Content-Type=keep"
+      # InfluxDB2
+      - "--metrics.influxdb2=true"
+      - "--metrics.influxdb2.address=${TRAEFIK_INFLUXDB_URL}"
+      - "--metrics.influxdb2.token=${TRAEFIK_INFLUXDB_TOKEN}"
+      - "--metrics.influxdb2.org=${TRAEFIK_INFLUXDB_ORG}"
+      - "--metrics.influxdb2.bucket=${TRAEFIK_INFLUXDB_BUCKET}"
+      - "--metrics.influxdb2.additionallabels.host=${DOMAIN_NAME}"
+      - "--metrics.influxdb2.additionallabels.wheel_name=${WHEEL_NAME}"
     environment:
       - DOMAIN_NAME=${DOMAIN_NAME}
       - WLED_URL=${WHEEL_WLED_URL}

@@ -23,6 +23,7 @@ def _create_dirs(dirs=["firmware", "map"]):
             os.mkdir("{}{}".format(OUTPUT_DIR, d))
 
 def bin_rename_copy(source, target, env):
+    print(source, target, env)
     _create_dirs()
     variant = env["PIOENV"]
 

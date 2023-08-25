@@ -5,7 +5,7 @@
 
 This docker-compose stack provides a convenient way to run the Wheel of Fortune software on embedded computers, such as OrangePi 3 LTS. The stack consists of two containers:
   1. **Wheel of Fortune Container**: This container includes the Wheel of Fortune software.
-  2. **Traefik Container**: Traefik is utilized as a reverse proxy to expose the user interface (UI) and the WLED interface.
+  2. **Traefik Container**: Traefik is utilized as a reverse proxy to expose the user interface (UI) and the WLED interface. Traefik also provides authentication via Basic HTTP authentication.
 
 ## Usage
 
@@ -17,7 +17,7 @@ Copy example data from `wheel-of-fortune/example-data` to `~/data/wheel-of-fortu
 
 Copy `wheel-of-fortune/embedded_software/docker_stack` to `~/docker_stack`.
 
-Add `~/docker_stack/.env` file using follwing example:
+Add `~/docker_stack/.env` file using following example:
 
 ```bash
 DOMAIN_NAME=wheel.example.com
@@ -51,6 +51,11 @@ TRAEFIK_INFLUXDB_BUCKET=traefik
 ```
 
 Fill in any missing values and/or make necessary changes to `docker-compose.yml` file.
+
+Add `usersfile` to `config/traefik` folder to list Basic Auth users.
+For more information see https://doc.traefik.io/traefik/middlewares/http/basicauth/#usersfile
+
+### Deploy
 
 Start docker stack by
 

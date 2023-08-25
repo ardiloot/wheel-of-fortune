@@ -7,7 +7,7 @@ OUTPUT_DIR = "build_output{}".format(os.path.sep)
 
 def _get_cpp_define_value(env, define):
     define_list = [item[-1] for item in env["CPPDEFINES"] if item[0] == define]
-
+    print(define_list)
     if define_list:
         return define_list[0]
 
@@ -32,6 +32,7 @@ def bin_rename_copy(source, target, env):
     bin_file = "{}firmware{}{}.bin".format(OUTPUT_DIR, os.path.sep, variant)
 
     release_name = _get_cpp_define_value(env, "WLED_RELEASE_NAME")
+    print("release name", release_name)
 
     if release_name:
         _create_dirs(["release"])

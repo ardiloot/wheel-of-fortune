@@ -9,4 +9,53 @@ This docker-compose stack provides a convenient way to run the Wheel of Fortune 
 
 ## Usage
 
-Copy the files from 
+### Data folder
+
+Copy example data from `wheel-of-fortune/example-data` to `~/data/wheel-of-fortune`. Make necessary changes to the data files.
+
+### Docker stack
+
+Copy `wheel-of-fortune/embedded_software/docker_stack` to `~/docker_stack`.
+
+Add `~/docker_stack/.env` file using follwing example:
+
+```bash
+DOMAIN_NAME=wheel.example.com
+DATA_DIR=/home/orangepi/data
+
+# Variables for Letsencrypt ACME DNS challenge (Cloudflare in this example)
+LETSENCRYPT_EMAIL=
+CLOUDFLARE_EMAIL=
+CLOUDFLARE_DNS_API_TOKEN=
+
+# Wheel of Fortune configuration
+WHEEL_NAME=test-wheel
+WHEEL_WLED_URL=
+WHEEL_WLED_SEGMENTS='[
+    {"name": "ambilight", "start": 0, "stop": 133},
+    {"name": "logo", "start": 133, "stop": 170},
+    {"name": "wheel", "start": 170, "stop": 205}
+]'
+
+# Wheel influxdb metrics
+WHEEL_INFLUXDB_URL=https://influxdb.int.example.com
+WHEEL_INFLUXDB_TOKEN=
+WHEEL_INFLUXDB_ORG=wheelmetrics
+WHEEL_INFLUXDB_BUCKET=wheel-of-fortune
+
+# Traefik influxdb metrics
+TRAEFIK_INFLUXDB_URL=https://influxdb.int.example.com
+TRAEFIK_INFLUXDB_TOKEN=
+TRAEFIK_INFLUXDB_ORG=wheelmetrics
+TRAEFIK_INFLUXDB_BUCKET=traefik
+```
+
+Fill in any missing values and/or make necessary changes to `docker-compose.yml` file.
+
+Start docker stack by
+
+```bash
+cd ~/docker_stack
+docker compose up -d
+```
+

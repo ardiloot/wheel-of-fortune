@@ -266,8 +266,9 @@ class Wheel:
             await asyncio.sleep(15.0)
 
     async def _task_spinning(self):
-        start_sector = self._encoder.sector
-        start_sector_count = self._encoder.total_sectors
+        enc_state = self._encoder.get_state()
+        start_sector = enc_state.sector
+        start_sector_count = enc_state.total_sectors
         start_time = self._loop.time()
         try:
             await self._sound.fadeout_all()
@@ -276,15 +277,22 @@ class Wheel:
             while True:
                 await asyncio.sleep(1.0)
         finally:
-            end_sector = self._encoder.sector
-            end_sector_count = self._encoder.total_sectors
+            end_sector = enc_state.sector
+            end_sector_count = enc_state.total_sectors
             end_time = self._loop.time()
             duration = end_time - start_time
             total_sectors = end_sector_count - start_sector_count
-            avg_rpm = total_sectors / self._encoder.num_sectors / duration * 60.0
+            avg_rpm = total_sectors / enc_state.num_sectors / duration * 60.0
 
             _LOGGER.info("Spin: sector: %d -> %d, total_sectors: %d -> %d (%d), duration %.1fs, avg_rpm: %.2f" % (
-                start_sector, end_sector, start_sector_count, end_sector_count, total_sectors, duration, avg_rpm))
+                start_sector,
+                end_sector,
+                start_sector_count,
+                end_sector_count,
+                total_sectors,
+                duration,
+                avg_rpm
+            ))
 
             point = Point("spin") \
                 .field("start_sector", start_sector) \
@@ -297,7 +305,8 @@ class Wheel:
 
     async def _task_stopped(self):
         try:
-            effect = self._sectors[self._encoder.sector].effect
+            enc_state = self._encoder.get_state()
+            effect = self._sectors[enc_state.sector].effect
 
             await self._servos.set_pos(1.0)
             await asyncio.sleep(1.0)

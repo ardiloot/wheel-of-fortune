@@ -10,7 +10,10 @@ from ._sound import Sound
 from ._telemetry import Telemetry, Point
 from ._themes import load_themes, Theme
 from ._effects import load_effects, Effect
-from .schemas import LedsStateIn
+from .schemas import (
+    LedsStateIn,
+    ServosStateIn,
+)
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -308,7 +311,7 @@ class Wheel:
             enc_state = self._encoder.get_state()
             effect = self._sectors[enc_state.sector].effect
 
-            await self._servos.set_pos(1.0)
+            await self._servos.set_state(ServosStateIn.model_validate({"servos": {"bottom": {"pos": 1.0}}}))
             await asyncio.sleep(1.0)
 
             if self._theme_sound_channel is not None:
@@ -326,13 +329,13 @@ class Wheel:
 
             await asyncio.sleep(4.0)
 
-            await self._servos.set_pos(0.0)
+            await self._servos.set_state(ServosStateIn.model_validate({"servos": {"bottom": {"pos": 0.0}}}))
             await asyncio.sleep(3.0)
             await self._sound.fadeout_all(timeout_ms=2000)
 
         finally:
             await self._sound.fadeout_all()
-            await self._servos.set_pos(0.0)
+            await self._servos.set_state(ServosStateIn.model_validate({"servos": {"bottom": {"pos": 0.0}}}))
 
     async def _task_poweroff(self):
         await self._sound.fadeout_all()

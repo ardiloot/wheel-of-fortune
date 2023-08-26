@@ -3,7 +3,12 @@ import aiohttp
 import logging
 from ._config import Config
 from ._settings import Settings
-
+from .schemas import (
+    LedSegmentState,
+    LedSegmentStateIn,
+    LedsState,
+    LedsStateIn,
+)
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -29,48 +34,39 @@ class LedSegment:
     def __init__(self, start, stop):
         self._start = start
         self._stop = stop
-        self.set_state()
+        self.set_state(LedSegmentStateIn())
 
-    def set_state(self,
-        enabled=True,
-        brightness=1.0,
-        pallete="default",
-        primary_color="#FF0000",
-        secondary_color="#000000",
-        effect="solid",
-        effect_speed=0.5,
-        effect_intensity=0.5
-    ):
-        if enabled is not None:
-            self._enabled = enabled
-        if brightness is not None:
-            self._brightness = brightness
-        if pallete is not None:
-            self._pallete = pallete
-        if primary_color is not None:
-            self._primary_color = primary_color
-        if secondary_color is not None:
-            self._secondary_color = secondary_color
-        if effect is not None:
-            self._effect = effect
-        if effect_speed is not None:
-            self._effect_speed = effect_speed
-        if effect_intensity is not None:
-            self._effect_intensity = effect_intensity
+    def set_state(self, state: LedSegmentStateIn):
+        if state.enabled is not None:
+            self._enabled = state.enabled
+        if state.brightness is not None:
+            self._brightness = state.brightness
+        if state.pallete is not None:
+            self._pallete = state.pallete
+        if state.primary_color is not None:
+            self._primary_color = state.primary_color
+        if state.secondary_color is not None:
+            self._secondary_color = state.secondary_color
+        if state.effect is not None:
+            self._effect = state.effect
+        if state.effect_speed is not None:
+            self._effect_speed = state.effect_speed
+        if state.effect_intensity is not None:
+            self._effect_intensity = state.effect_intensity
 
-    def get_state(self):
-        return {
-            "enabled": self._enabled,
-            "brightness": self._brightness,
-            "pallete": self._pallete,
-            "primary_color": self._primary_color,
-            "secondary_color": self._secondary_color,
-            "effect": self._effect,
-            "effect_speed": self._effect_speed,
-            "effect_intensity": self._effect_intensity,
-        }
+    def get_state(self) -> LedSegmentState:
+        return LedSegmentState(
+            enabled=self._enabled,
+            brightness=self._brightness,
+            pallete=self._pallete,
+            primary_color=self._primary_color,
+            secondary_color=self._secondary_color,
+            effect=self._effect,
+            effect_speed=self._effect_speed,
+            effect_intensity=self._effect_intensity,
+        )
 
-    def compile_state(self):
+    def compile_state(self) -> dict[str, int | float | str | list]:
 
         def to_rgb(h: str) -> tuple[int, int, int]:
             return tuple(int(h[i:i + 2], 16) for i in (1, 3, 5))
@@ -118,10 +114,6 @@ class LedSegment:
             "m12": 2                            # expand 1d fx
         }
     
-    @property
-    def enabled(self):
-        return self._enabled
-
 
 class LedController:
 
@@ -152,24 +144,24 @@ class LedController:
         await self._session.close()
         _LOGGER.info("close done.")
     
-    async def set_state(self, brightness=None, segments=None):
-        _LOGGER.info("set_state: %s %s" % (brightness, segments))
-        if brightness is not None:
-            self._brightness = brightness
-            self._settings.set("brightness", brightness)
+    async def set_state(self, state: LedsStateIn):
+        _LOGGER.info("set_state: %s %s" % (state.brightness, state.segments))
+        if state.brightness is not None:
+            self._brightness = state.brightness
+            self._settings.set("brightness", state.brightness)
 
-        if segments is not None:
+        if state.segments is not None:
             for name, segment in self._segments.items():
-                params = segments.get(name, {"enabled": False})
-                segment.set_state(**params)
-        await self._sync_state(sync_segments=segments is not None)
+                params = state.segments.get(name, LedSegmentStateIn(enabled=False))
+                segment.set_state(params)
+        await self._sync_state(sync_segments=state.segments is not None)
 
-    async def get_state(self):
-        return {
-            "power_on": self._brightness > 0.0,
-            "brightness": self._brightness,
-            "segments": dict((name, segment.get_state()) for name, segment in self._segments.items())
-        }
+    async def get_state(self) -> LedsState:
+        return LedsState(
+            power_on=self._brightness > 0.0,
+            brightness=self._brightness,
+            segments=dict((name, segment.get_state()) for name, segment in self._segments.items()),
+        )
 
     async def maintain(self):
         while True:

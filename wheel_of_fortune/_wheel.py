@@ -10,7 +10,7 @@ from ._sound import Sound
 from ._telemetry import Telemetry, Point
 from ._themes import load_themes, Theme
 from ._effects import load_effects, Effect
-
+from .schemas import LedsStateIn
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -255,12 +255,12 @@ class Wheel:
                 raise RuntimeError("ERROR cancelling task")
 
     async def _task_startup(self):
-        await self._leds.set_state(segments=self._theme.startup_led_preset)
+        await self._leds.set_state(LedsStateIn(segments=self._theme.startup_led_preset))
         await asyncio.sleep(2)
 
     async def _task_idle(self):
         await self._sound.fadeout_all()
-        await self._leds.set_state(segments=self._theme.idle_led_preset)
+        await self._leds.set_state(LedsStateIn(segments=self._theme.idle_led_preset))
         while True:
             _LOGGER.info("idle heartbeat")
             await asyncio.sleep(15.0)
@@ -272,7 +272,7 @@ class Wheel:
         start_time = self._loop.time()
         try:
             await self._sound.fadeout_all()
-            await self._leds.set_state(segments=self._theme.spinning_led_preset)
+            await self._leds.set_state(LedsStateIn(segments=self._theme.spinning_led_preset))
             self._theme_sound_channel = await self._sound.play_sound(self._theme.theme_sound)
             while True:
                 await asyncio.sleep(1.0)
@@ -315,7 +315,7 @@ class Wheel:
                 self._theme_sound_channel.set_volume(0.2)
                 await asyncio.sleep(0.2)
 
-            await self._leds.set_state(segments=effect.leds_preset)
+            await self._leds.set_state(LedsStateIn(segments=effect.leds_preset))
             await self._sound.play_sound(effect.effect_sound)
             await asyncio.sleep(2.0)
 
@@ -336,7 +336,7 @@ class Wheel:
 
     async def _task_poweroff(self):
         await self._sound.fadeout_all()
-        await self._leds.set_state(segments=self._theme.poweroff_led_preset)
+        await self._leds.set_state(LedsStateIn(segments=self._theme.poweroff_led_preset))
         while True:
             await asyncio.sleep(5.0)
 

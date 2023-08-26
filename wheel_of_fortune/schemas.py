@@ -68,8 +68,8 @@ class LedSegmentStateIn(BaseModel):
     primary_color: str | None = "#FF0000"
     secondary_color: str | None = "#000000"
     effect: str | None = "solid"
-    effect_speed: float | None = Field(default=1.0, ge=0.0, le=1.0)
-    effect_intensity: float | None = Field(default=1.0, ge=0.0, le=1.0)
+    effect_speed: float | None = Field(default=0.5, ge=0.0, le=1.0)
+    effect_intensity: float | None = Field(default=0.5, ge=0.0, le=1.0)
 
 
 class LedsStateIn(BaseModel):

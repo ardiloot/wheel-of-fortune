@@ -103,7 +103,7 @@ class SectorState(BaseModel):
     effect: str
 
 
-class Theme(BaseModel):
+class ThemeState(BaseModel):
     id: str
     name: str
     description: str
@@ -111,7 +111,7 @@ class Theme(BaseModel):
     theme_sound: str
 
 
-class Effect(BaseModel):
+class EffectState(BaseModel):
     id: str
     name: str
     description: str
@@ -122,8 +122,8 @@ class Effect(BaseModel):
 class WheelState(BaseModel):
     theme: str
     sectors: list[SectorState]
-    themes: list[Theme]
-    effects: list[Effect]
+    themes: list[ThemeState]
+    effects: list[EffectState]
 
 
 class WheelStateIn(BaseModel):

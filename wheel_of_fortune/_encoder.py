@@ -4,6 +4,7 @@ from typing import Callable
 from ._config import Config
 from ._utils import AsyncTimer, decode_grey_code, encode_gray_code
 from ._telemetry import Telemetry, Point
+from .schemas import EncoderState
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -68,14 +69,20 @@ class Encoder:
             
             report_cycles = 10 if self._is_standstill else 1
             if counter % report_cycles == 0:
+                state = self.get_state()
                 _LOGGER.debug("sector: %d, rpm %.1f (%d pulses in %.1f ms), total_revs: %.1f, missed_sectors: %d" % (
-                    self.sector, self.rpm, dpulses, 1e3 * dtime, self.total_revs, self.missed_sector_count))
+                    state.sector,
+                    state.rpm,
+                    dpulses, 1e3 * dtime,
+                    state.total_revs,
+                    state.missed_sector_count
+                ))
 
                 point = Point("encoder") \
-                    .field("sector", self.sector) \
-                    .field("rpm", self.rpm) \
-                    .field("total_revs", self.total_revs) \
-                    .field("missed_sector_count", self.missed_sector_count)
+                    .field("sector", state.sector) \
+                    .field("rpm", state.rpm) \
+                    .field("total_revs", state.total_revs) \
+                    .field("missed_sector_count", state.missed_sector_count)
                 self._telemetry.report_point(point)
                 
             await asyncio.sleep(1.0)
@@ -86,7 +93,7 @@ class Encoder:
         # speed: [sectors per sec]
         # drag_factor: speed is reduced by drag_factor * speed for every sector
         cur_speed = initial_speed
-        cur_sector = self.sector
+        cur_sector = self._sector
         while abs(1.0 / cur_speed) < 1.0:
             # Update sector
             cur_sector = (cur_sector + 1) % self._config.num_sectors
@@ -103,50 +110,22 @@ class Encoder:
 
             _LOGGER.info("test %d -> %d, speed %.2f, time per sector: %.1f" % (
                 cur_sector,
-                self.sector,
+                self._sector,
                 cur_speed, 1.0 / cur_speed
             ))
         _LOGGER.info("test finished.")
 
-    def get_state(self):
-        return dict(
-            sector=self.sector,
-            rpm=self.rpm,
-            total_revs=self.total_revs,
-            total_sectors=self.total_sectors,
-            missed_sector_count=self.missed_sector_count,
-            num_sectors=self.num_sectors,
-            standstill=self.standstill
+    def get_state(self) -> EncoderState:
+        return EncoderState(
+            sector=self._sector,
+            rpm=self._rpm,
+            total_revs=self._speed_pulse_count / self._pulses_per_rev,
+            total_sectors=self._total_sector_count,
+            missed_sector_count=self._missed_sector_count,
+            num_sectors=self._config.num_sectors,
+            standstill=self._is_standstill
         )
-
-    @property
-    def sector(self):
-        return self._sector
-
-    @property
-    def rpm(self):
-        return self._rpm
     
-    @property
-    def total_revs(self):
-        return self._speed_pulse_count / self._pulses_per_rev
-
-    @property
-    def total_sectors(self):
-        return self._total_sector_count
-    
-    @property
-    def missed_sector_count(self):
-        return self._missed_sector_count
-
-    @property
-    def num_sectors(self):
-        return self._config.num_sectors
-    
-    @property
-    def standstill(self):
-        return self._is_standstill
-
     def _standstill_detected(self):
         self._is_standstill = True
         self._callback("standstill")

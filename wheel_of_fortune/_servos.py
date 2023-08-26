@@ -2,7 +2,12 @@ import asyncio
 import aiohttp
 import logging
 from ._config import Config
-
+from .schemas import (
+    ServoState,
+    ServosState,
+    ServoStateIn,
+    ServosStateIn,
+)
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -12,9 +17,6 @@ class ServoController:
     def __init__(self, config):
         self._config: Config = config
         self._session: aiohttp.ClientSession | None = None
-
-    async def open(self):
-        _LOGGER.info("open")
         self._id_map = {
             "bottom": "0",
             "right": "1",
@@ -24,6 +26,9 @@ class ServoController:
         self._zero_duty = 0.087
         self._full_duty = 0.0516
         # self._mount_duty = 0.047352
+
+    async def open(self):
+        _LOGGER.info("open")
         self._session = aiohttp.ClientSession(
             base_url=self._config.wled_url,  # type: ignore
             raise_for_status=True,  # type: ignore
@@ -36,50 +41,36 @@ class ServoController:
         await self._session.close()
         _LOGGER.info("close done.")
 
-    async def set_pos(self, pos, names=None):
-        _LOGGER.info("set_servo_pos: %s %s" % (names, pos))
+    async def set_state(self, state: ServosStateIn):
         if self._session is None:
-            return ConnectionError("Session is not opened")
-        duty = self._pos_to_duty(pos)
-
+            raise ConnectionError("Session is not opened")
         pwm_data = {}
-        for name in names or self._id_map.keys():
-            if name not in self._id_map:
-                continue
-            pwm_data[self._id_map[name]] = {"duty": duty}
-        
+        for name, pwm_id in self._id_map.items():
+            if name in state.servos:
+                s: ServoStateIn = state.servos[name]
+                duty = self._pos_to_duty(s.pos) if not s.detached else None
+                pwm_data[pwm_id] = {"duty": duty}
         await self._session.post("/json/state", json={"pwm": pwm_data})
 
-    async def set_state(self, pos=None, detached=False, names=None):
-        if detached:
-            await self.set_pos(None, names=names)
-        elif pos is not None:
-            await self.set_pos(pos, names=names)
-
-    async def get_state(self):
+    async def get_state(self) -> ServosState:
         _LOGGER.info("get_state")
         if self._session is None:
-            return ConnectionError("Session is not opened")
+            raise ConnectionError("Session is not opened")
         
         resp = await self._session.get("/json/state")
         data = await resp.json()
 
-        res = {}
+        res_servos: dict[str, ServoState] = {}
         for _id, s in data.get("pwm", {}).items():
             duty = s.get("duty", 0.0)
             pos = self._duty_to_pos(duty)
-            res[self._name_map.get(_id, _id)] = {
-                "pos": pos,
-                "duty": duty,
-                "detached": duty == 0.0,
-            }
-        return res
-
-    async def _update_state(self, state):
-        if self._session is None:
-            return ConnectionError("Session is not opened")
-        await self._session.post("/json/state", json=state)
-
+            res_servos[self._name_map.get(_id, _id)] = ServoState(
+                pos=pos,
+                duty=duty,
+                detached=duty == 0.0,
+            )
+        return ServosState(servos=res_servos)
+    
     async def maintain(self):
         while True:
             state = await self.get_state()

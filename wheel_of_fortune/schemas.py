@@ -29,7 +29,11 @@ class ServoName(str, Enum):
 
 class ServoStateIn(BaseModel):
     pos: float | None = Field(ge=-0.3, le=1.3, examples=[0.5])
-    detached: bool | None = Field(examples=[False])
+    detached: bool = False
+
+
+class ServosStateIn(BaseModel):
+    servos: dict[str, ServoStateIn] = {}
 
 
 class ServoState(BaseModel):
@@ -39,10 +43,8 @@ class ServoState(BaseModel):
 
 
 class ServosState(BaseModel):
-    bottom: ServoState
-    right: ServoState
-    left: ServoState
-
+    servos: dict[str, ServoState]
+    
 
 class LedSegmentState(BaseModel):
     enabled: bool

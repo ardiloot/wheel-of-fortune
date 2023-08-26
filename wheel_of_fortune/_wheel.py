@@ -13,6 +13,12 @@ from ._effects import load_effects, Effect
 from .schemas import (
     LedsStateIn,
     ServosStateIn,
+    ThemeState,
+    EffectState,
+    SectorState,
+    SectorStateIn,
+    WheelState,
+    WheelStateIn,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -33,29 +39,29 @@ class Sector:
 
     async def init(self):
         if "name" in self._settings:
-            await self.set_name(self._settings["name"], save=False)
+            self.name = self._settings["name"]
         if "effect" in self._settings:
-            await self.set_effect(self._settings["effect"], save=False)
+            effect_id = self._settings["effect"]
+            self.effect = self._effects[effect_id]
 
-    async def set_name(self, name: str, save=True):
-        _LOGGER.info("Set sector %d name: %s -> %s" % (self.index, self.name, name))
-        self.name = name
-        if save:
-            self._settings.set("name", name)
-
-    async def set_effect(self, effect_id: str, save=True):
-        _LOGGER.info("Set sector %d effect: %s -> %s" % (self.index, self.effect._id, effect_id))
-        if effect_id not in self._effects:
-            raise ValueError("unknown effect id")
-        self.effect = self._effects[effect_id]
-        if save:
-            self._settings.set("effect", effect_id)
-
-    async def set_state(self, name=None, effect=None):
-        if name is not None:
-            await self.set_name(name)
-        if effect is not None:
-            await self.set_effect(effect)
+    async def set_state(self, state: SectorStateIn):
+        if state.name is not None:
+            _LOGGER.info("Set sector %d name: %s -> %s" % (self.index, self.name, state.name))
+            self.name = state.name
+            self._settings.set("name", self.name)
+        if state.effect is not None:
+            _LOGGER.info("Set sector %d effect: %s -> %s" % (self.index, self.effect._id, state.effect))
+            if state.effect not in self._effects:
+                raise ValueError("unknown effect id")
+            self.effect = self._effects[state.effect]
+            self._settings.set("effect", state.effect)
+    
+    def get_state(self) -> SectorState:
+        return SectorState(
+            index=self.index,
+            name=self.name,
+            effect=self.effect._id,
+        )
 
 
 class Wheel:
@@ -96,9 +102,6 @@ class Wheel:
         
         self._theme_sound_channel = None
 
-    def subscribe(self, callback):
-        self._subscriptions.append(callback)
-
     async def init(self):
         _LOGGER.info("init")
 
@@ -127,6 +130,41 @@ class Wheel:
         if self._active_task is not None and not self._active_task.done():
             self._active_task.cancel()
 
+    async def set_state(self, state: WheelStateIn):
+        if state.theme is not None:
+            await self.activate_theme(state.theme)
+
+    async def get_state(self) -> WheelState:
+        themes = [
+            ThemeState(
+                id=theme._id,
+                name=theme.name,
+                description=theme.description,
+                based_on=theme.based_on,
+                theme_sound=theme.theme_sound,
+            ) for theme in self._themes.values()
+        ]
+
+        effects = [
+            EffectState(
+                id=effect._id,
+                name=effect.name,
+                description=effect.description,
+                based_on=effect.based_on,
+                effect_sound=effect.effect_sound,
+            ) for effect in self._effects.values()
+        ]
+
+        return WheelState(
+            theme=self._theme._id,
+            sectors=[sector.get_state() for sector in self._sectors],
+            themes=themes,
+            effects=effects,
+        )
+
+    def subscribe(self, callback):
+        self._subscriptions.append(callback)
+
     async def activate_theme(self, theme_id: str, reload=True, save=True):
         _LOGGER.info("activate_theme: %s" % (theme_id))
         
@@ -142,45 +180,6 @@ class Wheel:
             self._reload_task()
         if save:
             self._settings.set("theme", self._theme._id)
-
-    async def set_state(self, theme=None):
-        if theme is not None:
-            await self.activate_theme(theme)
-
-    async def get_state(self):
-
-        themes = [
-            {
-                "id": theme._id,
-                "name": theme.name,
-                "description": theme.description,
-                "based_on": theme.based_on,
-                "theme_sound": theme.theme_sound,
-            } for theme in self._themes.values()
-        ]
-
-        effects = [
-            {
-                "id": effect._id,
-                "name": effect.name,
-                "description": effect.description,
-                "based_on": effect.based_on,
-                "effect_sound": effect.effect_sound,
-            } for effect in self._effects.values()
-        ]
-
-        return {
-            "theme": self._theme._id,
-            "sectors": [
-                {
-                    "index": sector.index,
-                    "name": sector.name,
-                    "effect": sector.effect._id,
-                } for sector in self._sectors
-            ],
-            "themes": themes,
-            "effects": effects,
-        }
 
     async def maintain(self):
         _LOGGER.info("maintain...")

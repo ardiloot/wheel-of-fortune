@@ -6,7 +6,7 @@ from .dependencies import startup_event, shutdown_event
 from .routers import encoder
 from .routers import servos
 from .routers import leds
-from .routers import sound
+from .routers import soundsystem
 from .routers import wheel
 from .routers import ws
 
@@ -26,7 +26,7 @@ app = FastAPI(
 app.include_router(encoder.router)
 app.include_router(servos.router)
 app.include_router(leds.router)
-app.include_router(sound.router)
+app.include_router(soundsystem.router)
 app.include_router(wheel.router)
 app.include_router(ws.router)
 

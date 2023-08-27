@@ -58,6 +58,17 @@ class Encoder:
     async def close(self):
         pass
 
+    def get_state(self) -> EncoderState:
+        return EncoderState(
+            sector=self._sector,
+            rpm=self._rpm,
+            total_revs=self._speed_pulse_count / self._pulses_per_rev,
+            total_sectors=self._total_sector_count,
+            missed_sector_count=self._missed_sector_count,
+            num_sectors=self._config.num_sectors,
+            standstill=self._is_standstill
+        )
+
     async def maintain(self):
         counter = 0
         while True:
@@ -115,17 +126,6 @@ class Encoder:
                 cur_speed, 1.0 / cur_speed
             ))
         _LOGGER.info("test finished.")
-
-    def get_state(self) -> EncoderState:
-        return EncoderState(
-            sector=self._sector,
-            rpm=self._rpm,
-            total_revs=self._speed_pulse_count / self._pulses_per_rev,
-            total_sectors=self._total_sector_count,
-            missed_sector_count=self._missed_sector_count,
-            num_sectors=self._config.num_sectors,
-            standstill=self._is_standstill
-        )
     
     def _standstill_detected(self):
         self._is_standstill = True

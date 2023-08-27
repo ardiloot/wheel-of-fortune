@@ -1,7 +1,5 @@
 {
-    "python.linting.flake8Enabled": true,
-    "python.linting.enabled": true,
-    "python.linting.flake8Args": [
+    "flake8.args": [
         "--max-line-length=120",
         "--ignore=E124,E128,E261,W293,W504,F722,F403,F401",
     ],
@@ -11,5 +9,16 @@
     },
     "[typescript]": {
         "editor.tabSize": 2
-    }
+    },
+    "cSpell.words": [
+        "fastapi",
+        "soundsystem",
+        "wled",
+        "pygame",
+        "subsettings",
+        "leds",
+        "pydantic",
+        "gpio",
+        "poweroff"
+    ]
 }

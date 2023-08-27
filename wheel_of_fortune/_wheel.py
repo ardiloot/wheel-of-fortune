@@ -7,7 +7,7 @@ from ._settings import SettingsManager, Settings
 from ._encoder import Encoder
 from ._leds import LedController
 from ._servos import ServoController
-from ._sound import Sound
+from ._soundsystem import SoundSystem
 from ._telemetry import Telemetry, Point
 from ._themes import load_themes, Theme
 from ._effects import load_effects, Effect
@@ -16,6 +16,7 @@ from .schemas import (
     LedsState,
     LedsStateIn,
     ServosState,
+    SoundSystemState,
     ServosStateIn,
     ThemeState,
     EffectState,
@@ -88,7 +89,7 @@ class Wheel:
         self._encoder = Encoder(config, self._gpio, self._telemetry, self._encoder_update)
         self._leds = LedController(config, self._settings_mgr["leds"], self._leds_update)
         self._servos = ServoController(config, self._servos_update)
-        self._sound = Sound(config, self._settings_mgr["sound"])
+        self._soundsystem = SoundSystem(config, self._settings_mgr["sound"], self._soundsystem_update)
 
         self._active_task: asyncio.Task | None = None
         self._next_task_name: str = "startup"
@@ -104,8 +105,6 @@ class Wheel:
         for i in range(config.num_sectors):
             sector_settings = self._settings.subsettings("sectors").subsettings("%d" % (i))
             self._sectors.append(Sector(i, sector_settings, self._effects))
-        
-        self._theme_sound_channel = None
 
     async def init(self):
         _LOGGER.info("init")
@@ -122,7 +121,7 @@ class Wheel:
         await self._encoder.open()
         await self._leds.open()
         await self._servos.open()
-        await self._sound.open()
+        await self._soundsystem.open()
 
     async def close(self):
         _LOGGER.info("close")
@@ -131,7 +130,7 @@ class Wheel:
         await self._leds.close()
         await self._servos.close()
         await self._encoder.close()
-        await self._sound.close()
+        await self._soundsystem.close()
         if self._active_task is not None and not self._active_task.done():
             self._active_task.cancel()
 
@@ -156,8 +155,8 @@ class Wheel:
         if state.leds:
             await self._leds.set_state(state.leds)
 
-        if state.sound:
-            await self._sound.set_state(state.sound)
+        if state.soundsystem:
+            await self._soundsystem.set_state(state.soundsystem)
 
         self._publish_update(update)
 
@@ -184,10 +183,6 @@ class Wheel:
             ) for effect in self._effects.values()
         ]
 
-        sound_system_state = await asyncio.gather( # type: ignore
-            self._sound.get_state(),
-        )
-
         return WheelState(
             theme=self._theme._id,
             sectors=sectors_state,
@@ -196,7 +191,7 @@ class Wheel:
             encoder=self._encoder.get_state(),
             servos=self._servos.get_state(),
             leds=self._leds.get_state(),
-            sound=sound_system_state,
+            soundsystem=self._soundsystem.get_state(),
         )
 
     def subscribe(self, callback: Callable[[WheelStateUpdate], None]):
@@ -226,7 +221,7 @@ class Wheel:
             self._telemetry.maintain(),
             self._leds.maintain(),
             self._servos.maintain(),
-            self._sound.maintain(),
+            self._soundsystem.maintain(),
             self._maintain(),
             self._maintain_power_state(),
         )
@@ -298,7 +293,7 @@ class Wheel:
         await asyncio.sleep(2)
 
     async def _task_idle(self):
-        await self._sound.fadeout_all()
+        await self._soundsystem.main_ch.fadeout()
         await self._leds.set_state(LedsStateIn(segments=self._theme.idle_led_preset))
         while True:
             _LOGGER.info("idle heartbeat")
@@ -310,9 +305,9 @@ class Wheel:
         start_sector_count = enc_state.total_sectors
         start_time = self._loop.time()
         try:
-            await self._sound.fadeout_all()
+            await self._soundsystem.main_ch.fadeout()
             await self._leds.set_state(LedsStateIn(segments=self._theme.spinning_led_preset))
-            self._theme_sound_channel = await self._sound.play_sound(self._theme.theme_sound)
+            await self._soundsystem.main_ch.play(self._theme.theme_sound)
             while True:
                 await asyncio.sleep(1.0)
         finally:
@@ -350,31 +345,26 @@ class Wheel:
             await self._servos.set_state(ServosStateIn.model_validate({"motors": {"bottom": {"pos": 1.0}}}))
             await asyncio.sleep(1.0)
 
-            if self._theme_sound_channel is not None:
-                self._theme_sound_channel.set_volume(0.2)
-                await asyncio.sleep(0.2)
+            await self._soundsystem.main_ch.volume_sweep(1.0, 0.2)
+            await asyncio.sleep(0.2)
 
             await self._leds.set_state(LedsStateIn(segments=effect.leds_preset))
-            await self._sound.play_sound(effect.effect_sound)
+            await self._soundsystem.effect_ch.play(effect.effect_sound)
             await asyncio.sleep(2.0)
 
-            if self._theme_sound_channel is not None:
-                for i in range(2, 11, 1):
-                    self._theme_sound_channel.set_volume(i / 10)
-                    await asyncio.sleep(0.1)
-
+            await self._soundsystem.main_ch.volume_sweep(0.2, 1.0, 1000)
             await asyncio.sleep(4.0)
 
             await self._servos.set_state(ServosStateIn.model_validate({"motors": {"bottom": {"pos": 0.0}}}))
             await asyncio.sleep(3.0)
-            await self._sound.fadeout_all(timeout_ms=2000)
+            await self._soundsystem.main_ch.fadeout(fade_ms=2000)
 
         finally:
-            await self._sound.fadeout_all()
+            await self._soundsystem.main_ch.fadeout()
             await self._servos.set_state(ServosStateIn.model_validate({"motors": {"bottom": {"pos": 0.0}}}))
 
     async def _task_poweroff(self):
-        await self._sound.fadeout_all()
+        await self._soundsystem.main_ch.fadeout()
         await self._leds.set_state(LedsStateIn(segments=self._theme.poweroff_led_preset))
         while True:
             await asyncio.sleep(5.0)
@@ -409,6 +399,12 @@ class Wheel:
             servos=state,
         ))
 
+    def _soundsystem_update(self, state: SoundSystemState):
+        _LOGGER.debug("sound system update: %s" % (state))
+        self._publish_update(WheelStateUpdate(
+            soundsystem=state,
+        ))
+
     def _publish_update(self, update: WheelStateUpdate):
         for callback in self._subscriptions:
             self._loop.call_soon(callback, update)
@@ -427,7 +423,7 @@ class Wheel:
     
     @property
     def sound(self):
-        return self._sound
+        return self._soundsystem
     
     @property
     def sectors(self):

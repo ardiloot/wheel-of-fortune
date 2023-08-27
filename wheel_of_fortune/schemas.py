@@ -81,20 +81,28 @@ class LedsStateIn(BaseModel):
 
 class SoundState(BaseModel):
     volume: float
-    num_playing: int
     duration_secs: float
 
 
-class SoundSystemState(BaseModel):
-    inited: bool
+class SoundChannelState(BaseModel):
     volume: float
-    num_channels: int
-    is_busy: bool
+    sound_name: str | None
+
+
+class SoundSystemState(BaseModel):
+    main_ch: SoundChannelState
+    effect_ch: SoundChannelState
     sounds: dict[str, SoundState]
 
 
-class SoundSystemStateIn(BaseModel):
+class SoundChannelStateIn(BaseModel):
     volume: float | None = Field(default=None, ge=0.0, le=1.0, examples=[0.5])
+    sound_name: str | None = None
+
+
+class SoundSystemStateIn(BaseModel):
+    main_ch: SoundChannelStateIn | None = None
+    effect_ch: SoundChannelStateIn | None = None
 
 
 class SectorState(BaseModel):
@@ -133,7 +141,7 @@ class WheelState(BaseModel):
     encoder: EncoderState
     servos: ServosState
     leds: LedsState
-    sound: SoundSystemState
+    soundsystem: SoundSystemState
 
 
 class WheelStateUpdate(BaseModel):
@@ -142,7 +150,7 @@ class WheelStateUpdate(BaseModel):
     encoder: EncoderState | None = None
     servos: ServosState | None = None
     leds: LedsState | None = None
-    sound: SoundSystemState | None = None
+    soundsystem: SoundSystemState | None = None
 
 
 class WheelStateIn(BaseModel):
@@ -150,7 +158,7 @@ class WheelStateIn(BaseModel):
     sectors: list[SectorStateIn] = []
     servos: ServosStateIn | None = None
     leds: LedsStateIn | None = None
-    sound: SoundSystemStateIn | None = None
+    soundsystem: SoundSystemStateIn | None = None
 
 
 class WsCommandType(str, Enum):

@@ -5,8 +5,8 @@ from typing import Callable
 from ._config import Config
 from .schemas import (
     ServoState,
-    ServosState,
     ServoStateIn,
+    ServosState,
     ServosStateIn,
 )
 
@@ -86,6 +86,7 @@ class ServoController:
         _LOGGER.info("close done.")
 
     async def set_state(self, state: ServosStateIn):
+        _LOGGER.info("set_state: %s" % (state))
         for name, motor in self._motors.items():
             if name in state.motors:
                 motor.set_state(state.motors[name])

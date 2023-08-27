@@ -160,8 +160,6 @@ class LedController:
                 segment.set_state(params)
         await self._sync_state(sync_segments=state.segments is not None)
 
-        self._loop.call_soon(self._update_cb, self.get_state())
-
     def get_state(self) -> LedsState:
         return LedsState(
             power_on=self._brightness > 0.0,
@@ -194,5 +192,5 @@ class LedController:
                 segment_states.append({"stop": 0})
             state["seg"] = segment_states
 
-        print("sync_state", state)
         await self._session.post("/json/state", json=state)
+        self._loop.call_soon(self._update_cb, self.get_state())

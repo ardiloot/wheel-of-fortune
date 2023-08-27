@@ -41,11 +41,11 @@ class WsConnection:
                 if cmd == "set_sound":
                     data = SoundSystemStateIn.model_validate(packet.get("data", {}))
                     await self._mgr._wheel.sound.set_state(**data.model_dump())
-                    await self._mgr.brodcast_sound_state()
+                    await self._mgr.broadcast_sound_state()
                 elif cmd == "set_leds":
                     data = LedsStateIn.model_validate(packet.get("data", {}))
                     await self._mgr._wheel.leds.set_state(**data.model_dump())
-                    await self._mgr.brodcast_leds_state()
+                    await self._mgr.broadcast_leds_state()
         except WebSocketDisconnect:
             self._mgr._disconnect(self)
 
@@ -92,7 +92,7 @@ class WsManager:
         await connection.connect()
         return connection
     
-    async def brodcast_leds_state(self):
+    async def broadcast_leds_state(self):
         state = await self._wheel.leds.get_state()
         await self._broadcast_json({
             "cmd": "update",
@@ -101,7 +101,7 @@ class WsManager:
             },
         })
 
-    async def brodcast_servos_state(self):
+    async def broadcast_servos_state(self):
         state = await self._wheel.servos.get_state()
         await self._broadcast_json({
             "cmd": "update",
@@ -110,7 +110,7 @@ class WsManager:
             },
         })
 
-    async def brodcast_sound_state(self):
+    async def broadcast_sound_state(self):
         state = await self._wheel.sound.get_state()
         await self._broadcast_json({
             "cmd": "update",
@@ -119,7 +119,7 @@ class WsManager:
             },
         })
 
-    async def brodcast_wheel_state(self):
+    async def broadcast_wheel_state(self):
         state = await self._wheel.get_state()
         await self._broadcast_json({
             "cmd": "update",

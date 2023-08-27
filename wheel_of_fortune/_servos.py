@@ -46,8 +46,8 @@ class ServoController:
             raise ConnectionError("Session is not opened")
         pwm_data = {}
         for name, pwm_id in self._id_map.items():
-            if name in state.servos:
-                s: ServoStateIn = state.servos[name]
+            if name in state.motors:
+                s: ServoStateIn = state.motors[name]
                 duty = self._pos_to_duty(s.pos) if not s.detached else None
                 pwm_data[pwm_id] = {"duty": duty}
         await self._session.post("/json/state", json={"pwm": pwm_data})

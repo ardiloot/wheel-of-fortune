@@ -124,6 +124,10 @@ class WheelState(BaseModel):
     sectors: list[SectorState]
     themes: list[ThemeState]
     effects: list[EffectState]
+    encoder: EncoderState
+    servos: ServosState
+    leds: LedsState
+    sound: SoundSystemState
 
 
 class WheelStateIn(BaseModel):

@@ -135,7 +135,9 @@ class Wheel:
             await self.activate_theme(state.theme)
 
     async def get_state(self) -> WheelState:
-        themes = [
+        sectors_state = [sector.get_state() for sector in self._sectors]
+
+        themes_state = [
             ThemeState(
                 id=theme._id,
                 name=theme.name,
@@ -145,7 +147,7 @@ class Wheel:
             ) for theme in self._themes.values()
         ]
 
-        effects = [
+        effects_state = [
             EffectState(
                 id=effect._id,
                 name=effect.name,
@@ -155,11 +157,21 @@ class Wheel:
             ) for effect in self._effects.values()
         ]
 
+        servos_state, leds_state, sound_system_state = await asyncio.gather( # type: ignore
+            self._servos.get_state(),
+            self._leds.get_state(),
+            self._sound.get_state(),
+        )
+
         return WheelState(
             theme=self._theme._id,
-            sectors=[sector.get_state() for sector in self._sectors],
-            themes=themes,
-            effects=effects,
+            sectors=sectors_state,
+            themes=themes_state,
+            effects=effects_state,
+            encoder=self._encoder.get_state(),
+            servos=servos_state,
+            leds=leds_state,
+            sound=sound_system_state,
         )
 
     def subscribe(self, callback):

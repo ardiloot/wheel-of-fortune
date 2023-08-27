@@ -13,7 +13,7 @@ from .schemas import (
 _LOGGER = logging.getLogger(__name__)
 
 
-PALLETE_MAP = {
+PALETTE_MAP = {
     "default": 0,
     "color": 2,
     "rainbow": 11,
@@ -41,8 +41,8 @@ class LedSegment:
             self._enabled = state.enabled
         if state.brightness is not None:
             self._brightness = state.brightness
-        if state.pallete is not None:
-            self._pallete = state.pallete
+        if state.palette is not None:
+            self._palette = state.palette
         if state.primary_color is not None:
             self._primary_color = state.primary_color
         if state.secondary_color is not None:
@@ -58,7 +58,7 @@ class LedSegment:
         return LedSegmentState(
             enabled=self._enabled,
             brightness=self._brightness,
-            pallete=self._pallete,
+            palette=self._palette,
             primary_color=self._primary_color,
             secondary_color=self._secondary_color,
             effect=self._effect,
@@ -74,7 +74,7 @@ class LedSegment:
         def normalize(v: float) -> int:
             return int(max(0, min(255, round(255 * v))))
 
-        pallete_id = PALLETE_MAP[self._pallete]
+        palette_id = PALETTE_MAP[self._palette]
         effect_id = EFFECT_MAP[self._effect]
 
         # https://kno.wled.ge/interfaces/json-api/
@@ -90,7 +90,7 @@ class LedSegment:
             "on": self._enabled,                # on/off
             "bri": normalize(self._brightness), # brightness
             
-            "pal": pallete_id,                  # pallete id
+            "pal": palette_id,                  # palette id
             "col": [
                 to_rgb(self._primary_color),    # primary color
                 to_rgb(self._secondary_color),  # secondary (bg) color

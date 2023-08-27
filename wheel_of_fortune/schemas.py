@@ -49,7 +49,7 @@ class ServosState(BaseModel):
 class LedSegmentState(BaseModel):
     enabled: bool
     brightness: float
-    pallete: str
+    palette: str
     primary_color: str
     secondary_color: str
     effect: str
@@ -66,7 +66,7 @@ class LedsState(BaseModel):
 class LedSegmentStateIn(BaseModel):
     enabled: bool | None = True
     brightness: float | None = Field(default=1.0, ge=0.0, le=1.0)
-    pallete: str | None = "default"
+    palette: str | None = "default"
     primary_color: str | None = "#FF0000"
     secondary_color: str | None = "#000000"
     effect: str | None = "solid"

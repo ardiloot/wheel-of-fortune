@@ -1,6 +1,7 @@
 import os
 import asyncio
 import logging
+from typing import Callable
 from ._config import Config
 from ._settings import SettingsManager, Settings
 from ._encoder import Encoder
@@ -19,6 +20,7 @@ from .schemas import (
     SectorStateIn,
     WheelState,
     WheelStateIn,
+    WheelStateUpdate,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -70,7 +72,7 @@ class Wheel:
         self._config: Config = config
         self._loop = asyncio.get_running_loop()
         self._gpio = gpio
-        self._subscriptions = []
+        self._subscriptions: list[Callable[[WheelStateUpdate], None]] = []
 
         self._poweroff_pin = "PL8"
         self._gpio.setup(self._poweroff_pin, self._gpio.IN, pull_up_down=self._gpio.PUD_OFF)
@@ -189,7 +191,7 @@ class Wheel:
             sound=sound_system_state,
         )
 
-    def subscribe(self, callback):
+    def subscribe(self, callback: Callable[[WheelStateUpdate], None]):
         self._subscriptions.append(callback)
 
     async def activate_theme(self, theme_id: str, reload=True, save=True):
@@ -207,6 +209,10 @@ class Wheel:
             self._reload_task()
         if save:
             self._settings.set("theme", self._theme._id)
+
+        self._publish_update(WheelStateUpdate(
+            theme=self._theme._id,
+        ))
 
     async def maintain(self):
         _LOGGER.info("maintain...")
@@ -376,18 +382,20 @@ class Wheel:
     async def __aexit__(self, *args):
         await self.close()
 
-    def _encoder_event(self, event_name: Sector):
+    def _encoder_event(self, event_name: str):
         _LOGGER.debug("encoder event: %s" % (event_name))
         if event_name == "spinning":
             self._schedule_task("spinning")
         elif event_name == "standstill":
             self._schedule_task("stopped")
         
-        self._publish_update({"encoder": self._encoder.get_state()})
+        self._publish_update(WheelStateUpdate(
+            encoder=self._encoder.get_state()
+        ))
 
-    def _publish_update(self, data):
+    def _publish_update(self, update: WheelStateUpdate):
         for callback in self._subscriptions:
-            self._loop.call_soon(callback, data)
+            self._loop.call_soon(callback, update)
 
     @property
     def encoder(self):

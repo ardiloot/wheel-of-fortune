@@ -14,10 +14,8 @@ async def get_state(wheel=Depends(get_wheel)) -> SoundSystemState:
 @router.patch("/api/v1/sound")
 async def set_state(state: SoundSystemStateIn, wheel=Depends(get_wheel), ws_mgr=Depends(get_ws_manager)):
     await wheel.sound.set_state(state)
-    await ws_mgr.broadcast_sound_state()
 
 
 @router.post("/api/v1/sound/{name}/play")
 async def play_sound(name: str, wheel=Depends(get_wheel), ws_mgr=Depends(get_ws_manager)):
     await wheel.sound.play_sound(name)
-    await ws_mgr.broadcast_sound_state()

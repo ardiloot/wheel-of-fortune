@@ -33,7 +33,7 @@ class ServoStateIn(BaseModel):
 
 
 class ServosStateIn(BaseModel):
-    servos: dict[str, ServoStateIn] = {}
+    motors: dict[str, ServoStateIn] = {}
 
 
 class ServoState(BaseModel):
@@ -103,6 +103,12 @@ class SectorState(BaseModel):
     effect: str
 
 
+class SectorStateIn(BaseModel):
+    index: int
+    name: str | None = None
+    effect: str | None = None
+
+
 class ThemeState(BaseModel):
     id: str
     name: str
@@ -132,11 +138,10 @@ class WheelState(BaseModel):
 
 class WheelStateIn(BaseModel):
     theme: str | None = None
-
-
-class SectorStateIn(BaseModel):
-    name: str | None = None
-    effect: str | None = None
+    sectors: list[SectorStateIn] = []
+    servos: ServosStateIn | None = None
+    leds: LedsStateIn | None = None
+    sound: SoundSystemStateIn | None = None
 
 
 class WsCommandType(str, Enum):

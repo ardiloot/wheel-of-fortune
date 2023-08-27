@@ -37,14 +37,14 @@ class Sector:
         self.name: str = "sector %d" % (index)
         self.effect: Effect = list(effects.values())[0]
 
-    async def init(self):
+    def init(self):
         if "name" in self._settings:
             self.name = self._settings["name"]
         if "effect" in self._settings:
             effect_id = self._settings["effect"]
             self.effect = self._effects[effect_id]
 
-    async def set_state(self, state: SectorStateIn):
+    def set_state(self, state: SectorStateIn):
         if state.name is not None:
             _LOGGER.info("Set sector %d name: %s -> %s" % (self.index, self.name, state.name))
             self.name = state.name
@@ -110,7 +110,7 @@ class Wheel:
         if "theme" in self._settings:
             await self.activate_theme(self._settings["theme"], reload=False, save=False)
         for sector in self._sectors:
-            await sector.init()
+            sector.init()
 
         # Open connections
         await self._telemetry.open()
@@ -133,6 +133,21 @@ class Wheel:
     async def set_state(self, state: WheelStateIn):
         if state.theme is not None:
             await self.activate_theme(state.theme)
+
+        for sector_state in state.sectors:
+            if sector_state.index < 0 or sector_state.index >= len(self._sectors):
+                raise ValueError("Sector index out of bounds")
+            sector = self._sectors[sector_state.index]
+            sector.set_state(sector_state)
+
+        if state.servos:
+            await self._servos.set_state(state.servos)
+        
+        if state.leds:
+            await self._leds.set_state(state.leds)
+
+        if state.sound:
+            await self._sound.set_state(state.sound)
 
     async def get_state(self) -> WheelState:
         sectors_state = [sector.get_state() for sector in self._sectors]
@@ -322,7 +337,7 @@ class Wheel:
             enc_state = self._encoder.get_state()
             effect = self._sectors[enc_state.sector].effect
 
-            await self._servos.set_state(ServosStateIn.model_validate({"servos": {"bottom": {"pos": 1.0}}}))
+            await self._servos.set_state(ServosStateIn.model_validate({"motors": {"bottom": {"pos": 1.0}}}))
             await asyncio.sleep(1.0)
 
             if self._theme_sound_channel is not None:
@@ -340,13 +355,13 @@ class Wheel:
 
             await asyncio.sleep(4.0)
 
-            await self._servos.set_state(ServosStateIn.model_validate({"servos": {"bottom": {"pos": 0.0}}}))
+            await self._servos.set_state(ServosStateIn.model_validate({"motors": {"bottom": {"pos": 0.0}}}))
             await asyncio.sleep(3.0)
             await self._sound.fadeout_all(timeout_ms=2000)
 
         finally:
             await self._sound.fadeout_all()
-            await self._servos.set_state(ServosStateIn.model_validate({"servos": {"bottom": {"pos": 0.0}}}))
+            await self._servos.set_state(ServosStateIn.model_validate({"motors": {"bottom": {"pos": 0.0}}}))
 
     async def _task_poweroff(self):
         await self._sound.fadeout_all()

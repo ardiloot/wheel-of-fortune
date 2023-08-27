@@ -136,6 +136,17 @@ class WheelState(BaseModel):
     sound: SoundSystemState
 
 
+class WheelStateUpdate(BaseModel):
+    theme: str | None = None
+    sectors: list[SectorState] | None = None
+    themes: list[ThemeState] | None = None
+    effects: list[EffectState] | None = None
+    encoder: EncoderState | None = None
+    servos: ServosState | None = None
+    leds: LedsState | None = None
+    sound: SoundSystemState | None = None
+
+
 class WheelStateIn(BaseModel):
     theme: str | None = None
     sectors: list[SectorStateIn] = []
@@ -145,18 +156,21 @@ class WheelStateIn(BaseModel):
 
 
 class WsCommandType(str, Enum):
-    state = "state"
-    update = "update"
+    state = "push_state"    # Full state (to client)
+    update = "update"       # State update (to client)
+    set_state = "set_state" # Set state (to server)
 
 
-class WsStateData(BaseModel):
-    encoder: EncoderState
-    servos: ServosState
-    leds: LedsState
-    sound: SoundSystemState
-    wheel: WheelState
+class WsStatePacket(BaseModel):
+    cmd: WsCommandType = WsCommandType.state
+    data: WheelState
 
 
-class WsCommandPacket(BaseModel):
-    cmd: WsCommandType
-    data: WsStateData
+class WsUpdatePacket(BaseModel):
+    cmd: WsCommandType = WsCommandType.update
+    data: WheelStateUpdate
+
+
+class WsSetStatePacket(BaseModel):
+    cmd: WsCommandType = WsCommandType.set_state
+    data: WheelStateIn

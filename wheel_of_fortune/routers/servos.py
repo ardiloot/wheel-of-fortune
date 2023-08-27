@@ -14,4 +14,3 @@ async def get_state(wheel=Depends(get_wheel)) -> ServosState:
 @router.patch("/api/v1/servos")
 async def set_state(state: ServosStateIn, wheel=Depends(get_wheel), ws_mgr=Depends(get_ws_manager)):
     await wheel.servos.set_state(state)
-    await ws_mgr.broadcast_servos_state()

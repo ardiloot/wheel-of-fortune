@@ -191,14 +191,17 @@ class WsCommandType(str, Enum):
 
 class WsStatePacket(BaseModel):
     cmd: WsCommandType = WsCommandType.state
-    data: WheelState
+    ts: float
+    state: WheelState
 
 
 class WsUpdatePacket(BaseModel):
     cmd: WsCommandType = WsCommandType.update
-    data: WheelStateUpdate
+    ts: float
+    update: WheelStateUpdate
 
 
 class WsSetStatePacket(BaseModel):
     cmd: WsCommandType = WsCommandType.set_state
-    data: WheelStateIn
+    ts: float
+    state: WheelStateIn

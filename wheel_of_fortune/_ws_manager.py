@@ -22,6 +22,7 @@ class WsConnection:
     def __init__(self, mgr, websocket):
         self._mgr: 'WsManager' = mgr
         self._websocket: WebSocket = websocket
+        self._loop = asyncio.get_running_loop()
 
     async def connect(self):
         _LOGGER.info("Accept WS connection %s" % (self._websocket))
@@ -35,7 +36,7 @@ class WsConnection:
                 cmd = packet_json.get("cmd")
                 if cmd == WsCommandType.set_state:
                     packet = WsSetStatePacket.model_validate(packet_json)
-                    await self._mgr._wheel.set_state(packet.data)
+                    await self._mgr._wheel.set_state(packet.state)
                 else:
                     raise ValueError("Unknown packet: %s" % (packet_json))
         except WebSocketDisconnect:
@@ -48,7 +49,8 @@ class WsConnection:
         wheel = self._mgr._wheel
         state = await wheel.get_state()
         packet = WsStatePacket(
-            data=state,
+            ts=self._loop.time(),
+            state=state,
         )
         await self.send_json(packet.model_dump())
 
@@ -57,6 +59,7 @@ class WsManager:
 
     def __init__(self, wheel):
         self._wheel: Wheel = wheel
+        self._loop = asyncio.get_running_loop()
         self._connections: set[WsConnection] = set()
         self._wheel.subscribe(self._wheel_update_received)
         self._background_tasks = set()
@@ -72,7 +75,10 @@ class WsManager:
         return connection
     
     async def _broadcast_update(self, update: WheelStateUpdate):
-        packet = WsUpdatePacket(data=update)
+        packet = WsUpdatePacket(
+            ts=self._loop.time(),
+            update=update,
+        )
         await self._broadcast_json(packet.model_dump())
 
     async def _broadcast_json(self, data):

@@ -6,6 +6,7 @@ from typing import Callable
 from ._config import Config
 from ._settings import Settings
 from .schemas import (
+    SoundChannelName,
     SoundChannelState,
     SoundChannelStateIn,
     SoundState,
@@ -56,8 +57,8 @@ class SoundChannel:
             raise ValueError("Sound not found: %s" % (sound_name))
         
         sound = self._sounds[sound_name]
-        self._channel.play(sound, fade_ms=fade_ms)  # TODO: loops, maxtime
-        self._channel.set_volume(self._volume)  # Reset with every play command
+        self._channel.play(sound, fade_ms=fade_ms)
+        self._channel.set_volume(self._volume)  # Resets with every play command
         self._sound_name = sound_name
         
     async def fadeout(self, fade_ms: int = 300):
@@ -92,25 +93,21 @@ class SoundSystem:
         self._sounds = load_sounds(os.path.join(config.data_dir, "sounds"))
 
         # Channels
-        self.main_ch = SoundChannel(
-            "main",
+        self._channels: dict[SoundChannelName, SoundChannel] = {}
+        self._channels[SoundChannelName.MAIN] = SoundChannel(
+            SoundChannelName.MAIN,
             pygame.mixer.Channel(0),
             self._sounds,
             settings.subsettings("main"),
         )
 
-        self.effect_ch = SoundChannel(
-            "effect",
+        self._channels[SoundChannelName.EFFECT] = SoundChannel(
+            SoundChannelName.EFFECT,
             pygame.mixer.Channel(1),
             self._sounds,
             settings.subsettings("effect"),
         )
         
-        self._channels = {ch.name: ch for ch in [
-            self.main_ch,
-            self.effect_ch,
-        ]}
-
     async def open(self):
         _LOGGER.info("open")
         for ch in self._channels.values():
@@ -121,10 +118,9 @@ class SoundSystem:
         pygame.mixer.quit()
 
     async def set_state(self, state: SoundSystemStateIn):
-        if state.main_ch is not None:
-            await self.main_ch.set_state(state.main_ch)
-        if state.effect_ch is not None:
-            await self.effect_ch.set_state(state.effect_ch)
+        for name, ch in self._channels.items():
+            if name in state.channels:
+                await ch.set_state(state.channels[name])
         self._loop.call_soon(self._update_cb, self.get_state())
         
     def get_state(self) -> SoundSystemState:
@@ -136,8 +132,7 @@ class SoundSystem:
             )
 
         return SoundSystemState(
-            main_ch=self.main_ch.get_state(),
-            effect_ch=self.effect_ch.get_state(),
+            channels={ch.name: ch.get_state() for ch in self._channels.values()},
             sounds=sounds_state,
         )
         
@@ -149,6 +144,17 @@ class SoundSystem:
             # ))
             await asyncio.sleep(2.0)
 
+    async def play(self, channel: SoundChannelName, sound_name: str, **kwargs):
+        await self._channels[channel].play(sound_name, **kwargs)
+        self._loop.call_soon(self._update_cb, self.get_state())
+        
+    async def fadeout(self, channel: SoundChannelName, **kwargs):
+        await self._channels[channel].fadeout(**kwargs)
+        self._loop.call_soon(self._update_cb, self.get_state())
+
+    async def volume_sweep(self, channel: SoundChannelName, volume_from: float, volume_to: float, **kwargs):
+        await self._channels[channel].volume_sweep(volume_from, volume_to, **kwargs)
+        
 
 def load_sounds(sounds_dir: str, suffix: str = ".mp3") -> dict[str, pygame.mixer.Sound]:
     _LOGGER.info("load sounds... (dir: %s)" % (sounds_dir))

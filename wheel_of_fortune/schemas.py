@@ -88,6 +88,10 @@ class LedsStateIn(BaseModel):
 # Sound system
 # -----------------------------------------------------------------------------
 
+class SoundChannelName(str, Enum):
+    MAIN = "main"
+    EFFECT = "effect"
+
 
 class SoundState(BaseModel):
     volume: float
@@ -100,8 +104,7 @@ class SoundChannelState(BaseModel):
 
 
 class SoundSystemState(BaseModel):
-    main_ch: SoundChannelState
-    effect_ch: SoundChannelState
+    channels: dict[str, SoundChannelState]
     sounds: dict[str, SoundState]
 
 
@@ -111,8 +114,7 @@ class SoundChannelStateIn(BaseModel):
 
 
 class SoundSystemStateIn(BaseModel):
-    main_ch: SoundChannelStateIn | None = None
-    effect_ch: SoundChannelStateIn | None = None
+    channels: dict[str, SoundChannelStateIn] = {}
 
 
 # -----------------------------------------------------------------------------

@@ -15,6 +15,7 @@ from .schemas import (
     EncoderState,
     LedsState,
     LedsStateIn,
+    ServosState,
     ServosStateIn,
     ThemeState,
     EffectState,
@@ -86,7 +87,7 @@ class Wheel:
         self._telemetry = Telemetry(config)
         self._encoder = Encoder(config, self._gpio, self._telemetry, self._encoder_update)
         self._leds = LedController(config, self._settings_mgr["leds"], self._leds_update)
-        self._servos = ServoController(config)
+        self._servos = ServoController(config, self._servos_update)
         self._sound = Sound(config, self._settings_mgr["sound"])
 
         self._active_task: asyncio.Task | None = None
@@ -151,14 +152,12 @@ class Wheel:
 
         if state.servos:
             await self._servos.set_state(state.servos)
-            update.servos = await self._servos.get_state()
-        
+
         if state.leds:
             await self._leds.set_state(state.leds)
 
         if state.sound:
             await self._sound.set_state(state.sound)
-            update.sound = await self._sound.get_state()
 
         self._publish_update(update)
 
@@ -185,8 +184,7 @@ class Wheel:
             ) for effect in self._effects.values()
         ]
 
-        servos_state, sound_system_state = await asyncio.gather( # type: ignore
-            self._servos.get_state(),
+        sound_system_state = await asyncio.gather( # type: ignore
             self._sound.get_state(),
         )
 
@@ -196,7 +194,7 @@ class Wheel:
             themes=themes_state,
             effects=effects_state,
             encoder=self._encoder.get_state(),
-            servos=servos_state,
+            servos=self._servos.get_state(),
             leds=self._leds.get_state(),
             sound=sound_system_state,
         )
@@ -403,6 +401,12 @@ class Wheel:
         _LOGGER.debug("leds update: %s" % (state))
         self._publish_update(WheelStateUpdate(
             leds=state,
+        ))
+
+    def _servos_update(self, state: ServosState):
+        _LOGGER.debug("servos update: %s" % (state))
+        self._publish_update(WheelStateUpdate(
+            servos=state,
         ))
 
     def _publish_update(self, update: WheelStateUpdate):

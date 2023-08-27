@@ -37,13 +37,13 @@ class ServosStateIn(BaseModel):
 
 
 class ServoState(BaseModel):
-    pos: float | None = None
+    pos: float
     duty: float
     detached: bool
 
 
 class ServosState(BaseModel):
-    servos: dict[str, ServoState]
+    motors: dict[str, ServoState]
     
 
 class LedSegmentState(BaseModel):

@@ -19,6 +19,11 @@ class Config(BaseSettings):
 
     wled_url: str | None = None
     wled_segments: list[WLedSegmentConfig] = []
+
+    servo_names: list[str] = ["bottom", "right", "left"]
+    servo_zero_duty: float = 0.086
+    servo_full_duty: float = 0.516
+    servo_mount_duty: float = 0.0473
     
     influxdb_url: str | None = None
     influxdb_token: str | None = None

@@ -133,23 +133,33 @@ class Wheel:
             self._active_task.cancel()
 
     async def set_state(self, state: WheelStateIn):
+        update = WheelStateUpdate()
+
         if state.theme is not None:
             await self.activate_theme(state.theme)
+            update.theme = self._theme._id
 
         for sector_state in state.sectors:
             if sector_state.index < 0 or sector_state.index >= len(self._sectors):
                 raise ValueError("Sector index out of bounds")
             sector = self._sectors[sector_state.index]
             sector.set_state(sector_state)
+        if len(state.sectors) > 0:
+            update.sectors = [sector.get_state() for sector in self._sectors]
 
         if state.servos:
             await self._servos.set_state(state.servos)
+            update.servos = await self._servos.get_state()
         
         if state.leds:
             await self._leds.set_state(state.leds)
+            update.leds = await self._leds.get_state()
 
         if state.sound:
             await self._sound.set_state(state.sound)
+            update.sound = await self._sound.get_state()
+
+        self._publish_update(update)
 
     async def get_state(self) -> WheelState:
         sectors_state = [sector.get_state() for sector in self._sectors]
@@ -209,10 +219,6 @@ class Wheel:
             self._reload_task()
         if save:
             self._settings.set("theme", self._theme._id)
-
-        self._publish_update(WheelStateUpdate(
-            theme=self._theme._id,
-        ))
 
     async def maintain(self):
         _LOGGER.info("maintain...")
@@ -394,6 +400,7 @@ class Wheel:
         ))
 
     def _publish_update(self, update: WheelStateUpdate):
+        _LOGGER.debug("publish_update: %s" % (update))
         for callback in self._subscriptions:
             self._loop.call_soon(callback, update)
 

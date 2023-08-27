@@ -12,6 +12,7 @@ from ._telemetry import Telemetry, Point
 from ._themes import load_themes, Theme
 from ._effects import load_effects, Effect
 from .schemas import (
+    EncoderState,
     LedsStateIn,
     ServosStateIn,
     ThemeState,
@@ -82,7 +83,7 @@ class Wheel:
         self._settings = self._settings_mgr["wheel"]
 
         self._telemetry = Telemetry(config)
-        self._encoder = Encoder(config, self._gpio, self._encoder_event, self._telemetry)
+        self._encoder = Encoder(config, self._gpio, self._telemetry, self._encoder_update)
         self._leds = LedController(config, self._settings_mgr["leds"])
         self._servos = ServoController(config)
         self._sound = Sound(config, self._settings_mgr["sound"])
@@ -388,15 +389,15 @@ class Wheel:
     async def __aexit__(self, *args):
         await self.close()
 
-    def _encoder_event(self, event_name: str):
-        _LOGGER.debug("encoder event: %s" % (event_name))
-        if event_name == "spinning":
-            self._schedule_task("spinning")
-        elif event_name == "standstill":
+    def _encoder_update(self, encoder_state: EncoderState):
+        _LOGGER.debug("encoder event: %s" % (encoder_state))
+        if encoder_state.standstill:
             self._schedule_task("stopped")
-        
+        else:
+            self._schedule_task("spinning")
+            
         self._publish_update(WheelStateUpdate(
-            encoder=self._encoder.get_state()
+            encoder=encoder_state
         ))
 
     def _publish_update(self, update: WheelStateUpdate):

@@ -15,11 +15,12 @@ __all__ = [
 
 class Encoder:
 
-    def __init__(self, config, gpio, callback, telemetry):
+    def __init__(self, config, gpio, telemetry, update_cb):
         self._config: Config = config
         self._gpio = gpio
-        self._callback: Callable[[str], None] = callback
         self._telemetry: Telemetry = telemetry
+        self._update_cb: Callable[[EncoderState], None] = update_cb
+        
         self._loop = asyncio.get_running_loop()
         
         self._encoder_pins: list[str] = ["PH3", "PH4", "PH6", "PH5"]
@@ -128,7 +129,7 @@ class Encoder:
     
     def _standstill_detected(self):
         self._is_standstill = True
-        self._callback("standstill")
+        self._update_cb(self.get_state())
 
     def _decode_sector(self):
         res = 0
@@ -158,7 +159,7 @@ class Encoder:
             self._sector = new_sector
             self._is_standstill = False
             self._standstill_timer.start()
-            self._callback("spinning")
+            self._update_cb(self.get_state())
         except Exception:
             _LOGGER.exception("error in encoder update")
 

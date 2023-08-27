@@ -139,8 +139,6 @@ class WheelState(BaseModel):
 class WheelStateUpdate(BaseModel):
     theme: str | None = None
     sectors: list[SectorState] | None = None
-    themes: list[ThemeState] | None = None
-    effects: list[EffectState] | None = None
     encoder: EncoderState | None = None
     servos: ServosState | None = None
     leds: LedsState | None = None

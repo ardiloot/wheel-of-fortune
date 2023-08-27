@@ -2,8 +2,9 @@ from enum import Enum
 from pydantic import BaseModel, Field
 
 
-class Versions(BaseModel):
-    wled: str
+# -----------------------------------------------------------------------------
+# Encoder
+# -----------------------------------------------------------------------------
 
 
 class EncoderState(BaseModel):
@@ -21,10 +22,19 @@ class EncoderTestParams(BaseModel):
     drag_factor: float = Field(ge=0.0, le=100, examples=[0.1])
 
 
-class ServoName(str, Enum):
-    bottom = "bottom"
-    right = "right"
-    left = "left"
+# -----------------------------------------------------------------------------
+# Servos
+# -----------------------------------------------------------------------------
+
+
+class ServoState(BaseModel):
+    pos: float
+    duty: float
+    detached: bool
+
+
+class ServosState(BaseModel):
+    motors: dict[str, ServoState]
 
 
 class ServoStateIn(BaseModel):
@@ -36,15 +46,10 @@ class ServosStateIn(BaseModel):
     motors: dict[str, ServoStateIn] = {}
 
 
-class ServoState(BaseModel):
-    pos: float
-    duty: float
-    detached: bool
+# -----------------------------------------------------------------------------
+# LEDs
+# -----------------------------------------------------------------------------
 
-
-class ServosState(BaseModel):
-    motors: dict[str, ServoState]
-    
 
 class LedSegmentState(BaseModel):
     enabled: bool
@@ -79,6 +84,11 @@ class LedsStateIn(BaseModel):
     segments: dict[str, LedSegmentStateIn] | None = None
 
 
+# -----------------------------------------------------------------------------
+# Sound system
+# -----------------------------------------------------------------------------
+
+
 class SoundState(BaseModel):
     volume: float
     duration_secs: float
@@ -103,6 +113,11 @@ class SoundChannelStateIn(BaseModel):
 class SoundSystemStateIn(BaseModel):
     main_ch: SoundChannelStateIn | None = None
     effect_ch: SoundChannelStateIn | None = None
+
+
+# -----------------------------------------------------------------------------
+# Wheel
+# -----------------------------------------------------------------------------
 
 
 class SectorState(BaseModel):
@@ -144,6 +159,14 @@ class WheelState(BaseModel):
     soundsystem: SoundSystemState
 
 
+class WheelStateIn(BaseModel):
+    theme: str | None = None
+    sectors: list[SectorStateIn] = []
+    servos: ServosStateIn | None = None
+    leds: LedsStateIn | None = None
+    soundsystem: SoundSystemStateIn | None = None
+
+
 class WheelStateUpdate(BaseModel):
     theme: str | None = None
     sectors: list[SectorState] | None = None
@@ -153,12 +176,9 @@ class WheelStateUpdate(BaseModel):
     soundsystem: SoundSystemState | None = None
 
 
-class WheelStateIn(BaseModel):
-    theme: str | None = None
-    sectors: list[SectorStateIn] = []
-    servos: ServosStateIn | None = None
-    leds: LedsStateIn | None = None
-    soundsystem: SoundSystemStateIn | None = None
+# -----------------------------------------------------------------------------
+# Websocket
+# -----------------------------------------------------------------------------
 
 
 class WsCommandType(str, Enum):

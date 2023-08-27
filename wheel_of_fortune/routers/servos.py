@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
-from ..dependencies import get_wheel, get_ws_manager
-from ..schemas import ServoName, ServosState, ServoStateIn, ServosStateIn
+from ..dependencies import get_wheel
+from ..schemas import ServosState, ServosStateIn
 
 router = APIRouter(tags=["servos"])
 
@@ -12,5 +12,5 @@ async def get_state(wheel=Depends(get_wheel)) -> ServosState:
 
 
 @router.patch("/api/v1/servos")
-async def set_state(state: ServosStateIn, wheel=Depends(get_wheel), ws_mgr=Depends(get_ws_manager)):
+async def set_state(state: ServosStateIn, wheel=Depends(get_wheel)):
     await wheel.servos.set_state(state)

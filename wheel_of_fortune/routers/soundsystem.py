@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends
-from ..dependencies import get_wheel, get_ws_manager
+from ..dependencies import get_wheel
 from ..schemas import SoundSystemState, SoundSystemStateIn
 
 router = APIRouter(tags=["soundsystem"])
@@ -12,5 +12,5 @@ async def get_state(wheel=Depends(get_wheel)) -> SoundSystemState:
 
 
 @router.patch("/api/v1/soundsystem")
-async def set_state(state: SoundSystemStateIn, wheel=Depends(get_wheel), ws_mgr=Depends(get_ws_manager)):
+async def set_state(state: SoundSystemStateIn, wheel=Depends(get_wheel)):
     await wheel.sound.set_state(state)

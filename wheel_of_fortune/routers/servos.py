@@ -7,7 +7,7 @@ router = APIRouter(tags=["servos"])
 
 @router.get("/api/v1/servos")
 async def get_state(wheel=Depends(get_wheel)) -> ServosState:
-    res = await wheel.servos.get_state()
+    res = wheel.servos.get_state()
     return res
 
 

@@ -7,7 +7,7 @@ router = APIRouter(tags=["leds"])
 
 @router.get("/api/v1/leds")
 async def get_state(wheel=Depends(get_wheel)) -> LedsState:
-    state = await wheel.leds.get_state()
+    state = wheel.leds.get_state()
     return state
 
 

@@ -13,6 +13,7 @@ from ._themes import load_themes, Theme
 from ._effects import load_effects, Effect
 from .schemas import (
     EncoderState,
+    LedsState,
     LedsStateIn,
     ServosStateIn,
     ThemeState,
@@ -84,7 +85,7 @@ class Wheel:
 
         self._telemetry = Telemetry(config)
         self._encoder = Encoder(config, self._gpio, self._telemetry, self._encoder_update)
-        self._leds = LedController(config, self._settings_mgr["leds"])
+        self._leds = LedController(config, self._settings_mgr["leds"], self._leds_update)
         self._servos = ServoController(config)
         self._sound = Sound(config, self._settings_mgr["sound"])
 
@@ -154,7 +155,6 @@ class Wheel:
         
         if state.leds:
             await self._leds.set_state(state.leds)
-            update.leds = await self._leds.get_state()
 
         if state.sound:
             await self._sound.set_state(state.sound)
@@ -185,9 +185,8 @@ class Wheel:
             ) for effect in self._effects.values()
         ]
 
-        servos_state, leds_state, sound_system_state = await asyncio.gather( # type: ignore
+        servos_state, sound_system_state = await asyncio.gather( # type: ignore
             self._servos.get_state(),
-            self._leds.get_state(),
             self._sound.get_state(),
         )
 
@@ -198,7 +197,7 @@ class Wheel:
             effects=effects_state,
             encoder=self._encoder.get_state(),
             servos=servos_state,
-            leds=leds_state,
+            leds=self._leds.get_state(),
             sound=sound_system_state,
         )
 
@@ -389,19 +388,24 @@ class Wheel:
     async def __aexit__(self, *args):
         await self.close()
 
-    def _encoder_update(self, encoder_state: EncoderState):
-        _LOGGER.debug("encoder event: %s" % (encoder_state))
-        if encoder_state.standstill:
+    def _encoder_update(self, state: EncoderState):
+        _LOGGER.debug("encoder update: %s" % (state))
+        if state.standstill:
             self._schedule_task("stopped")
         else:
             self._schedule_task("spinning")
             
         self._publish_update(WheelStateUpdate(
-            encoder=encoder_state
+            encoder=state,
+        ))
+
+    def _leds_update(self, state: LedsState):
+        _LOGGER.debug("leds update: %s" % (state))
+        self._publish_update(WheelStateUpdate(
+            leds=state,
         ))
 
     def _publish_update(self, update: WheelStateUpdate):
-        _LOGGER.debug("publish_update: %s" % (update))
         for callback in self._subscriptions:
             self._loop.call_soon(callback, update)
 

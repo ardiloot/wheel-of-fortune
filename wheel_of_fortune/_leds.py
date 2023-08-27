@@ -1,6 +1,7 @@
 import asyncio
 import aiohttp
 import logging
+from typing import Callable
 from ._config import Config
 from ._settings import Settings
 from .schemas import (
@@ -117,9 +118,12 @@ class LedSegment:
 
 class LedController:
 
-    def __init__(self, config, settings):
+    def __init__(self, config, settings, update_cb):
         self._config: Config = config
         self._settings: Settings = settings
+        self._update_cb: Callable[[LedsState], None] = update_cb
+        self._loop = asyncio.get_running_loop()
+
         self._brightness: float = 0.5
         self._segments: dict[str, LedSegment] = {}
 
@@ -156,7 +160,9 @@ class LedController:
                 segment.set_state(params)
         await self._sync_state(sync_segments=state.segments is not None)
 
-    async def get_state(self) -> LedsState:
+        self._loop.call_soon(self._update_cb, self.get_state())
+
+    def get_state(self) -> LedsState:
         return LedsState(
             power_on=self._brightness > 0.0,
             brightness=self._brightness,

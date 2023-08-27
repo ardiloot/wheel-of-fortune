@@ -47,14 +47,6 @@ class WsConnection:
     async def _send_state(self):
         wheel = self._mgr._wheel
         state = await wheel.get_state()
-
-        servos_state, leds_state, sound_system_state, wheel_state = await asyncio.gather( # type: ignore
-            wheel.servos.get_state(),
-            wheel.leds.get_state(),
-            wheel.sound.get_state(),
-            wheel.get_state(),
-        )
-        
         packet = WsStatePacket(
             data=state,
         )

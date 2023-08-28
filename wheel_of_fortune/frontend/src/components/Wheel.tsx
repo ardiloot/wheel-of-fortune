@@ -1,6 +1,7 @@
 import { createStyles } from "@mantine/core";
 import { useState } from "react";
 import SectorEditModal from "./SectorEditModal";
+import { EffectState, EncoderState, SectorState } from "../schemas";
 
 
 const useStyles = createStyles((theme) => ({
@@ -56,34 +57,26 @@ function toXY(radius: number, angle: number) {
 }
 
 
-export default function Wheel({ apiUrl, encoderState, wheelState } : {apiUrl: string, encoderState: any, wheelState: any}) {
+export default function Wheel({
+  sectors,
+  effects,
+  encoderState,
+  updateSector,
+} : {
+  sectors: Array<SectorState>,
+  effects: Array<EffectState>,
+  encoderState: EncoderState,
+  updateSector: (index: number, name: string, effect: string) => void
+}) {
 
   const [editSectorIndex, setEditSectorIndex] = useState<number | null>(null);  
   const { classes } = useStyles();
+  const activeSector = encoderState.sector;
 
-  const sectors = wheelState === null ? [] : wheelState.sectors;
-  const activeSector = encoderState?.sector ?? 0;
-  const effects = wheelState?.effects ?? [];
-
-  const apiUpdateSector = async (index: number, name : string, effect: string) => {
-    const requestOptions = {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        name: name,
-        effect: effect,
-      })
-    };
-    const resp = await fetch(apiUrl + '/wheel/sector/' + index, requestOptions);
-    if (resp.status >= 400) {
-      throw new Error('Server responds with error!');
-    }
-  };
-
-  async function handleSectorEdit(index: number, name: string, effect: string) {
+  function handleSectorEdit(index: number, name: string, effect: string) {
     console.log('save: ' + index + ' ' + name + ' ' + effect);
     setEditSectorIndex(null);
-    await apiUpdateSector(index, name, effect);
+    updateSector(index, name, effect);
   }
 
   const wheelRadius = 400.0;

@@ -9,12 +9,10 @@ import ReconnectingWebSocket from 'reconnecting-websocket';
 import { ColorSchemeToggle } from './components/ColorSchemeToggle';
 import { useLocalStorage } from '@mantine/hooks';
 import { IconCheck, IconX } from '@tabler/icons-react';
+import { WsStatePacket, ThemeState, WsUpdatePacket, WsSetStatePacket, SectorState, EffectState, EncoderState, LedsState, SoundSystemState } from './schemas';
+import { throttle } from 'lodash';
 
 
-const API_URL = (
-  import.meta.env.VITE_API_URL ?? 
-  window.location.protocol + '//' + window.location.host + '/api/v1'
-);
 const WS_URL = (
   import.meta.env.VITE_WS_URL ?? 
   (window.location.protocol === 'http:' ? 'ws://' : 'wss://') + window.location.host + '/api/v1/ws'
@@ -30,13 +28,37 @@ export default function App() {
   const toggleColorScheme = (value?: ColorScheme) =>
     setColorScheme(value || (colorScheme === 'dark' ? 'light' : 'dark'));
 
-  const [connectionStatus, setConnectionStatus] = useState<number>(-1)
-  const [encoderState, setEncoderState] = useState(null)
-  const [ledsState, setLedsState] = useState(null)
-  const [soundState, setSoundState] = useState(null)
-  const [wheelState, setWheelState] = useState(null)
-  const ws = useRef<ReconnectingWebSocket | null>(null)
+  const [connectionStatus, setConnectionStatus] = useState<number>(-1);
+  const [activeTheme, setActiveTheme] = useState<string>('');
+  const [availableThemes, setAvailableThemes] = useState<Array<ThemeState>>([]);
+  const [sectors, setSectors] = useState<Array<SectorState>>([]);
+  const [effects, setEffects] = useState<Array<EffectState>>([]);
+  const [encoderState, setEncoderState] = useState<EncoderState>({
+    sector: 0,
+    rpm: 0.0,
+    total_revs: 0,
+    total_sectors: 0,
+    missed_sector_count: 0,
+    num_sectors: 0,
+    standstill: true,
+  });
+  const [ledsState, setLedsState] = useState<LedsState>({
+    power_on: true,
+    brightness: 1.0,
+    segments: {},
+  });
+  const [soundsystemState, setSoundsystemState] = useState<SoundSystemState>({
+    channels: {
+      main: {
+        volume: 0.0,
+        sound_name: '',
+      }
+    },
+    sounds: {},
+  })
 
+
+  const ws = useRef<ReconnectingWebSocket | null>(null)
   useEffect(() => {
     console.log('Connect to websocket', WS_URL);
     const wsConn = new ReconnectingWebSocket(WS_URL);
@@ -72,19 +94,30 @@ export default function App() {
       console.log('ws message', message);
 
       if (message.cmd === 'state') {
-        setEncoderState(message.data.encoder);
-        setLedsState(message.data.leds);
-        setSoundState(message.data.sound);
-        setWheelState(message.data.wheel);
+        const packet = WsStatePacket.parse(message);
+        const state = packet.state;
+        console.log('state', state);
+        setActiveTheme(state.theme);
+        setAvailableThemes(state.themes);
+        setSectors(state.sectors);
+        setEffects(state.effects);
+        setEncoderState(state.encoder);
+        setLedsState(state.leds);
+        setSoundsystemState(state.soundsystem);
       } else if (message.cmd === 'update') {
-        if ('encoder' in message.data)
-          setEncoderState(message.data.encoder);
-        if ('sound' in message.data)
-          setSoundState(message.data.sound);
-        if ('wheel' in message.data)
-          setWheelState(message.data.wheel);
-        if ('leds' in message.data)
-          setLedsState(message.data.leds);
+        const packet = WsUpdatePacket.parse(message);
+        const update = packet.update;
+        console.log('update', update);
+        if (update.theme !== undefined)
+          setActiveTheme(update.theme);
+        if (update.sectors !== undefined)
+          setSectors(update.sectors);
+        if (update.encoder !== undefined)
+          setEncoderState(update.encoder);
+        if (update.leds !== undefined)
+          setLedsState(update.leds);
+        if (update.soundsystem !== undefined)
+          setSoundsystemState(update.soundsystem);
       }
     };
 
@@ -92,6 +125,44 @@ export default function App() {
       wsConn.close();
     };
   }, []);
+
+  const throttledSetBrightness = useRef(
+    throttle(async (brightness : number) => {
+      if (ws.current === null)
+        return;
+      const newState: WsSetStatePacket = {
+        cmd: 'set_state',
+        ts: Date.now() / 1000.0,
+        state: {
+          leds: {
+            brightness: brightness,
+          },
+        }
+      };
+      ws.current.send(JSON.stringify(newState))
+    }, 250)
+  ).current;
+
+  const throttledSetVolume = useRef(
+    throttle(async (volume : number) => {
+      if (ws.current === null)
+        return;
+      const newState: WsSetStatePacket = {
+        cmd: 'set_state',
+        ts: Date.now() / 1000.0,
+        state: {
+          soundsystem: {
+            channels: {
+              main: {
+                volume: volume,
+              },
+            },
+          },
+        }
+      };
+      ws.current.send(JSON.stringify(newState))
+    }, 250)
+  ).current;
 
   return (
     <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
@@ -112,27 +183,74 @@ export default function App() {
           <ColorSchemeToggle />
 
           <ThemeSelect
-            apiUrl={API_URL}
-            wheelState={wheelState}
-            setWheelState={setWheelState}
+            activeTheme={activeTheme}
+            availableThemes={availableThemes}
+            setActiveTheme={async (theme: string) => {
+              console.log('set theme:', theme)
+              setActiveTheme(theme);
+
+              if (ws.current !== null) {
+                const newState: WsSetStatePacket = {
+                  cmd: 'set_state',
+                  ts: Date.now() / 1000.0,
+                  state: {
+                    theme: theme,
+                  }
+                };
+                ws.current.send(JSON.stringify(newState))
+              }
+            }}
           />
 
           <VolumeSlider
-            ws={ws.current}
-            soundState={soundState}
-            setSoundState={setSoundState}
+            volume={soundsystemState.channels.main.volume}
+            setVolume={(volume) => {
+              setSoundsystemState({
+                ...soundsystemState,
+                channels: {
+                  ...soundsystemState.channels,
+                  main: {
+                    ...soundsystemState.channels.main,
+                    volume: volume,
+                  }
+                }
+              });
+              throttledSetVolume(volume);
+            }}
           />
 
           <BrightnessSlider
-            ws={ws.current}
-            ledsState={ledsState}
-            setLedsState={setLedsState}
+            brightness={ledsState.brightness}
+            setBrightness={(brightness) => {
+              setLedsState({
+                ...ledsState,
+                brightness: brightness,
+              });
+              throttledSetBrightness(brightness);
+            }}
           />
 
           <Wheel
-            apiUrl={API_URL}
+            sectors={sectors}
+            effects={effects}
             encoderState={encoderState}
-            wheelState={wheelState}
+            updateSector={async (index, name, effect) => {
+              if (ws.current !== null) {
+                const newState: WsSetStatePacket = {
+                  cmd: 'set_state',
+                  ts: Date.now() / 1000.0,
+                  state: {
+                    sectors: {
+                      [index]: {
+                        name: name,
+                        effect: effect,
+                      },
+                    },
+                  },
+                };
+                ws.current.send(JSON.stringify(newState))
+              }
+            }}
           />
 
         </Container>

@@ -111,7 +111,12 @@ class Wheel:
         # Open settings
         await self._settings_mgr.open()
         if "theme" in self._settings:
-            await self.activate_theme(self._settings["theme"], reload=False, save=False)
+            theme_id = self._settings["theme"]
+            if theme_id in self._themes:
+                self._theme = self._themes[theme_id]
+            else:
+                _LOGGER.warn("unknwon theme id: %s" % (theme_id))
+
         for sector in self._sectors:
             sector.init()
 
@@ -134,11 +139,20 @@ class Wheel:
             self._active_task.cancel()
 
     async def set_state(self, state: WheelStateIn):
-        update = WheelStateUpdate()
 
         if state.theme is not None:
-            await self.activate_theme(state.theme)
-            update.theme = self._theme._id
+            _LOGGER.info("activate_theme: %s" % (state.theme))
+            if state.theme in self._themes:
+                self._theme = self._themes[state.theme]
+            else:
+                raise ValueError("unknown theme name")
+            self._settings.set("theme", self._theme._id)
+            self._publish_update(WheelStateUpdate(
+                theme=self._theme._id,
+            ))
+            cur_task_name = self._active_task.get_name() if self._active_task is not None else None
+            if cur_task_name == "idle":
+                self._reload_task()
 
         for index, sector_state in state.sectors.items():
             if index < 0 or index >= len(self._sectors):
@@ -146,7 +160,9 @@ class Wheel:
             sector = self._sectors[index]
             sector.set_state(sector_state)
         if len(state.sectors) > 0:
-            update.sectors = [sector.get_state() for sector in self._sectors]
+            self._publish_update(WheelStateUpdate(
+                sectors=[sector.get_state() for sector in self._sectors]
+            ))
 
         if state.servos:
             await self._servos.set_state(state.servos)
@@ -156,8 +172,6 @@ class Wheel:
 
         if state.soundsystem:
             await self._soundsystem.set_state(state.soundsystem)
-
-        self._publish_update(update)
 
     async def get_state(self) -> WheelState:
         cur_task_name = self._active_task.get_name() if self._active_task is not None else None
@@ -176,22 +190,6 @@ class Wheel:
 
     def subscribe(self, callback: Callable[[WheelStateUpdate], None]):
         self._subscriptions.append(callback)
-
-    async def activate_theme(self, theme_id: str, reload=True, save=True):
-        _LOGGER.info("activate_theme: %s" % (theme_id))
-        
-        new_theme = self._themes.get(theme_id)
-        if new_theme is None:
-            raise ValueError("unknown theme name")
-        
-        if new_theme._id == self._theme._id:
-            return
-        
-        self._theme = new_theme
-        if reload:
-            self._reload_task()
-        if save:
-            self._settings.set("theme", self._theme._id)
 
     async def maintain(self):
         _LOGGER.info("maintain...")

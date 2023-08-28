@@ -11,11 +11,6 @@ export default function BrightnessSlider({
   setBrightness: (brightness: number) => void
 }) {
   const brightnessPercent = Math.round(100 * brightness);
-  function handleBrightnessChange(value : number) {
-    if (value === brightnessPercent)
-      return;
-    setBrightness(value / 100.0);
-  }
 
   return (
     <Slider
@@ -24,7 +19,11 @@ export default function BrightnessSlider({
     mb="lg"
     thumbChildren={<IconSun size="1.5rem" />}
     value={ brightnessPercent }
-    onChange={handleBrightnessChange}
+    onChange={(value) => {
+      if (value === brightnessPercent)
+        return;
+      setBrightness(value / 100.0);
+    }}
     thumbSize={25}
     styles={(_) => ({
       thumb: {

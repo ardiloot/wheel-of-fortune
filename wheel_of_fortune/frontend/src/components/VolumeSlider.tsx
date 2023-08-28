@@ -11,12 +11,6 @@ export default function VolumeSlider({
 }) {
   const volumePercent = Math.round(100 * volume);
 
-  function handleVolumeChange(value : number) {
-    if (value === volumePercent)
-      return;
-    setVolume(value / 100.0);
-  }
-
   return (
     <Slider
     size={5}
@@ -24,7 +18,11 @@ export default function VolumeSlider({
     mb="lg"
     thumbChildren={<IconVolume2 size="1.5rem" />}
     value={ volumePercent }
-    onChange={handleVolumeChange}
+    onChange={(value) => {
+      if (value === volumePercent)
+        return;
+      setVolume(value / 100.0);
+    }}
     thumbSize={25}
     styles={(_) => ({
       thumb: {

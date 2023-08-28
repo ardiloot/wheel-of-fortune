@@ -16,7 +16,9 @@ export default function ThemeSelect({
     <Select
       label="Theme:"
       value={ activeTheme }
-      onChange={(theme: string) => {setActiveTheme(theme)}}
+      onChange={(theme: string) => {
+        setActiveTheme(theme);
+      }}
       data={ availableThemes.map((theme: any) => ({value: theme.id, label: theme.name})) }
     />
   )

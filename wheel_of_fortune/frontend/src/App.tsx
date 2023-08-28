@@ -1,16 +1,19 @@
 import { useEffect, useRef, useState } from 'react';
 import { ColorScheme, ColorSchemeProvider, Container, LoadingOverlay, MantineProvider, Title } from '@mantine/core';
 import { Notifications, notifications } from '@mantine/notifications';
+import { useLocalStorage } from '@mantine/hooks';
+import { IconCheck, IconX } from '@tabler/icons-react';
+import { throttle } from 'lodash';
+import ReconnectingWebSocket from 'reconnecting-websocket';
+
+
+import { WsStatePacket, ThemeState, WsUpdatePacket, WsSetStatePacket, SectorState, EffectState, EncoderState, LedsState, SoundSystemState, WheelStateIn } from './schemas';
+import { ColorSchemeToggle } from './components/ColorSchemeToggle';
 import Wheel from './components/Wheel';
 import VolumeSlider from './components/VolumeSlider';
 import BrightnessSlider from './components/BrightnessSlider';
 import ThemeSelect from './components/ThemeSelect';
-import ReconnectingWebSocket from 'reconnecting-websocket';
-import { ColorSchemeToggle } from './components/ColorSchemeToggle';
-import { useLocalStorage } from '@mantine/hooks';
-import { IconCheck, IconX } from '@tabler/icons-react';
-import { WsStatePacket, ThemeState, WsUpdatePacket, WsSetStatePacket, SectorState, EffectState, EncoderState, LedsState, SoundSystemState, WheelStateIn } from './schemas';
-import { throttle } from 'lodash';
+
 
 
 const WS_URL = (
@@ -19,6 +22,9 @@ const WS_URL = (
 );
 
 export default function App() {
+
+  // Color scheme
+
   const [colorScheme, setColorScheme] = useLocalStorage<ColorScheme>({
     key: 'mantine-color-scheme',
     defaultValue: 'light',

@@ -154,12 +154,13 @@ class Wheel:
             if cur_task_name == "idle":
                 self._reload_task()
 
-        for index, sector_state in state.sectors.items():
-            if index < 0 or index >= len(self._sectors):
-                raise ValueError("Sector index out of bounds")
-            sector = self._sectors[index]
-            sector.set_state(sector_state)
         if len(state.sectors) > 0:
+            for index, sector_state in state.sectors.items():
+                if index < 0 or index >= len(self._sectors):
+                    raise ValueError("Sector index out of bounds")
+                sector = self._sectors[index]
+                sector.set_state(sector_state)
+            
             self._publish_update(WheelStateUpdate(
                 sectors=[sector.get_state() for sector in self._sectors]
             ))

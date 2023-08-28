@@ -1,3 +1,4 @@
+import time
 import asyncio
 import logging
 from typing import TYPE_CHECKING
@@ -22,7 +23,6 @@ class WsConnection:
     def __init__(self, mgr, websocket):
         self._mgr: 'WsManager' = mgr
         self._websocket: WebSocket = websocket
-        self._loop = asyncio.get_running_loop()
 
     async def connect(self):
         _LOGGER.info("Accept WS connection %s" % (self._websocket))
@@ -49,7 +49,7 @@ class WsConnection:
         wheel = self._mgr._wheel
         state = await wheel.get_state()
         packet = WsStatePacket(
-            ts=self._loop.time(),
+            ts=time.time(),
             state=state,
         )
         await self.send_json(packet.model_dump())
@@ -59,7 +59,6 @@ class WsManager:
 
     def __init__(self, wheel):
         self._wheel: Wheel = wheel
-        self._loop = asyncio.get_running_loop()
         self._connections: set[WsConnection] = set()
         self._wheel.subscribe(self._wheel_update_received)
         self._background_tasks = set()
@@ -76,10 +75,10 @@ class WsManager:
     
     async def _broadcast_update(self, update: WheelStateUpdate):
         packet = WsUpdatePacket(
-            ts=self._loop.time(),
+            ts=time.time(),
             update=update,
         )
-        await self._broadcast_json(packet.model_dump())
+        await self._broadcast_json(packet.model_dump(exclude_none=True))
 
     async def _broadcast_json(self, data):
         _LOGGER.info("WsManager: broadcast json to %d clients" % (len(self._connections)))

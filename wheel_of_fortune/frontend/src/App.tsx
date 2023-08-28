@@ -9,7 +9,7 @@ import ReconnectingWebSocket from 'reconnecting-websocket';
 import { ColorSchemeToggle } from './components/ColorSchemeToggle';
 import { useLocalStorage } from '@mantine/hooks';
 import { IconCheck, IconX } from '@tabler/icons-react';
-import { WsStatePacket, ThemeState, WsUpdatePacket, WsSetStatePacket, SectorState, EffectState, EncoderState, LedsState, SoundSystemState } from './schemas';
+import { WsStatePacket, ThemeState, WsUpdatePacket, WsSetStatePacket, SectorState, EffectState, EncoderState, LedsState, SoundSystemState, WheelStateIn } from './schemas';
 import { throttle } from 'lodash';
 
 
@@ -27,6 +27,8 @@ export default function App() {
 
   const toggleColorScheme = (value?: ColorScheme) =>
     setColorScheme(value || (colorScheme === 'dark' ? 'light' : 'dark'));
+
+  // States
 
   const [connectionStatus, setConnectionStatus] = useState<number>(-1);
   const [activeTheme, setActiveTheme] = useState<string>('');
@@ -57,6 +59,7 @@ export default function App() {
     sounds: {},
   })
 
+  // Websocket
 
   const ws = useRef<ReconnectingWebSocket | null>(null)
   useEffect(() => {
@@ -126,41 +129,41 @@ export default function App() {
     };
   }, []);
 
+  // Set state
+  function wsSetState(state: WheelStateIn) {
+    if (ws.current === null) {
+      console.warn('Websocet down, cannot set state', state);
+      return;
+    }
+    const newState: WsSetStatePacket = {
+      cmd: 'set_state',
+      ts: Date.now() / 1000.0,
+      state: state,
+    };
+    ws.current.send(JSON.stringify(newState));
+  };
+
   const throttledSetBrightness = useRef(
-    throttle(async (brightness : number) => {
-      if (ws.current === null)
-        return;
-      const newState: WsSetStatePacket = {
-        cmd: 'set_state',
-        ts: Date.now() / 1000.0,
-        state: {
-          leds: {
-            brightness: brightness,
-          },
-        }
-      };
-      ws.current.send(JSON.stringify(newState))
+    throttle((brightness : number) => {
+      wsSetState({
+        leds: {
+          brightness: brightness,
+        },
+      });
     }, 250)
   ).current;
 
   const throttledSetVolume = useRef(
-    throttle(async (volume : number) => {
-      if (ws.current === null)
-        return;
-      const newState: WsSetStatePacket = {
-        cmd: 'set_state',
-        ts: Date.now() / 1000.0,
-        state: {
-          soundsystem: {
-            channels: {
-              main: {
-                volume: volume,
-              },
+    throttle((volume : number) => {
+      wsSetState({
+        soundsystem: {
+          channels: {
+            main: {
+              volume: volume,
             },
           },
         }
-      };
-      ws.current.send(JSON.stringify(newState))
+      })
     }, 250)
   ).current;
 
@@ -188,17 +191,7 @@ export default function App() {
             setActiveTheme={async (theme: string) => {
               console.log('set theme:', theme)
               setActiveTheme(theme);
-
-              if (ws.current !== null) {
-                const newState: WsSetStatePacket = {
-                  cmd: 'set_state',
-                  ts: Date.now() / 1000.0,
-                  state: {
-                    theme: theme,
-                  }
-                };
-                ws.current.send(JSON.stringify(newState))
-              }
+              wsSetState({theme: theme});
             }}
           />
 
@@ -235,21 +228,14 @@ export default function App() {
             effects={effects}
             encoderState={encoderState}
             updateSector={async (index, name, effect) => {
-              if (ws.current !== null) {
-                const newState: WsSetStatePacket = {
-                  cmd: 'set_state',
-                  ts: Date.now() / 1000.0,
-                  state: {
-                    sectors: {
-                      [index]: {
-                        name: name,
-                        effect: effect,
-                      },
-                    },
+              wsSetState({
+                sectors: {
+                  [index]: {
+                    name: name,
+                    effect: effect,
                   },
-                };
-                ws.current.send(JSON.stringify(newState))
-              }
+                },
+              });
             }}
           />
 

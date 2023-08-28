@@ -118,7 +118,7 @@ class SoundSystemStateIn(BaseModel):
 
 
 # -----------------------------------------------------------------------------
-# Wheel
+# Sectors
 # -----------------------------------------------------------------------------
 
 
@@ -129,9 +129,13 @@ class SectorState(BaseModel):
 
 
 class SectorStateIn(BaseModel):
-    index: int
     name: str | None = None
     effect: str | None = None
+
+
+# -----------------------------------------------------------------------------
+# Themes
+# -----------------------------------------------------------------------------
 
 
 class ThemeState(BaseModel):
@@ -142,6 +146,11 @@ class ThemeState(BaseModel):
     theme_sound: str
 
 
+# -----------------------------------------------------------------------------
+# Effects
+# -----------------------------------------------------------------------------
+
+
 class EffectState(BaseModel):
     id: str
     name: str
@@ -150,10 +159,15 @@ class EffectState(BaseModel):
     effect_sound: str
 
 
+# -----------------------------------------------------------------------------
+# Wheel
+# -----------------------------------------------------------------------------
+
+
 class WheelState(BaseModel):
     theme: str
-    sectors: list[SectorState]
     themes: list[ThemeState]
+    sectors: list[SectorState]
     effects: list[EffectState]
     encoder: EncoderState
     servos: ServosState
@@ -163,7 +177,7 @@ class WheelState(BaseModel):
 
 class WheelStateIn(BaseModel):
     theme: str | None = None
-    sectors: list[SectorStateIn] = []
+    sectors: dict[int, SectorStateIn] = {}
     servos: ServosStateIn | None = None
     leds: LedsStateIn | None = None
     soundsystem: SoundSystemStateIn | None = None

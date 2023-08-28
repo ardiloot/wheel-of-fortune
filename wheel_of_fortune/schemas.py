@@ -200,7 +200,7 @@ class WheelStateUpdate(BaseModel):
 
 
 class WsCommandType(str, Enum):
-    state = "push_state"    # Full state (to client)
+    state = "state"    # Full state (to client)
     update = "update"       # State update (to client)
     set_state = "set_state" # Set state (to server)
 

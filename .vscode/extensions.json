@@ -1,0 +1,10 @@
+{
+	"recommendations": [
+        "eamodio.gitlens",
+        "ms-python.python",
+        "streetsidesoftware.code-spell-checker",
+        "mhutchie.git-graph",
+        "ms-python.flake8",
+        "github.vscode-pull-request-github"
+    ]
+}

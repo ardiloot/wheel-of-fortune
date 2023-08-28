@@ -12,14 +12,16 @@ nvm use
 npm ci
 ```
 
-## Updating requirements
+## Run backend in developer mode
+
+Create `.env.local` file for overriding environment:
 
 ```bash
-nvm use
-npm update
+VITE_API_URL=https://wheel.int.example.com/api/v1
+VITE_WS_URL=wss://wheel.int.example.com/api/v1/ws
 ```
 
-## Run backend
+Run frontend in `dev` mode:
 
 ```bash
 nvm use

@@ -1,29 +1,78 @@
 import asyncio
 import aiohttp
 import logging
+from typing import Callable
 from ._config import Config
-
+from .schemas import (
+    ServoState,
+    ServoStateIn,
+    ServosState,
+    ServosStateIn,
+)
 
 _LOGGER = logging.getLogger(__name__)
 
 
+class ServoMotor:
+
+    def __init__(self, pwm_id, zero_duty, full_duty, mount_duty):
+        self.pwm_id = pwm_id
+        self._zero_duty = zero_duty
+        self._full_duty = full_duty
+        self._mount_duty = mount_duty
+
+        self._pos = 0.0
+        self._detached = True
+
+    def set_state(self, state: ServoStateIn):
+        if state.pos is not None:
+            self._pos = state.pos
+        if state.detached is not None:
+            self._detached = state.detached
+
+    def get_state(self) -> ServoState:
+        return ServoState(
+            pos=self._pos,
+            duty=self.get_duty(),
+            detached=self._detached,
+        )
+
+    def get_duty(self):
+        if self._detached:
+            return 0.0
+        return self._pos_to_duty(self._pos)
+        
+    def _pos_to_duty(self, pos: float | None) -> float:
+        if pos is None:
+            return 0.0
+        return pos * (self._full_duty - self._zero_duty) + self._zero_duty
+
+    def _duty_to_pos(self, duty: float) -> float | None:
+        if duty == 0.0:
+            return None
+        return (duty - self._zero_duty) / (self._full_duty - self._zero_duty)
+
+
 class ServoController:
 
-    def __init__(self, config):
+    def __init__(self, config, update_cb):
         self._config: Config = config
+        self._update_cb: Callable[[ServosState], None] = update_cb
+        self._loop = asyncio.get_running_loop()
         self._session: aiohttp.ClientSession | None = None
+        
+        self._motors = {}
+        for i, name in enumerate(config.servo_names):
+            pwm_id = "%d" % (i)
+            self._motors[name] = ServoMotor(
+                pwm_id,
+                self._config.servo_zero_duty,
+                self._config.servo_full_duty,
+                self._config.servo_mount_duty,
+            )
 
     async def open(self):
         _LOGGER.info("open")
-        self._id_map = {
-            "bottom": "0",
-            "right": "1",
-            "left": "2",
-        }
-        self._name_map = {v: k for k, v in self._id_map.items()}
-        self._zero_duty = 0.087
-        self._full_duty = 0.0516
-        # self._mount_duty = 0.047352
         self._session = aiohttp.ClientSession(
             base_url=self._config.wled_url,  # type: ignore
             raise_for_status=True,  # type: ignore
@@ -36,62 +85,32 @@ class ServoController:
         await self._session.close()
         _LOGGER.info("close done.")
 
-    async def set_pos(self, pos, names=None):
-        _LOGGER.info("set_servo_pos: %s %s" % (names, pos))
-        if self._session is None:
-            return ConnectionError("Session is not opened")
-        duty = self._pos_to_duty(pos)
+    async def set_state(self, state: ServosStateIn):
+        _LOGGER.info("set_state: %s" % (state))
+        for name, motor in self._motors.items():
+            if name in state.motors:
+                motor.set_state(state.motors[name])
+        await self._sync_state()
 
-        pwm_data = {}
-        for name in names or self._id_map.keys():
-            if name not in self._id_map:
-                continue
-            pwm_data[self._id_map[name]] = {"duty": duty}
-        
-        await self._session.post("/json/state", json={"pwm": pwm_data})
-
-    async def set_state(self, pos=None, detached=False, names=None):
-        if detached:
-            await self.set_pos(None, names=names)
-        elif pos is not None:
-            await self.set_pos(pos, names=names)
-
-    async def get_state(self):
-        _LOGGER.info("get_state")
-        if self._session is None:
-            return ConnectionError("Session is not opened")
-        
-        resp = await self._session.get("/json/state")
-        data = await resp.json()
-
-        res = {}
-        for _id, s in data.get("pwm", {}).items():
-            duty = s.get("duty", 0.0)
-            pos = self._duty_to_pos(duty)
-            res[self._name_map.get(_id, _id)] = {
-                "pos": pos,
-                "duty": duty,
-                "detached": duty == 0.0,
-            }
-        return res
-
-    async def _update_state(self, state):
-        if self._session is None:
-            return ConnectionError("Session is not opened")
-        await self._session.post("/json/state", json=state)
-
+    def get_state(self) -> ServosState:
+        return ServosState(
+            motors={name: motor.get_state() for name, motor in self._motors.items()}
+        )
+    
     async def maintain(self):
         while True:
-            state = await self.get_state()
+            state = self.get_state()
             _LOGGER.info("servos state: %s" % (state))
             await asyncio.sleep(100.0)
 
-    def _pos_to_duty(self, pos):
-        if pos is None:
-            return 0.0
-        return pos * (self._full_duty - self._zero_duty) + self._zero_duty
-
-    def _duty_to_pos(self, duty):
-        if duty == 0.0:
-            return None
-        return (duty - self._zero_duty) / (self._full_duty - self._zero_duty)
+    async def _sync_state(self):
+        _LOGGER.info("sync state")
+        if self._session is None:
+            raise ConnectionError("Session is not opened")
+        
+        pwm_data = {}
+        for motor in self._motors.values():
+            pwm_data[motor.pwm_id] = {"duty": motor.get_duty()}
+        
+        await self._session.post("/json/state", json={"pwm": pwm_data})
+        self._loop.call_soon(self._update_cb, self.get_state())

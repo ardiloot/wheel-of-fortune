@@ -249,20 +249,19 @@ class Wheel:
             try:
                 await self._active_task
             except asyncio.CancelledError:
-                _LOGGER.info("task was cancelled: %s" % (self._active_task.get_name()))
+                _LOGGER.info("task was cancelled: %s" % (self._cur_task))
                 pass
-            _LOGGER.info("task finished: %s" % (self._active_task.get_name()))
+            _LOGGER.info("task finished: %s" % (self._cur_task))
 
     def _schedule_task(self, task: TaskType):
-        cur_task = self._cur_task
         if task == self._cur_task:
             return
         
-        if cur_task == TaskType.POWEROFF:
+        if self._cur_task == TaskType.POWEROFF:
             _LOGGER.warn("Cannot schedule tasks after poweroff")
             return
 
-        _LOGGER.info("_schedule_task %s -> %s:" % (cur_task, task))
+        _LOGGER.info("_schedule_task %s -> %s:" % (self._cur_task, task))
         self._next_task = task
         if self._active_task is not None and not self._active_task.done():
             success = self._active_task.cancel()

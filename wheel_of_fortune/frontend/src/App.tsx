@@ -130,6 +130,7 @@ export default function App() {
   }, []);
 
   // Set state
+
   function wsSetState(state: WheelStateIn) {
     if (ws.current === null) {
       console.warn('Websocet down, cannot set state', state);
@@ -145,25 +146,13 @@ export default function App() {
 
   const throttledSetBrightness = useRef(
     throttle((brightness : number) => {
-      wsSetState({
-        leds: {
-          brightness: brightness,
-        },
-      });
+      wsSetState({leds: {brightness: brightness}});
     }, 250)
   ).current;
 
   const throttledSetVolume = useRef(
     throttle((volume : number) => {
-      wsSetState({
-        soundsystem: {
-          channels: {
-            main: {
-              volume: volume,
-            },
-          },
-        }
-      })
+      wsSetState({soundsystem: {channels: {main: {volume: volume}}}});
     }, 250)
   ).current;
 
@@ -227,15 +216,8 @@ export default function App() {
             sectors={sectors}
             effects={effects}
             encoderState={encoderState}
-            updateSector={async (index, name, effect) => {
-              wsSetState({
-                sectors: {
-                  [index]: {
-                    name: name,
-                    effect: effect,
-                  },
-                },
-              });
+            updateSector={(index, name, effect) => {
+              wsSetState({sectors: {[index]: {name: name, effect: effect}}});
             }}
           />
 

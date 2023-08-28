@@ -142,10 +142,10 @@ class Wheel:
             await self.activate_theme(state.theme)
             update.theme = self._theme._id
 
-        for sector_state in state.sectors:
-            if sector_state.index < 0 or sector_state.index >= len(self._sectors):
+        for index, sector_state in state.sectors.items():
+            if index < 0 or index >= len(self._sectors):
                 raise ValueError("Sector index out of bounds")
-            sector = self._sectors[sector_state.index]
+            sector = self._sectors[index]
             sector.set_state(sector_state)
         if len(state.sectors) > 0:
             update.sectors = [sector.get_state() for sector in self._sectors]
@@ -186,8 +186,8 @@ class Wheel:
 
         return WheelState(
             theme=self._theme._id,
-            sectors=sectors_state,
             themes=themes_state,
+            sectors=sectors_state,
             effects=effects_state,
             encoder=self._encoder.get_state(),
             servos=self._servos.get_state(),

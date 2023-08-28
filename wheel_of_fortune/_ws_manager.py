@@ -96,7 +96,7 @@ class WsManager:
         self._connections.remove(connection)
 
     def _wheel_update_received(self, update: WheelStateUpdate):
-        _LOGGER.info("WsManager: wheel state update received")
+        _LOGGER.info("WsManager: wheel state update received: %s" % (update))
         task = asyncio.create_task(self._broadcast_update(update))
         self._background_tasks.add(task)
         task.add_done_callback(self._background_tasks.discard)

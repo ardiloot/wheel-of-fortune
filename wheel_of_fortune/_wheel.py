@@ -1,6 +1,7 @@
 import os
 import asyncio
 import logging
+from enum import Enum
 from typing import Callable
 from ._config import Config
 from ._settings import SettingsManager, Settings
@@ -31,6 +32,15 @@ _LOGGER = logging.getLogger(__name__)
 __all__ = [
     "Wheel",
 ]
+
+
+class TaskType(Enum):
+    STARTUP = "startup"
+    IDLE = "idle"
+    SPINNING = "spinning"
+    STOPPED = "stopped"
+    POWEROFF = "poweroff"
+    UNKNOWN = "unknown"
 
 
 class Sector:
@@ -91,7 +101,7 @@ class Wheel:
         self._soundsystem = SoundSystem(config, self._settings_mgr["sound"], self._soundsystem_update)
 
         self._active_task: asyncio.Task | None = None
-        self._next_task_name: str = "startup"
+        self._next_task: TaskType = TaskType.STARTUP
 
         themes_file = os.path.join(config.data_dir, "themes.yaml")
         self._themes = load_themes(themes_file)
@@ -115,7 +125,7 @@ class Wheel:
             if theme_id in self._themes:
                 self._theme = self._themes[theme_id]
             else:
-                _LOGGER.warn("unknwon theme id: %s" % (theme_id))
+                _LOGGER.warn("unknown theme id: %s" % (theme_id))
 
         for sector in self._sectors:
             sector.init()
@@ -150,8 +160,7 @@ class Wheel:
             self._publish_update(WheelStateUpdate(
                 theme=self._theme._id,
             ))
-            cur_task_name = self._active_task.get_name() if self._active_task is not None else None
-            if cur_task_name == "idle":
+            if self._cur_task == TaskType.IDLE:
                 self._reload_task()
 
         if len(state.sectors) > 0:
@@ -175,10 +184,9 @@ class Wheel:
             await self._soundsystem.set_state(state.soundsystem)
 
     async def get_state(self) -> WheelState:
-        cur_task_name = self._active_task.get_name() if self._active_task is not None else None
         
         return WheelState(
-            task_name=cur_task_name,
+            task_name=self._cur_task.value,
             theme=self._theme._id,
             themes=[theme.get_state() for theme in self._themes.values()],
             sectors=[sector.get_state() for sector in self._sectors],
@@ -211,26 +219,27 @@ class Wheel:
         while True:
             if self._gpio.input(self._poweroff_pin):
                 _LOGGER.info("poweroff requested...")
-                self._schedule_task("poweroff")
+                self._schedule_task(TaskType.POWEROFF)
 
             await asyncio.sleep(1.0)
 
     async def _maintain(self):
         _LOGGER.info("start maintaining")
-        self._next_task_name = "startup"
+        self._next_task = TaskType.STARTUP
 
         while True:
             # Start next task
-            task_name = self._next_task_name
-            self._next_task_name = "idle"
+            task = self._next_task
+            self._next_task = TaskType.IDLE
             task_co = {
-                "startup": self._task_startup,
-                "idle": self._task_idle,
-                "spinning": self._task_spinning,
-                "stopped": self._task_stopped,
-                "poweroff": self._task_poweroff,
-            }[task_name]()
-            _LOGGER.info("start task: %s" % (task_name))
+                TaskType.STARTUP: self._task_startup,
+                TaskType.IDLE: self._task_idle,
+                TaskType.SPINNING: self._task_spinning,
+                TaskType.STOPPED: self._task_stopped,
+                TaskType.POWEROFF: self._task_poweroff,
+            }[task]()
+            _LOGGER.info("start task: %s" % (task))
+            task_name = task.value
             self._active_task = asyncio.create_task(task_co, name=task_name)
             self._publish_update(WheelStateUpdate(
                 task_name=task_name,
@@ -244,20 +253,17 @@ class Wheel:
                 pass
             _LOGGER.info("task finished: %s" % (self._active_task.get_name()))
 
-    def _schedule_task(self, task_name: str):
-        cur_task_name = None
-        if self._active_task is not None:
-            cur_task_name = self._active_task.get_name()
-
-        if task_name == cur_task_name:
+    def _schedule_task(self, task: TaskType):
+        cur_task = self._cur_task
+        if task == self._cur_task:
             return
         
-        if cur_task_name == "poweroff":
+        if cur_task == TaskType.POWEROFF:
             _LOGGER.warn("Cannot schedule tasks after poweroff")
             return
 
-        _LOGGER.info("_schedule_task %s -> %s:" % (cur_task_name, task_name))
-        self._next_task_name = task_name
+        _LOGGER.info("_schedule_task %s -> %s:" % (cur_task, task))
+        self._next_task = task
         if self._active_task is not None and not self._active_task.done():
             success = self._active_task.cancel()
             if not success:
@@ -358,12 +364,18 @@ class Wheel:
     async def __aexit__(self, *args):
         await self.close()
 
+    @property
+    def _cur_task(self):
+        if self._active_task is None:
+            return TaskType.UNKNOWN
+        return TaskType(self._active_task.get_name())
+
     def _encoder_update(self, state: EncoderState):
         _LOGGER.debug("encoder update: %s" % (state))
         if state.standstill:
-            self._schedule_task("stopped")
+            self._schedule_task(TaskType.STOPPED)
         else:
-            self._schedule_task("spinning")
+            self._schedule_task(TaskType.SPINNING)
             
         self._publish_update(WheelStateUpdate(
             encoder=state,

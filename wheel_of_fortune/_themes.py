@@ -1,7 +1,7 @@
 import yaml
 import logging
 import mergedeep
-
+from .schemas import ThemeState
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -38,6 +38,15 @@ class Theme:
         params.pop("visible", None)
         # TODO: params validation
         return Theme(theme_id, **params)
+
+    def get_state(self) -> ThemeState:
+        return ThemeState(
+            id=self._id,
+            name=self.name,
+            description=self.description,
+            based_on=self.based_on,
+            theme_sound=self.theme_sound,
+        )
 
 
 def load_themes(filename: str):

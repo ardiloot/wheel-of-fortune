@@ -19,8 +19,6 @@ from .schemas import (
     ServosState,
     SoundSystemState,
     ServosStateIn,
-    ThemeState,
-    EffectState,
     SectorState,
     SectorStateIn,
     WheelState,
@@ -162,33 +160,14 @@ class Wheel:
         self._publish_update(update)
 
     async def get_state(self) -> WheelState:
-        sectors_state = [sector.get_state() for sector in self._sectors]
-
-        themes_state = [
-            ThemeState(
-                id=theme._id,
-                name=theme.name,
-                description=theme.description,
-                based_on=theme.based_on,
-                theme_sound=theme.theme_sound,
-            ) for theme in self._themes.values()
-        ]
-
-        effects_state = [
-            EffectState(
-                id=effect._id,
-                name=effect.name,
-                description=effect.description,
-                based_on=effect.based_on,
-                effect_sound=effect.effect_sound,
-            ) for effect in self._effects.values()
-        ]
-
+        cur_task_name = self._active_task.get_name() if self._active_task is not None else None
+        
         return WheelState(
+            task_name=cur_task_name,
             theme=self._theme._id,
-            themes=themes_state,
-            sectors=sectors_state,
-            effects=effects_state,
+            themes=[theme.get_state() for theme in self._themes.values()],
+            sectors=[sector.get_state() for sector in self._sectors],
+            effects=[effect.get_state() for effect in self._effects.values()],
             encoder=self._encoder.get_state(),
             servos=self._servos.get_state(),
             leds=self._leds.get_state(),
@@ -254,6 +233,9 @@ class Wheel:
             }[task_name]()
             _LOGGER.info("start task: %s" % (task_name))
             self._active_task = asyncio.create_task(task_co, name=task_name)
+            self._publish_update(WheelStateUpdate(
+                task_name=task_name,
+            ))
 
             # Wait for task
             try:
@@ -389,19 +371,16 @@ class Wheel:
         ))
 
     def _leds_update(self, state: LedsState):
-        _LOGGER.debug("leds update: %s" % (state))
         self._publish_update(WheelStateUpdate(
             leds=state,
         ))
 
     def _servos_update(self, state: ServosState):
-        _LOGGER.debug("servos update: %s" % (state))
         self._publish_update(WheelStateUpdate(
             servos=state,
         ))
 
     def _soundsystem_update(self, state: SoundSystemState):
-        _LOGGER.debug("sound system update: %s" % (state))
         self._publish_update(WheelStateUpdate(
             soundsystem=state,
         ))

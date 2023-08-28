@@ -1,6 +1,7 @@
 import yaml
 import logging
 import mergedeep
+from .schemas import EffectState
 
 
 _LOGGER = logging.getLogger(__name__)
@@ -32,6 +33,15 @@ class Effect:
         params.pop("visible", None)
         # TODO: params validation
         return Effect(effect_id, **params)
+
+    def get_state(self) -> EffectState:
+        return EffectState(
+            id=self._id,
+            name=self.name,
+            description=self.description,
+            based_on=self.based_on,
+            effect_sound=self.effect_sound,
+        )
 
 
 def load_effects(filename: str):

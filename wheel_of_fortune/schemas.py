@@ -165,6 +165,7 @@ class EffectState(BaseModel):
 
 
 class WheelState(BaseModel):
+    task_name: str | None
     theme: str
     themes: list[ThemeState]
     sectors: list[SectorState]
@@ -184,6 +185,7 @@ class WheelStateIn(BaseModel):
 
 
 class WheelStateUpdate(BaseModel):
+    task_name: str | None = None
     theme: str | None = None
     sectors: list[SectorState] | None = None
     encoder: EncoderState | None = None

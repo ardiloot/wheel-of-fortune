@@ -6,9 +6,11 @@ import { Slider, rem } from "@mantine/core";
 export default function BrightnessSlider({
   brightness,
   setBrightness,
+  setBrightnessEnd,
 } : {
   brightness: number,
-  setBrightness: (brightness: number) => void
+  setBrightness: (brightness: number) => void,
+  setBrightnessEnd: (brightness: number) => void,
 }) {
   const brightnessPercent = Math.round(100 * brightness);
 
@@ -19,11 +21,8 @@ export default function BrightnessSlider({
     mb="lg"
     thumbChildren={<IconSun size="1.5rem" />}
     value={ brightnessPercent }
-    onChange={(value) => {
-      if (value === brightnessPercent)
-        return;
-      setBrightness(value / 100.0);
-    }}
+    onChange={(value) => setBrightness(value / 100)}
+    onChangeEnd={(value) => setBrightnessEnd(value / 100)}
     thumbSize={25}
     styles={(_) => ({
       thumb: {

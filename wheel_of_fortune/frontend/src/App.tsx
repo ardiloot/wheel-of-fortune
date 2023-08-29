@@ -154,18 +154,6 @@ export default function App() {
     ws.current.send(JSON.stringify(newState));
   };
 
-  const throttledSetBrightness = useRef(
-    throttle((brightness : number) => {
-      wsSetState({leds: {brightness: brightness}});
-    }, 250)
-  ).current;
-
-  const throttledSetVolume = useRef(
-    throttle((volume : number) => {
-      wsSetState({soundsystem: {channels: {main: {volume: volume}}}});
-    }, 250)
-  ).current;
-
   return (
     <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
       <MantineProvider
@@ -207,7 +195,9 @@ export default function App() {
                   }
                 }
               });
-              throttledSetVolume(volume);
+            }}
+            setVolumeEnd={(volume) => {
+              wsSetState({soundsystem: {channels: {main: {volume: volume}}}});
             }}
           />
 
@@ -218,7 +208,9 @@ export default function App() {
                 ...ledsState,
                 brightness: brightness,
               });
-              throttledSetBrightness(brightness);
+            }}
+            setBrightnessEnd={(brightness) => {
+              wsSetState({leds: {brightness: brightness}});
             }}
           />
 

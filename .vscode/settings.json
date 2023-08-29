@@ -20,6 +20,7 @@
         "pygame",
         "soundsystem",
         "subsettings",
-        "wled"
+        "wled",
+        "mantine"
     ]
 }

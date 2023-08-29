@@ -11,14 +11,15 @@
         "editor.tabSize": 2
     },
     "cSpell.words": [
+        "aiohttp",
         "fastapi",
-        "soundsystem",
-        "wled",
-        "pygame",
-        "subsettings",
-        "leds",
-        "pydantic",
         "gpio",
-        "poweroff"
+        "leds",
+        "poweroff",
+        "pydantic",
+        "pygame",
+        "soundsystem",
+        "subsettings",
+        "wled"
     ]
 }

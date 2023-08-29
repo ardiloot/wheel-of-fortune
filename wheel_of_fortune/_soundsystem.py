@@ -2,7 +2,7 @@ import os
 import asyncio
 import logging
 import pygame
-from enum import Enum
+import time
 from typing import Callable
 from ._config import Config
 from ._settings import Settings
@@ -91,10 +91,7 @@ class SoundSystem:
         pygame.mixer.set_num_channels(4)
         pygame.mixer.set_reserved(2)
 
-        # Load sounds
-        self._sounds = load_sounds(os.path.join(config.data_dir, "sounds"))
-
-        # Channels
+        self._sounds = {}
         self._channels: dict[str, SoundChannel] = {
             name: SoundChannel(
                 pygame.mixer.Channel(i),
@@ -105,6 +102,9 @@ class SoundSystem:
 
     async def open(self):
         _LOGGER.info("open")
+        sounds = await load_sounds(os.path.join(self._config.data_dir, "sounds"))
+        self._sounds.update(sounds)
+
         for ch in self._channels.values():
             ch.open()
 
@@ -158,17 +158,31 @@ class SoundSystem:
         await self._channels[channel].volume_sweep(volume_from, volume_to, **kwargs)
         
 
-def load_sounds(sounds_dir: str, suffix: str = ".mp3") -> dict[str, pygame.mixer.Sound]:
+async def load_sounds(sounds_dir: str, suffix: str = ".mp3") -> dict[str, pygame.mixer.Sound]:
     _LOGGER.info("load sounds... (dir: %s)" % (sounds_dir))
-    res = {}
+    start_time = time.time()
+    
+    # List files
+    sound_files = []
     for fname in os.listdir(sounds_dir):
         if not fname.endswith(suffix):
             _LOGGER.warn("unknown sound file: %s" % (fname))
             continue
         _LOGGER.info("loading sound file: %s" % (fname))
+        sound_file_path = os.path.join(sounds_dir, fname)
+        sound_files.append(sound_file_path)
 
-        sound = pygame.mixer.Sound(os.path.join(sounds_dir, fname))
+    # Load sounds in threads
+    loop = asyncio.get_running_loop()
+    sounds = await asyncio.gather(*[
+        loop.run_in_executor(None, lambda x: pygame.mixer.Sound(x), f) for f in sound_files
+    ])
+
+    # Unpack
+    res = {}
+    for fname, sound in zip(sound_files, sounds):
         name = fname[:-len(suffix)]
         res[name] = sound
-    _LOGGER.info("load sounds done.")
+
+    _LOGGER.info("load sounds done in: %.3f s" % (time.time() - start_time))
     return res

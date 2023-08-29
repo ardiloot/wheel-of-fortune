@@ -319,7 +319,7 @@ class Wheel:
             end_time = self._loop.time()
             duration = end_time - start_time
             total_sectors = end_sector_count - start_sector_count
-            avg_rpm = total_sectors / config.num_sectors / duration * 60.0
+            avg_rpm = total_sectors / self._config.num_sectors / duration * 60.0
 
             _LOGGER.info("Spin: sector: %d -> %d, total_sectors: %d -> %d (%d), duration %.1fs, avg_rpm: %.2f" % (
                 start_sector,

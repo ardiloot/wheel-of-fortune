@@ -162,8 +162,6 @@ class Wheel:
             self._publish_update(WheelStateUpdate(
                 theme=self._theme._id,
             ))
-            if self._cur_task == TaskType.IDLE:
-                self._reload_task()
 
         if len(state.sectors) > 0:
             for index, sector_state in state.sectors.items():
@@ -289,11 +287,16 @@ class Wheel:
         await asyncio.sleep(2)
 
     async def _task_idle(self):
-        await self._soundsystem.fadeout(MAIN_CH)
-        await self._leds.set_state(LedsStateIn(segments=self._theme.idle_led_preset))
+        cur_theme = ""
+        counter = 0
         while True:
-            _LOGGER.info("idle heartbeat")
-            await asyncio.sleep(15.0)
+            if cur_theme != self._theme._id:
+                await self._leds.set_state(LedsStateIn(segments=self._theme.idle_led_preset))
+                cur_theme = self._theme._id
+            await asyncio.sleep(1.0)
+            counter += 1
+            if counter % 15 == 0:
+                _LOGGER.info("idle heartbeat")
 
     async def _task_spinning(self):
         enc_state = self._encoder.get_state()

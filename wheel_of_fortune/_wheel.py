@@ -133,20 +133,24 @@ class Wheel:
             sector.init()
 
         # Open connections
-        await self._telemetry.open()
-        await self._encoder.open()
-        await self._leds.open()
-        await self._servos.open()
-        await self._soundsystem.open()
+        await asyncio.gather(
+            self._telemetry.open(),
+            self._encoder.open(),
+            self._leds.open(),
+            self._servos.open(),
+            self._soundsystem.open(),
+        )
 
     async def close(self):
         _LOGGER.info("close")
-        await self._settings_mgr.close()
-        await self._telemetry.close()
-        await self._leds.close()
-        await self._servos.close()
-        await self._encoder.close()
-        await self._soundsystem.close()
+        await asyncio.gather(
+            self._settings_mgr.close(),
+            self._telemetry.close(),
+            self._leds.close(),
+            self._servos.close(),
+            self._encoder.close(),
+            self._soundsystem.close(),
+        )
         if self._active_task is not None and not self._active_task.done():
             self._active_task.cancel()
 

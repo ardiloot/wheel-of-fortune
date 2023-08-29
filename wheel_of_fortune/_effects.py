@@ -1,7 +1,7 @@
 import yaml
 import logging
 import mergedeep
-from .schemas import EffectState
+from .schemas import EffectInfo
 
 
 _LOGGER = logging.getLogger(__name__)
@@ -34,8 +34,8 @@ class Effect:
         # TODO: params validation
         return Effect(effect_id, **params)
 
-    def get_state(self) -> EffectState:
-        return EffectState(
+    def get_info(self) -> EffectInfo:
+        return EffectInfo(
             id=self._id,
             name=self.name,
             description=self.description,

@@ -9,9 +9,10 @@ from ._settings import Settings
 from .schemas import (
     SoundChannelState,
     SoundChannelStateIn,
-    SoundState,
+    SoundInfo,
     SoundSystemState,
     SoundSystemStateIn,
+    SoundSystemInfo,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -120,15 +121,17 @@ class SoundSystem:
         self._loop.call_soon(self._update_cb, self.get_state())
         
     def get_state(self) -> SoundSystemState:
-        sounds_state: dict[str, SoundState] = {}
-        for name, sound in self._sounds.items():
-            sounds_state[name] = SoundState(
-                volume=sound.get_volume(),
-                duration_secs=sound.get_length(),
-            )
-
         return SoundSystemState(
             channels={name: ch.get_state() for name, ch in self._channels.items()},
+        )
+
+    def get_info(self) -> SoundSystemInfo:
+        sounds_state: dict[str, SoundInfo] = {}
+        for name, sound in self._sounds.items():
+            sounds_state[name] = SoundInfo(
+                duration_secs=sound.get_length(),
+            )
+        return SoundSystemInfo(
             sounds=sounds_state,
         )
         

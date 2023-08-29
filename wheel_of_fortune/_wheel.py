@@ -1,6 +1,7 @@
 import os
 import asyncio
 import logging
+import importlib.metadata
 from enum import Enum
 from typing import Callable
 from ._config import Config
@@ -23,10 +24,12 @@ from .schemas import (
     SectorStateIn,
     WheelState,
     WheelStateIn,
+    WheelInfo,
     WheelStateUpdate,
 )
 
 _LOGGER = logging.getLogger(__name__)
+VERSION = importlib.metadata.version("wheel_of_fortune")
 
 __all__ = [
     "Wheel",
@@ -182,18 +185,25 @@ class Wheel:
         if state.soundsystem:
             await self._soundsystem.set_state(state.soundsystem)
 
-    async def get_state(self) -> WheelState:
+    def get_state(self) -> WheelState:
         
         return WheelState(
             task_name=self._cur_task.value,
             theme=self._theme._id,
-            themes=[theme.get_state() for theme in self._themes.values()],
             sectors=[sector.get_state() for sector in self._sectors],
-            effects=[effect.get_state() for effect in self._effects.values()],
             encoder=self._encoder.get_state(),
             servos=self._servos.get_state(),
             leds=self._leds.get_state(),
             soundsystem=self._soundsystem.get_state(),
+        )
+
+    def get_info(self) -> WheelInfo:
+        return WheelInfo(
+            version=VERSION,
+            themes=[theme.get_info() for theme in self._themes.values()],
+            effects=[effect.get_info() for effect in self._effects.values()],
+            leds=self._leds.get_info(),
+            soundsystem=self._soundsystem.get_info(),
         )
 
     def subscribe(self, callback: Callable[[WheelStateUpdate], None]):
@@ -302,7 +312,7 @@ class Wheel:
             end_time = self._loop.time()
             duration = end_time - start_time
             total_sectors = end_sector_count - start_sector_count
-            avg_rpm = total_sectors / enc_state.num_sectors / duration * 60.0
+            avg_rpm = total_sectors / config.num_sectors / duration * 60.0
 
             _LOGGER.info("Spin: sector: %d -> %d, total_sectors: %d -> %d (%d), duration %.1fs, avg_rpm: %.2f" % (
                 start_sector,

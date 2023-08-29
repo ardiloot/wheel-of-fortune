@@ -9,6 +9,7 @@ from .schemas import (
     LedSegmentStateIn,
     LedsState,
     LedsStateIn,
+    LedsInfo,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -131,6 +132,7 @@ class LedController:
             self._segments[segment.name] = LedSegment(segment.start, segment.stop)
         
         self._session: aiohttp.ClientSession | None = None
+        self._info = {}
 
     async def open(self):
         _LOGGER.info("open")
@@ -140,6 +142,9 @@ class LedController:
         )
         if "brightness" in self._settings:
             self._brightness = self._settings["brightness"]
+
+        resp = await self._session.get("/json/info")
+        self._info = await resp.json()
             
     async def close(self):
         if self._session is None:
@@ -165,6 +170,11 @@ class LedController:
             power_on=self._brightness > 0.0,
             brightness=self._brightness,
             segments=dict((name, segment.get_state()) for name, segment in self._segments.items()),
+        )
+    
+    def get_info(self) -> LedsInfo:
+        return LedsInfo(
+            version=self._info.get("ver", "unknown"),
         )
 
     async def maintain(self):

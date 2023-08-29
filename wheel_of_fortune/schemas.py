@@ -13,7 +13,6 @@ class EncoderState(BaseModel):
     total_revs: float
     total_sectors: int
     missed_sector_count: int
-    num_sectors: int
     standstill: bool
 
 
@@ -84,13 +83,16 @@ class LedsStateIn(BaseModel):
     segments: dict[str, LedSegmentStateIn] | None = None
 
 
+class LedsInfo(BaseModel):
+    version: str
+
+
 # -----------------------------------------------------------------------------
 # Sound system
 # -----------------------------------------------------------------------------
 
 
-class SoundState(BaseModel):
-    volume: float
+class SoundInfo(BaseModel):
     duration_secs: float
 
 
@@ -101,7 +103,6 @@ class SoundChannelState(BaseModel):
 
 class SoundSystemState(BaseModel):
     channels: dict[str, SoundChannelState]
-    sounds: dict[str, SoundState]
 
 
 class SoundChannelStateIn(BaseModel):
@@ -111,6 +112,10 @@ class SoundChannelStateIn(BaseModel):
 
 class SoundSystemStateIn(BaseModel):
     channels: dict[str, SoundChannelStateIn] = {}
+
+
+class SoundSystemInfo(BaseModel):
+    sounds: dict[str, SoundInfo]
 
 
 # -----------------------------------------------------------------------------
@@ -134,7 +139,7 @@ class SectorStateIn(BaseModel):
 # -----------------------------------------------------------------------------
 
 
-class ThemeState(BaseModel):
+class ThemeInfo(BaseModel):
     id: str
     name: str
     description: str
@@ -147,7 +152,7 @@ class ThemeState(BaseModel):
 # -----------------------------------------------------------------------------
 
 
-class EffectState(BaseModel):
+class EffectInfo(BaseModel):
     id: str
     name: str
     description: str
@@ -163,9 +168,7 @@ class EffectState(BaseModel):
 class WheelState(BaseModel):
     task_name: str | None
     theme: str
-    themes: list[ThemeState]
     sectors: list[SectorState]
-    effects: list[EffectState]
     encoder: EncoderState
     servos: ServosState
     leds: LedsState
@@ -190,21 +193,30 @@ class WheelStateUpdate(BaseModel):
     soundsystem: SoundSystemState | None = None
 
 
+class WheelInfo(BaseModel):
+    version: str
+    themes: list[ThemeInfo]
+    effects: list[EffectInfo]
+    leds: LedsInfo
+    soundsystem: SoundSystemInfo
+
+
 # -----------------------------------------------------------------------------
 # Websocket
 # -----------------------------------------------------------------------------
 
 
 class WsCommandType(Enum):
-    STATE = "state"    # Full state (to client)
+    INIT = "init"           # Full state and info (to client)
     UPDATE = "update"       # State update (to client)
     SET_STATE = "set_state" # Set state (to server)
 
 
-class WsStatePacket(BaseModel):
-    cmd: WsCommandType = WsCommandType.STATE
+class WsInitPacket(BaseModel):
+    cmd: WsCommandType = WsCommandType.INIT
     ts: float
     state: WheelState
+    info: WheelInfo
 
 
 class WsUpdatePacket(BaseModel):

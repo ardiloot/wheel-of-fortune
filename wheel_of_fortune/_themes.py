@@ -1,7 +1,7 @@
 import yaml
 import logging
 import mergedeep
-from .schemas import ThemeState
+from .schemas import ThemeInfo
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -39,8 +39,8 @@ class Theme:
         # TODO: params validation
         return Theme(theme_id, **params)
 
-    def get_state(self) -> ThemeState:
-        return ThemeState(
+    def get_info(self) -> ThemeInfo:
+        return ThemeInfo(
             id=self._id,
             name=self.name,
             description=self.description,

@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 from fastapi import WebSocket, WebSocketDisconnect
 from .schemas import (
     WsCommandType,
-    WsStatePacket,
+    WsInitPacket,
     WheelStateUpdate,
     WsUpdatePacket,
     WsSetStatePacket,
@@ -27,7 +27,7 @@ class WsConnection:
     async def connect(self):
         _LOGGER.info("Accept WS connection %s" % (self._websocket))
         await self._websocket.accept()
-        await self._send_state()
+        await self._send_init()
 
     async def maintain(self):
         try:
@@ -45,12 +45,12 @@ class WsConnection:
     async def send(self, data: str):
         await self._websocket.send_text(data)
 
-    async def _send_state(self):
+    async def _send_init(self):
         wheel = self._mgr._wheel
-        state = await wheel.get_state()
-        packet = WsStatePacket(
+        packet = WsInitPacket(
             ts=time.time(),
-            state=state,
+            state=wheel.get_state(),
+            info=wheel.get_info(),
         )
         await self.send(packet.model_dump_json())
 

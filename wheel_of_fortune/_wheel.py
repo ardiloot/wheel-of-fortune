@@ -70,7 +70,7 @@ class Sector:
             if state.effect_id not in self._effects:
                 raise ValueError("unknown effect id")
             self.effect_id = state.effect_id
-            self._settings.set("effect", self.effect_id)
+            self._settings.set("effect_id", self.effect_id)
     
     def get_state(self) -> SectorState:
         return SectorState(
@@ -165,7 +165,7 @@ class Wheel:
                 self._theme_id = state.theme_id
             else:
                 raise ValueError("unknown theme name")
-            self._settings.set("theme", self._theme_id)
+            self._settings.set("theme_id", self._theme_id)
             self._publish_update(WheelStateUpdate(
                 theme_id=self._theme_id,
             ))

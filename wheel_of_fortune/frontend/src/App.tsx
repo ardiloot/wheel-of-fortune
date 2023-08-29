@@ -7,7 +7,7 @@ import { throttle } from 'lodash';
 import ReconnectingWebSocket from 'reconnecting-websocket';
 
 
-import { WsStatePacket, ThemeState, WsUpdatePacket, WsSetStatePacket, SectorState, EffectState, EncoderState, LedsState, SoundSystemState, WheelStateIn } from './schemas';
+import { WsInitPacket, ThemeInfo, WsUpdatePacket, WsSetStatePacket, SectorState, EffectInfo, EncoderState, LedsState, SoundSystemState, WheelStateIn } from './schemas';
 import { ColorSchemeToggle } from './components/ColorSchemeToggle';
 import Wheel from './components/Wheel';
 import VolumeSlider from './components/VolumeSlider';
@@ -38,9 +38,9 @@ export default function App() {
 
   const [connectionStatus, setConnectionStatus] = useState<number>(-1);
   const [activeTheme, setActiveTheme] = useState<string>('');
-  const [availableThemes, setAvailableThemes] = useState<Array<ThemeState>>([]);
+  const [availableThemes, setAvailableThemes] = useState<Array<ThemeInfo>>([]);
   const [sectors, setSectors] = useState<Array<SectorState>>([]);
-  const [effects, setEffects] = useState<Array<EffectState>>([]);
+  const [effects, setEffects] = useState<Array<EffectInfo>>([]);
   const [encoderState, setEncoderState] = useState<EncoderState>({
     sector: 0,
     rpm: 0.0,
@@ -102,17 +102,21 @@ export default function App() {
       const message = JSON.parse(e.data);
       console.log('ws message', message);
 
-      if (message.cmd === 'state') {
-        const packet = WsStatePacket.parse(message);
+      if (message.cmd === 'init') {
+        const packet = WsInitPacket.parse(message);
         const state = packet.state;
         console.log('state', state);
+        
         setActiveTheme(state.theme);
-        setAvailableThemes(state.themes);
         setSectors(state.sectors);
-        setEffects(state.effects);
         setEncoderState(state.encoder);
         setLedsState(state.leds);
         setSoundsystemState(state.soundsystem);
+
+        const info = packet.info;
+        console.log('info', info);
+        setAvailableThemes(info.themes);
+        setEffects(info.effects);
       } else if (message.cmd === 'update') {
         const packet = WsUpdatePacket.parse(message);
         const update = packet.update;

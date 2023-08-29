@@ -1,5 +1,5 @@
 import { Select } from "@mantine/core";
-import { ThemeState } from "../schemas";
+import { ThemeInfo } from "../schemas";
 
 
 export default function ThemeSelect({
@@ -8,7 +8,7 @@ export default function ThemeSelect({
   setActiveTheme
 } : {
   activeTheme: string,
-  availableThemes: Array<ThemeState>,
+  availableThemes: Array<ThemeInfo>,
   setActiveTheme: (theme: string) => void
 }) {
 

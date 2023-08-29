@@ -10,7 +10,6 @@ export const EncoderState = z.object({
   total_revs: z.number(),
   total_sectors: z.number().int(),
   missed_sector_count: z.number().int(),
-  num_sectors: z.number().int(),
   standstill: z.boolean(),
 });
 export type EncoderState = z.infer<typeof EncoderState>;
@@ -45,15 +44,20 @@ export const LedsStateIn = z.object({
 });
 export type LedsStateIn = z.infer<typeof LedsStateIn>;
 
+
+export const LedsInfo = z.object({
+  version: z.string(),
+});
+export type LedsInfo = z.infer<typeof LedsInfo>;
+
 // ----------------------------------------------------------------------------
 // Sound system
 // ----------------------------------------------------------------------------
 
-export const SoundState = z.object({
-  volume: z.number(),
+export const SoundInfo = z.object({
   duration_secs: z.number(),
 });
-export type SoundState = z.infer<typeof SoundState>;
+export type SoundInfo = z.infer<typeof SoundInfo>;
 
 
 export const SoundChannelState = z.object({
@@ -72,7 +76,6 @@ export type SoundChannelStateIn = z.infer<typeof SoundChannelStateIn>;
 
 export const SoundSystemState = z.object({
   channels: z.record(z.string(), SoundChannelState),
-  sounds: z.record(z.string(), SoundState),
 });
 export type SoundSystemState = z.infer<typeof SoundSystemState>;
 
@@ -81,6 +84,12 @@ export const SoundSystemStateIn = z.object({
   channels: z.record(z.string(), SoundChannelStateIn).optional(),
 });
 export type SoundSystemStateIn = z.infer<typeof SoundSystemStateIn>;
+
+
+export const SoundSystemInfo = z.object({
+  sounds: z.record(z.string(), SoundInfo),
+});
+export type SoundSystemInfo = z.infer<typeof SoundSystemInfo>;
 
 // ----------------------------------------------------------------------------
 // Sectors
@@ -100,25 +109,24 @@ export const SectorStateIn = z.object({
 });
 export type SectorStateIn = z.infer<typeof SectorStateIn>;
 
-
 // ----------------------------------------------------------------------------
 // Themes
 // ----------------------------------------------------------------------------
 
-export const ThemeState = z.object({
+export const ThemeInfo = z.object({
   id: z.string(),
   name: z.string(),
   description: z.string(),
   based_on: z.array(z.string()),
   theme_sound: z.string(),
 });
-export type ThemeState = z.infer<typeof ThemeState>;
+export type ThemeInfo = z.infer<typeof ThemeInfo>;
 
 // ----------------------------------------------------------------------------
 // Effects
 // ----------------------------------------------------------------------------
 
-export const EffectState = z.object({
+export const EffectInfo = z.object({
   id: z.string(),
   name: z.string(),
   description: z.string(),
@@ -126,7 +134,7 @@ export const EffectState = z.object({
   effect_sound: z.string(),
 });
 
-export type EffectState = z.infer<typeof EffectState>;
+export type EffectInfo = z.infer<typeof EffectInfo>;
 
 // ----------------------------------------------------------------------------
 // Wheel
@@ -135,9 +143,7 @@ export type EffectState = z.infer<typeof EffectState>;
 export const WheelState = z.object({
   task_name: z.string().optional(),
   theme: z.string(),
-  themes: z.array(ThemeState),
   sectors: z.array(SectorState),
-  effects: z.array(EffectState),
   encoder: EncoderState,
   leds: LedsState,
   soundsystem: SoundSystemState,
@@ -164,16 +170,27 @@ export const WheelStateUpdate = z.object({
 });
 export type WheelStateUpdate = z.infer<typeof WheelStateUpdate>;
 
+
+export const WheelInfo = z.object({
+  version: z.string(),
+  themes: z.array(ThemeInfo),
+  effects: z.array(EffectInfo),
+  leds: LedsInfo,
+  soundsystem: SoundSystemInfo,
+});
+export type WheelInfo = z.infer<typeof WheelInfo>;
+
 // ----------------------------------------------------------------------------
 // Websocket
 // ----------------------------------------------------------------------------
 
-export const WsStatePacket = z.object({
+export const WsInitPacket = z.object({
   cmd: z.string(),
   ts: z.number(),
   state: WheelState,
+  info: WheelInfo,
 });
-export type WsStatePacket = z.infer<typeof WsStatePacket>;
+export type WsInitPacket = z.infer<typeof WsInitPacket>;
 
 
 export const WsUpdatePacket = z.object({

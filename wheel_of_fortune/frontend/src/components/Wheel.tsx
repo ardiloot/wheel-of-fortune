@@ -1,7 +1,7 @@
 import { createStyles } from "@mantine/core";
 import { useState } from "react";
 import SectorEditModal from "./SectorEditModal";
-import { EffectState, EncoderState, SectorState } from "../schemas";
+import { EffectInfo, EncoderState, SectorState } from "../schemas";
 
 
 const useStyles = createStyles((theme) => ({
@@ -64,7 +64,7 @@ export default function Wheel({
   updateSector,
 } : {
   sectors: Array<SectorState>,
-  effects: Array<EffectState>,
+  effects: Array<EffectInfo>,
   encoderState: EncoderState,
   updateSector: (index: number, name: string, effect: string) => void
 }) {

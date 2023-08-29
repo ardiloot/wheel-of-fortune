@@ -1,19 +1,33 @@
 import { useEffect, useRef, useState } from 'react';
-import { ColorScheme, ColorSchemeProvider, Container, LoadingOverlay, MantineProvider, Title } from '@mantine/core';
+import {
+  ColorScheme,
+  ColorSchemeProvider,
+  Container,
+  LoadingOverlay,
+  MantineProvider,
+  Title
+} from '@mantine/core';
 import { Notifications, notifications } from '@mantine/notifications';
 import { useLocalStorage } from '@mantine/hooks';
 import { IconCheck, IconX } from '@tabler/icons-react';
-import { throttle } from 'lodash';
 import ReconnectingWebSocket from 'reconnecting-websocket';
-
-
-import { WsStatePacket, ThemeState, WsUpdatePacket, WsSetStatePacket, SectorState, EffectState, EncoderState, LedsState, SoundSystemState, WheelStateIn } from './schemas';
 import { ColorSchemeToggle } from './components/ColorSchemeToggle';
 import Wheel from './components/Wheel';
 import VolumeSlider from './components/VolumeSlider';
 import BrightnessSlider from './components/BrightnessSlider';
 import ThemeSelect from './components/ThemeSelect';
-
+import {
+  WsInitPacket,
+  ThemeInfo,
+  WsUpdatePacket,
+  WsSetStatePacket,
+  SectorState,
+  EffectInfo,
+  EncoderState,
+  LedsState,
+  SoundSystemState,
+  WheelStateIn
+} from './schemas';
 
 
 const WS_URL = (
@@ -38,16 +52,13 @@ export default function App() {
 
   const [connectionStatus, setConnectionStatus] = useState<number>(-1);
   const [activeTheme, setActiveTheme] = useState<string>('');
-  const [availableThemes, setAvailableThemes] = useState<Array<ThemeState>>([]);
   const [sectors, setSectors] = useState<Array<SectorState>>([]);
-  const [effects, setEffects] = useState<Array<EffectState>>([]);
   const [encoderState, setEncoderState] = useState<EncoderState>({
     sector: 0,
     rpm: 0.0,
     total_revs: 0,
     total_sectors: 0,
     missed_sector_count: 0,
-    num_sectors: 0,
     standstill: true,
   });
   const [ledsState, setLedsState] = useState<LedsState>({
@@ -62,8 +73,9 @@ export default function App() {
         sound_name: '',
       }
     },
-    sounds: {},
-  })
+  });
+  const [availableThemes, setAvailableThemes] = useState<Record<string, ThemeInfo>>({});
+  const [availableEffects, setAvailableEffects] = useState<Record<string, EffectInfo>>({});
 
   // Websocket
 
@@ -102,23 +114,27 @@ export default function App() {
       const message = JSON.parse(e.data);
       console.log('ws message', message);
 
-      if (message.cmd === 'state') {
-        const packet = WsStatePacket.parse(message);
+      if (message.cmd === 'init') {
+        const packet = WsInitPacket.parse(message);
         const state = packet.state;
         console.log('state', state);
-        setActiveTheme(state.theme);
-        setAvailableThemes(state.themes);
+        
+        setActiveTheme(state.theme_id);
         setSectors(state.sectors);
-        setEffects(state.effects);
         setEncoderState(state.encoder);
         setLedsState(state.leds);
         setSoundsystemState(state.soundsystem);
+
+        const info = packet.info;
+        console.log('info', info);
+        setAvailableThemes(info.themes);
+        setAvailableEffects(info.effects);
       } else if (message.cmd === 'update') {
         const packet = WsUpdatePacket.parse(message);
         const update = packet.update;
         console.log('update', update);
-        if (update.theme !== undefined)
-          setActiveTheme(update.theme);
+        if (update.theme_id !== undefined)
+          setActiveTheme(update.theme_id);
         if (update.sectors !== undefined)
           setSectors(update.sectors);
         if (update.encoder !== undefined)
@@ -150,18 +166,6 @@ export default function App() {
     ws.current.send(JSON.stringify(newState));
   };
 
-  const throttledSetBrightness = useRef(
-    throttle((brightness : number) => {
-      wsSetState({leds: {brightness: brightness}});
-    }, 250)
-  ).current;
-
-  const throttledSetVolume = useRef(
-    throttle((volume : number) => {
-      wsSetState({soundsystem: {channels: {main: {volume: volume}}}});
-    }, 250)
-  ).current;
-
   return (
     <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
       <MantineProvider
@@ -183,10 +187,10 @@ export default function App() {
           <ThemeSelect
             activeTheme={activeTheme}
             availableThemes={availableThemes}
-            setActiveTheme={async (theme: string) => {
-              console.log('set theme:', theme)
-              setActiveTheme(theme);
-              wsSetState({theme: theme});
+            setActiveTheme={(themeId) => {
+              console.log('set theme:', themeId)
+              setActiveTheme(themeId);
+              wsSetState({theme_id: themeId});
             }}
           />
 
@@ -203,7 +207,9 @@ export default function App() {
                   }
                 }
               });
-              throttledSetVolume(volume);
+            }}
+            setVolumeEnd={(volume) => {
+              wsSetState({soundsystem: {channels: {main: {volume: volume}}}});
             }}
           />
 
@@ -214,16 +220,18 @@ export default function App() {
                 ...ledsState,
                 brightness: brightness,
               });
-              throttledSetBrightness(brightness);
+            }}
+            setBrightnessEnd={(brightness) => {
+              wsSetState({leds: {brightness: brightness}});
             }}
           />
 
           <Wheel
             sectors={sectors}
-            effects={effects}
+            availableEffects={availableEffects}
             encoderState={encoderState}
-            updateSector={(index, name, effect) => {
-              wsSetState({sectors: {[index]: {name: name, effect: effect}}});
+            updateSector={(index, name, effectId) => {
+              wsSetState({sectors: {[index]: {name: name, effect_id: effectId}}});
             }}
           />
 

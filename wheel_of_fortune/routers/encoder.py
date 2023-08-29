@@ -5,7 +5,7 @@ from ..schemas import EncoderState, EncoderTestParams
 router = APIRouter(tags=["encoder"])
 
 
-@router.get("/api/v1/encoder")
+@router.get("/api/v1/encoder/state")
 def get_state(wheel=Depends(get_wheel)) -> EncoderState:
     return wheel.encoder.get_state()
 

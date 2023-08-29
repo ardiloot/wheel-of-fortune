@@ -1,5 +1,5 @@
 import { Select } from "@mantine/core";
-import { ThemeState } from "../schemas";
+import { ThemeInfo } from "../schemas";
 
 
 export default function ThemeSelect({
@@ -8,18 +8,24 @@ export default function ThemeSelect({
   setActiveTheme
 } : {
   activeTheme: string,
-  availableThemes: Array<ThemeState>,
-  setActiveTheme: (theme: string) => void
+  availableThemes: Record<string, ThemeInfo>,
+  setActiveTheme: (themeId: string) => void
 }) {
 
   return (
     <Select
       label="Theme:"
       value={ activeTheme }
-      onChange={(theme: string) => {
-        setActiveTheme(theme);
+      onChange={(themeId) => {
+        setActiveTheme(themeId);
       }}
-      data={ availableThemes.map((theme: any) => ({value: theme.id, label: theme.name})) }
+      data={ Object.keys(availableThemes).map((themeId: string) => {
+        const theme = availableThemes[themeId]
+        return {
+          value: themeId,
+          label: theme.name,
+        }
+      })}
     />
   )
 }

@@ -1,7 +1,7 @@
 import { createStyles } from "@mantine/core";
 import { useState } from "react";
 import SectorEditModal from "./SectorEditModal";
-import { EffectState, EncoderState, SectorState } from "../schemas";
+import { EffectInfo, EncoderState, SectorState } from "../schemas";
 
 
 const useStyles = createStyles((theme) => ({
@@ -59,31 +59,31 @@ function toXY(radius: number, angle: number) {
 
 export default function Wheel({
   sectors,
-  effects,
+  availableEffects,
   encoderState,
   updateSector,
 } : {
   sectors: Array<SectorState>,
-  effects: Array<EffectState>,
+  availableEffects: Record<string, EffectInfo>,
   encoderState: EncoderState,
-  updateSector: (index: number, name: string, effect: string) => void
+  updateSector: (index: number, name: string, effectId: string) => void
 }) {
 
   const [editSectorIndex, setEditSectorIndex] = useState<number | null>(null);  
   const { classes } = useStyles();
   const activeSector = encoderState.sector;
 
-  function handleSectorEdit(index: number, name: string, effect: string) {
-    console.log('save: ' + index + ' ' + name + ' ' + effect);
+  function handleSectorEdit(index: number, name: string, effectId: string) {
+    console.log('save: ' + index + ' ' + name + ' ' + effectId);
     setEditSectorIndex(null);
-    updateSector(index, name, effect);
+    updateSector(index, name, effectId);
   }
 
   const wheelRadius = 400.0;
   const sectorAngularWidth = 2.0 * Math.PI / sectors.length;
   const curWheelAngle = sectorAngularWidth * activeSector;
 
-  const sectorPathItems = sectors.map((sector : any) => {
+  const sectorPathItems = sectors.map((sector) => {
     function handleSectorClick() {
       console.log('clicked:' + sector.index)
       setEditSectorIndex(sector.index);
@@ -108,15 +108,15 @@ export default function Wheel({
     );
   });
 
-  const sectorNameItems = sectors.map((sector: any) => {
+  const sectorNameItems = sectors.map((sector) => {
     const textRadius = 0.95 * wheelRadius
     const angle = sector.index * 2.0 * Math.PI / sectors.length - curWheelAngle;
     const p = toXY(textRadius, angle);
     const transform =
       'translate(' + p.x.toFixed(3) + ', ' + p.y.toFixed(3) + ') ' +
       'rotate(' + toDeg(angle  + Math.PI / 2).toFixed(3) + ')';
-      const effectIds = effects.map((effect: any) => effect.id);
-      const effectNumber = effectIds.indexOf(sector.effect);
+      const effectIds = Object.keys(availableEffects);
+      const effectNumber = effectIds.indexOf(sector.effect_id);
       const effectColor = EFFECT_COLORS[effectNumber]; 
 
     return (
@@ -134,7 +134,7 @@ export default function Wheel({
     );
   });
 
-  const sectorSeparatorItems = sectors.map((sector: any) => {
+  const sectorSeparatorItems = sectors.map((sector) => {
     const radius = 0.97 * wheelRadius
     const angle = sector.index * 2.0 * Math.PI / sectors.length - curWheelAngle - 0.5 * sectorAngularWidth;
     const p = toXY(radius, angle);
@@ -212,7 +212,7 @@ export default function Wheel({
         sectorIndex={editSectorIndex}
         onClose={() => setEditSectorIndex(null)}
         onSave={handleSectorEdit}
-        effects={effects}
+        availableEffects={availableEffects}
       />
 
     </>

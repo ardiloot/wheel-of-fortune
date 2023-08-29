@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 from fastapi import WebSocket, WebSocketDisconnect
 from .schemas import (
     WsCommandType,
-    WsStatePacket,
+    WsInitPacket,
     WheelStateUpdate,
     WsUpdatePacket,
     WsSetStatePacket,
@@ -27,14 +27,14 @@ class WsConnection:
     async def connect(self):
         _LOGGER.info("Accept WS connection %s" % (self._websocket))
         await self._websocket.accept()
-        await self._send_state()
+        await self._send_init()
 
     async def maintain(self):
         try:
             while True:
                 packet_json = await self._websocket.receive_json()
-                cmd = packet_json.get("cmd")
-                if cmd == WsCommandType.set_state:
+                cmd = WsCommandType(packet_json.get("cmd"))
+                if cmd == WsCommandType.SET_STATE:
                     packet = WsSetStatePacket.model_validate(packet_json)
                     await self._mgr._wheel.set_state(packet.state)
                 else:
@@ -42,17 +42,17 @@ class WsConnection:
         except WebSocketDisconnect:
             self._mgr._disconnect(self)
 
-    async def send_json(self, data):
-        await self._websocket.send_json(data)
+    async def send(self, data: str):
+        await self._websocket.send_text(data)
 
-    async def _send_state(self):
+    async def _send_init(self):
         wheel = self._mgr._wheel
-        state = await wheel.get_state()
-        packet = WsStatePacket(
+        packet = WsInitPacket(
             ts=time.time(),
-            state=state,
+            state=wheel.get_state(),
+            info=wheel.get_info(),
         )
-        await self.send_json(packet.model_dump())
+        await self.send(packet.model_dump_json())
 
 
 class WsManager:
@@ -78,13 +78,13 @@ class WsManager:
             ts=time.time(),
             update=update,
         )
-        await self._broadcast_json(packet.model_dump(exclude_none=True))
+        await self._broadcast(packet.model_dump_json(exclude_none=True))
 
-    async def _broadcast_json(self, data):
+    async def _broadcast(self, data: str):
         _LOGGER.info("WsManager: broadcast json to %d clients" % (len(self._connections)))
         r = []
         for connection in self._connections:
-            r.append(connection.send_json(data))
+            r.append(connection.send(data))
         await asyncio.gather(*r)
 
     def _disconnect(self, connection: WsConnection):

@@ -1,7 +1,7 @@
 import yaml
 import logging
 import mergedeep
-from .schemas import EffectState
+from .schemas import EffectInfo
 
 
 _LOGGER = logging.getLogger(__name__)
@@ -12,36 +12,10 @@ __all__ = [
 ]
 
 
-class Effect:
+class Effect(EffectInfo):
 
-    def __init__(self, _id,
-        name="Example effect",
-        description="Example effect description",
-        based_on=[],
-        effect_sound="example_effect",
-        leds_preset={}
-    ):
-        self._id: str = _id
-        self.name: str = name
-        self.description: str = description
-        self.based_on: list[str] = based_on
-        self.effect_sound: str = effect_sound
-        self.leds_preset = leds_preset
-    
-    @staticmethod
-    def from_dict(effect_id, params):
-        params.pop("visible", None)
-        # TODO: params validation
-        return Effect(effect_id, **params)
-
-    def get_state(self) -> EffectState:
-        return EffectState(
-            id=self._id,
-            name=self.name,
-            description=self.description,
-            based_on=self.based_on,
-            effect_sound=self.effect_sound,
-        )
+    def get_info(self) -> EffectInfo:
+        return self
 
 
 def load_effects(filename: str):
@@ -75,5 +49,5 @@ def load_effects(filename: str):
         if not effect.get("visible", True):
             continue
         params = compile(effect_id)
-        res[effect_id] = Effect.from_dict(effect_id, params)
+        res[effect_id] = Effect.model_validate(params)
     return res

@@ -65,7 +65,6 @@ class Encoder:
             total_revs=self._speed_pulse_count / self._pulses_per_rev,
             total_sectors=self._total_sector_count,
             missed_sector_count=self._missed_sector_count,
-            num_sectors=self._config.num_sectors,
             standstill=self._is_standstill
         )
 

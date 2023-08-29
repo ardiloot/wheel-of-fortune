@@ -10,7 +10,6 @@ export const EncoderState = z.object({
   total_revs: z.number(),
   total_sectors: z.number().int(),
   missed_sector_count: z.number().int(),
-  num_sectors: z.number().int(),
   standstill: z.boolean(),
 });
 export type EncoderState = z.infer<typeof EncoderState>;
@@ -45,15 +44,20 @@ export const LedsStateIn = z.object({
 });
 export type LedsStateIn = z.infer<typeof LedsStateIn>;
 
+
+export const LedsInfo = z.object({
+  version: z.string(),
+});
+export type LedsInfo = z.infer<typeof LedsInfo>;
+
 // ----------------------------------------------------------------------------
 // Sound system
 // ----------------------------------------------------------------------------
 
-export const SoundState = z.object({
-  volume: z.number(),
+export const SoundInfo = z.object({
   duration_secs: z.number(),
 });
-export type SoundState = z.infer<typeof SoundState>;
+export type SoundInfo = z.infer<typeof SoundInfo>;
 
 
 export const SoundChannelState = z.object({
@@ -72,7 +76,6 @@ export type SoundChannelStateIn = z.infer<typeof SoundChannelStateIn>;
 
 export const SoundSystemState = z.object({
   channels: z.record(z.string(), SoundChannelState),
-  sounds: z.record(z.string(), SoundState),
 });
 export type SoundSystemState = z.infer<typeof SoundSystemState>;
 
@@ -82,6 +85,12 @@ export const SoundSystemStateIn = z.object({
 });
 export type SoundSystemStateIn = z.infer<typeof SoundSystemStateIn>;
 
+
+export const SoundSystemInfo = z.object({
+  sounds: z.record(z.string(), SoundInfo),
+});
+export type SoundSystemInfo = z.infer<typeof SoundSystemInfo>;
+
 // ----------------------------------------------------------------------------
 // Sectors
 // ----------------------------------------------------------------------------
@@ -89,55 +98,55 @@ export type SoundSystemStateIn = z.infer<typeof SoundSystemStateIn>;
 export const SectorState = z.object({
   index: z.number().int(),
   name: z.string(),
-  effect: z.string(),
+  effect_id: z.string(),
 });
 export type SectorState = z.infer<typeof SectorState>;
 
 
 export const SectorStateIn = z.object({
   name: z.string().optional(),
-  effect: z.string().optional(),
+  effect_id: z.string().optional(),
 });
 export type SectorStateIn = z.infer<typeof SectorStateIn>;
-
 
 // ----------------------------------------------------------------------------
 // Themes
 // ----------------------------------------------------------------------------
 
-export const ThemeState = z.object({
-  id: z.string(),
+export const ThemeInfo = z.object({
   name: z.string(),
   description: z.string(),
   based_on: z.array(z.string()),
   theme_sound: z.string(),
+  // startup_led_preset: z.record(z.string(), LedSegmentStateIn),
+  // idle_led_preset: z.record(z.string(), LedSegmentStateIn),
+  // spinning_led_preset: z.record(z.string(), LedSegmentStateIn),
+  // poweroff_led_preset: z.record(z.string(), LedSegmentStateIn),
 });
-export type ThemeState = z.infer<typeof ThemeState>;
+export type ThemeInfo = z.infer<typeof ThemeInfo>;
 
 // ----------------------------------------------------------------------------
 // Effects
 // ----------------------------------------------------------------------------
 
-export const EffectState = z.object({
-  id: z.string(),
+export const EffectInfo = z.object({
   name: z.string(),
   description: z.string(),
   based_on: z.array(z.string()),
   effect_sound: z.string(),
+  // leds_preset: z.record(z.string(), LedSegmentStateIn),
 });
 
-export type EffectState = z.infer<typeof EffectState>;
+export type EffectInfo = z.infer<typeof EffectInfo>;
 
 // ----------------------------------------------------------------------------
 // Wheel
 // ----------------------------------------------------------------------------
 
 export const WheelState = z.object({
-  task_name: z.string().optional(),
-  theme: z.string(),
-  themes: z.array(ThemeState),
+  active_task: z.string().optional(),
+  theme_id: z.string(),
   sectors: z.array(SectorState),
-  effects: z.array(EffectState),
   encoder: EncoderState,
   leds: LedsState,
   soundsystem: SoundSystemState,
@@ -146,7 +155,7 @@ export type WheelState = z.infer<typeof WheelState>;
 
 
 export const WheelStateIn = z.object({
-  theme: z.string().optional(),
+  theme_id: z.string().optional(),
   sectors: z.record(z.number().int(), SectorStateIn).optional(),
   leds: LedsStateIn.optional(),
   soundsystem: SoundSystemStateIn.optional(),
@@ -155,8 +164,8 @@ export type WheelStateIn = z.infer<typeof WheelStateIn>;
 
 
 export const WheelStateUpdate = z.object({
-  task_name: z.string().optional(),
-  theme: z.string().optional(),
+  active_task: z.string().optional(),
+  theme_id: z.string().optional(),
   sectors: z.array(SectorState).optional(),
   encoder: EncoderState.optional(),
   leds: LedsState.optional(),
@@ -164,16 +173,27 @@ export const WheelStateUpdate = z.object({
 });
 export type WheelStateUpdate = z.infer<typeof WheelStateUpdate>;
 
+
+export const WheelInfo = z.object({
+  version: z.string(),
+  themes: z.record(z.string(), ThemeInfo),
+  effects: z.record(z.string(), EffectInfo),
+  leds: LedsInfo,
+  soundsystem: SoundSystemInfo,
+});
+export type WheelInfo = z.infer<typeof WheelInfo>;
+
 // ----------------------------------------------------------------------------
 // Websocket
 // ----------------------------------------------------------------------------
 
-export const WsStatePacket = z.object({
+export const WsInitPacket = z.object({
   cmd: z.string(),
   ts: z.number(),
   state: WheelState,
+  info: WheelInfo,
 });
-export type WsStatePacket = z.infer<typeof WsStatePacket>;
+export type WsInitPacket = z.infer<typeof WsInitPacket>;
 
 
 export const WsUpdatePacket = z.object({

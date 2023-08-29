@@ -1,16 +1,20 @@
 from fastapi import APIRouter, Depends
 from ..dependencies import get_wheel
-from ..schemas import SoundSystemState, SoundSystemStateIn
+from ..schemas import SoundSystemState, SoundSystemInfo, SoundSystemStateIn
 
 router = APIRouter(tags=["soundsystem"])
 
 
-@router.get("/api/v1/soundsystem")
+@router.get("/api/v1/soundsystem/state")
 async def get_state(wheel=Depends(get_wheel)) -> SoundSystemState:
-    state = wheel.sound.get_state()
-    return state
+    return wheel.sound.get_state()
 
 
-@router.patch("/api/v1/soundsystem")
+@router.get("/api/v1/soundsystem/info")
+async def get_info(wheel=Depends(get_wheel)) -> SoundSystemInfo:
+    return wheel.sound.get_info()
+
+
+@router.patch("/api/v1/soundsystem/state")
 async def set_state(state: SoundSystemStateIn, wheel=Depends(get_wheel)):
     await wheel.sound.set_state(state)

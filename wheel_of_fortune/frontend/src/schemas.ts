@@ -98,14 +98,14 @@ export type SoundSystemInfo = z.infer<typeof SoundSystemInfo>;
 export const SectorState = z.object({
   index: z.number().int(),
   name: z.string(),
-  effect: z.string(),
+  effect_id: z.string(),
 });
 export type SectorState = z.infer<typeof SectorState>;
 
 
 export const SectorStateIn = z.object({
   name: z.string().optional(),
-  effect: z.string().optional(),
+  effect_id: z.string().optional(),
 });
 export type SectorStateIn = z.infer<typeof SectorStateIn>;
 
@@ -114,11 +114,14 @@ export type SectorStateIn = z.infer<typeof SectorStateIn>;
 // ----------------------------------------------------------------------------
 
 export const ThemeInfo = z.object({
-  id: z.string(),
   name: z.string(),
   description: z.string(),
   based_on: z.array(z.string()),
   theme_sound: z.string(),
+  // startup_led_preset: z.record(z.string(), LedSegmentStateIn),
+  // idle_led_preset: z.record(z.string(), LedSegmentStateIn),
+  // spinning_led_preset: z.record(z.string(), LedSegmentStateIn),
+  // poweroff_led_preset: z.record(z.string(), LedSegmentStateIn),
 });
 export type ThemeInfo = z.infer<typeof ThemeInfo>;
 
@@ -127,11 +130,11 @@ export type ThemeInfo = z.infer<typeof ThemeInfo>;
 // ----------------------------------------------------------------------------
 
 export const EffectInfo = z.object({
-  id: z.string(),
   name: z.string(),
   description: z.string(),
   based_on: z.array(z.string()),
   effect_sound: z.string(),
+  // leds_preset: z.record(z.string(), LedSegmentStateIn),
 });
 
 export type EffectInfo = z.infer<typeof EffectInfo>;
@@ -173,8 +176,8 @@ export type WheelStateUpdate = z.infer<typeof WheelStateUpdate>;
 
 export const WheelInfo = z.object({
   version: z.string(),
-  themes: z.array(ThemeInfo),
-  effects: z.array(EffectInfo),
+  themes: z.record(z.string(), ThemeInfo),
+  effects: z.record(z.string(), EffectInfo),
   leds: LedsInfo,
   soundsystem: SoundSystemInfo,
 });

@@ -38,16 +38,13 @@ export default function App() {
 
   const [connectionStatus, setConnectionStatus] = useState<number>(-1);
   const [activeTheme, setActiveTheme] = useState<string>('');
-  const [availableThemes, setAvailableThemes] = useState<Array<ThemeInfo>>([]);
   const [sectors, setSectors] = useState<Array<SectorState>>([]);
-  const [effects, setEffects] = useState<Array<EffectInfo>>([]);
   const [encoderState, setEncoderState] = useState<EncoderState>({
     sector: 0,
     rpm: 0.0,
     total_revs: 0,
     total_sectors: 0,
     missed_sector_count: 0,
-    num_sectors: 0,
     standstill: true,
   });
   const [ledsState, setLedsState] = useState<LedsState>({
@@ -62,8 +59,9 @@ export default function App() {
         sound_name: '',
       }
     },
-    sounds: {},
-  })
+  });
+  const [availableThemes, setAvailableThemes] = useState<Record<string, ThemeInfo>>({});
+  const [availableEffects, setAvailableEffects] = useState<Record<string, EffectInfo>>({});
 
   // Websocket
 
@@ -116,7 +114,7 @@ export default function App() {
         const info = packet.info;
         console.log('info', info);
         setAvailableThemes(info.themes);
-        setEffects(info.effects);
+        setAvailableEffects(info.effects);
       } else if (message.cmd === 'update') {
         const packet = WsUpdatePacket.parse(message);
         const update = packet.update;
@@ -216,10 +214,10 @@ export default function App() {
 
           <Wheel
             sectors={sectors}
-            effects={effects}
+            availableEffects={availableEffects}
             encoderState={encoderState}
-            updateSector={(index, name, effect) => {
-              wsSetState({sectors: {[index]: {name: name, effect: effect}}});
+            updateSector={(index, name, effect_id) => {
+              wsSetState({sectors: {[index]: {name: name, effect_id: effect_id}}});
             }}
           />
 

@@ -57,8 +57,8 @@ class Sector:
     def init(self):
         if "name" in self._settings:
             self.name = self._settings["name"]
-        if "effect" in self._settings:
-            self.effect_id = self._settings["effect"]
+        if "effect_id" in self._settings:
+            self.effect_id = self._settings["effect_id"]
 
     def set_state(self, state: SectorStateIn):
         if state.name is not None:
@@ -125,8 +125,8 @@ class Wheel:
 
         # Open settings
         await self._settings_mgr.open()
-        if "theme" in self._settings:
-            theme_id = self._settings["theme"]
+        if "theme_id" in self._settings:
+            theme_id = self._settings["theme_id"]
             if theme_id in self._themes:
                 self._theme_id = theme_id
             else:

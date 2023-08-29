@@ -66,17 +66,17 @@ export default function Wheel({
   sectors: Array<SectorState>,
   availableEffects: Record<string, EffectInfo>,
   encoderState: EncoderState,
-  updateSector: (index: number, name: string, effect_id: string) => void
+  updateSector: (index: number, name: string, effectId: string) => void
 }) {
 
   const [editSectorIndex, setEditSectorIndex] = useState<number | null>(null);  
   const { classes } = useStyles();
   const activeSector = encoderState.sector;
 
-  function handleSectorEdit(index: number, name: string, effect_id: string) {
-    console.log('save: ' + index + ' ' + name + ' ' + effect_id);
+  function handleSectorEdit(index: number, name: string, effectId: string) {
+    console.log('save: ' + index + ' ' + name + ' ' + effectId);
     setEditSectorIndex(null);
-    updateSector(index, name, effect_id);
+    updateSector(index, name, effectId);
   }
 
   const wheelRadius = 400.0;

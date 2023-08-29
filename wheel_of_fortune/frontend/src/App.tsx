@@ -1,19 +1,33 @@
 import { useEffect, useRef, useState } from 'react';
-import { ColorScheme, ColorSchemeProvider, Container, LoadingOverlay, MantineProvider, Title } from '@mantine/core';
+import {
+  ColorScheme,
+  ColorSchemeProvider,
+  Container,
+  LoadingOverlay,
+  MantineProvider,
+  Title
+} from '@mantine/core';
 import { Notifications, notifications } from '@mantine/notifications';
 import { useLocalStorage } from '@mantine/hooks';
 import { IconCheck, IconX } from '@tabler/icons-react';
-import { throttle } from 'lodash';
 import ReconnectingWebSocket from 'reconnecting-websocket';
-
-
-import { WsInitPacket, ThemeInfo, WsUpdatePacket, WsSetStatePacket, SectorState, EffectInfo, EncoderState, LedsState, SoundSystemState, WheelStateIn } from './schemas';
 import { ColorSchemeToggle } from './components/ColorSchemeToggle';
 import Wheel from './components/Wheel';
 import VolumeSlider from './components/VolumeSlider';
 import BrightnessSlider from './components/BrightnessSlider';
 import ThemeSelect from './components/ThemeSelect';
-
+import {
+  WsInitPacket,
+  ThemeInfo,
+  WsUpdatePacket,
+  WsSetStatePacket,
+  SectorState,
+  EffectInfo,
+  EncoderState,
+  LedsState,
+  SoundSystemState,
+  WheelStateIn
+} from './schemas';
 
 
 const WS_URL = (
@@ -173,10 +187,10 @@ export default function App() {
           <ThemeSelect
             activeTheme={activeTheme}
             availableThemes={availableThemes}
-            setActiveTheme={async (theme_id: string) => {
-              console.log('set theme:', theme_id)
-              setActiveTheme(theme_id);
-              wsSetState({theme_id: theme_id});
+            setActiveTheme={(themeId) => {
+              console.log('set theme:', themeId)
+              setActiveTheme(themeId);
+              wsSetState({theme_id: themeId});
             }}
           />
 
@@ -216,8 +230,8 @@ export default function App() {
             sectors={sectors}
             availableEffects={availableEffects}
             encoderState={encoderState}
-            updateSector={(index, name, effect_id) => {
-              wsSetState({sectors: {[index]: {name: name, effect_id: effect_id}}});
+            updateSector={(index, name, effectId) => {
+              wsSetState({sectors: {[index]: {name: name, effect_id: effectId}}});
             }}
           />
 

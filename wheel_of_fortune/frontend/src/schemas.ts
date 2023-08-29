@@ -155,7 +155,7 @@ export type WheelState = z.infer<typeof WheelState>;
 
 
 export const WheelStateIn = z.object({
-  theme: z.string().optional(),
+  theme_id: z.string().optional(),
   sectors: z.record(z.number().int(), SectorStateIn).optional(),
   leds: LedsStateIn.optional(),
   soundsystem: SoundSystemStateIn.optional(),

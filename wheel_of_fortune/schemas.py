@@ -167,8 +167,8 @@ class EffectInfo(BaseModel):
 
 
 class WheelState(BaseModel):
-    task_name: str | None
-    theme: str
+    active_task: str | None
+    theme_is: str
     sectors: list[SectorState]
     encoder: EncoderState
     servos: ServosState
@@ -177,7 +177,7 @@ class WheelState(BaseModel):
 
 
 class WheelStateIn(BaseModel):
-    theme: str | None = None
+    theme_id: str | None = None
     sectors: dict[int, SectorStateIn] = {}
     servos: ServosStateIn | None = None
     leds: LedsStateIn | None = None
@@ -185,8 +185,8 @@ class WheelStateIn(BaseModel):
 
 
 class WheelStateUpdate(BaseModel):
-    task_name: str | None = None
-    theme: str | None = None
+    active_task: str | None = None
+    theme_id: str | None = None
     sectors: list[SectorState] | None = None
     encoder: EncoderState | None = None
     servos: ServosState | None = None

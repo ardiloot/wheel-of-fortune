@@ -159,15 +159,15 @@ class Wheel:
 
     async def set_state(self, state: WheelStateIn):
 
-        if state.theme is not None:
-            _LOGGER.info("activate_theme: %s" % (state.theme))
-            if state.theme in self._themes:
-                self._theme = state.theme
+        if state.theme_id is not None:
+            _LOGGER.info("activate_theme: %s" % (state.theme_id))
+            if state.theme_id in self._themes:
+                self._theme_id = state.theme_id
             else:
                 raise ValueError("unknown theme name")
             self._settings.set("theme", self._theme_id)
             self._publish_update(WheelStateUpdate(
-                theme=self._theme_id,
+                theme_id=self._theme_id,
             ))
 
         if len(state.sectors) > 0:
@@ -193,8 +193,8 @@ class Wheel:
     def get_state(self) -> WheelState:
         
         return WheelState(
-            task_name=self._cur_task.value,
-            theme=self._theme_id,
+            active_task=self._cur_task.value,
+            theme_id=self._theme_id,
             sectors=[sector.get_state() for sector in self._sectors],
             encoder=self._encoder.get_state(),
             servos=self._servos.get_state(),
@@ -253,10 +253,10 @@ class Wheel:
                 TaskType.POWEROFF: self._task_poweroff,
             }[task]()
             _LOGGER.info("start task: %s" % (task))
-            task_name = task.value
-            self._active_task = asyncio.create_task(task_co, name=task_name)
+            active_task_name = task.value
+            self._active_task = asyncio.create_task(task_co, name=active_task_name)
             self._publish_update(WheelStateUpdate(
-                task_name=task_name,
+                active_task=active_task_name,
             ))
 
             # Wait for task

@@ -105,7 +105,7 @@ export default function App() {
         const state = packet.state;
         console.log('state', state);
         
-        setActiveTheme(state.theme);
+        setActiveTheme(state.theme_id);
         setSectors(state.sectors);
         setEncoderState(state.encoder);
         setLedsState(state.leds);
@@ -119,8 +119,8 @@ export default function App() {
         const packet = WsUpdatePacket.parse(message);
         const update = packet.update;
         console.log('update', update);
-        if (update.theme !== undefined)
-          setActiveTheme(update.theme);
+        if (update.theme_id !== undefined)
+          setActiveTheme(update.theme_id);
         if (update.sectors !== undefined)
           setSectors(update.sectors);
         if (update.encoder !== undefined)
@@ -173,10 +173,10 @@ export default function App() {
           <ThemeSelect
             activeTheme={activeTheme}
             availableThemes={availableThemes}
-            setActiveTheme={async (theme: string) => {
-              console.log('set theme:', theme)
-              setActiveTheme(theme);
-              wsSetState({theme: theme});
+            setActiveTheme={async (theme_id: string) => {
+              console.log('set theme:', theme_id)
+              setActiveTheme(theme_id);
+              wsSetState({theme_id: theme_id});
             }}
           />
 

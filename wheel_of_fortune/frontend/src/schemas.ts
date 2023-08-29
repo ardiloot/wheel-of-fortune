@@ -144,8 +144,8 @@ export type EffectInfo = z.infer<typeof EffectInfo>;
 // ----------------------------------------------------------------------------
 
 export const WheelState = z.object({
-  task_name: z.string().optional(),
-  theme: z.string(),
+  active_task: z.string().optional(),
+  theme_id: z.string(),
   sectors: z.array(SectorState),
   encoder: EncoderState,
   leds: LedsState,
@@ -164,8 +164,8 @@ export type WheelStateIn = z.infer<typeof WheelStateIn>;
 
 
 export const WheelStateUpdate = z.object({
-  task_name: z.string().optional(),
-  theme: z.string().optional(),
+  active_task: z.string().optional(),
+  theme_id: z.string().optional(),
   sectors: z.array(SectorState).optional(),
   encoder: EncoderState.optional(),
   leds: LedsState.optional(),

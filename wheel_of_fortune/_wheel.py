@@ -52,33 +52,36 @@ class Sector:
         self._settings: Settings = settings
         self._effects: dict[str, Effect] = effects
         self.name: str = "sector %d" % (index)
-        self.effect: Effect = list(effects.values())[0]
+        self.effect_id: str = list(effects.keys())[0]
 
     def init(self):
         if "name" in self._settings:
             self.name = self._settings["name"]
         if "effect" in self._settings:
-            effect_id = self._settings["effect"]
-            self.effect = self._effects[effect_id]
+            self.effect_id = self._settings["effect"]
 
     def set_state(self, state: SectorStateIn):
         if state.name is not None:
             _LOGGER.info("Set sector %d name: %s -> %s" % (self.index, self.name, state.name))
             self.name = state.name
             self._settings.set("name", self.name)
-        if state.effect is not None:
-            _LOGGER.info("Set sector %d effect: %s -> %s" % (self.index, self.effect._id, state.effect))
-            if state.effect not in self._effects:
+        if state.effect_id is not None:
+            _LOGGER.info("Set sector %d effect: %s -> %s" % (self.index, self.effect_id, state.effect_id))
+            if state.effect_id not in self._effects:
                 raise ValueError("unknown effect id")
-            self.effect = self._effects[state.effect]
-            self._settings.set("effect", state.effect)
+            self.effect_id = state.effect_id
+            self._settings.set("effect", self.effect_id)
     
     def get_state(self) -> SectorState:
         return SectorState(
             index=self.index,
             name=self.name,
-            effect=self.effect._id,
+            effect_id=self.effect_id,
         )
+
+    @property
+    def effect(self):
+        return self._effects[self.effect_id]
 
 
 class Wheel:
@@ -107,7 +110,7 @@ class Wheel:
 
         themes_file = os.path.join(config.data_dir, "themes.yaml")
         self._themes = load_themes(themes_file)
-        self._theme: Theme = list(self._themes.values())[0]
+        self._theme_id: str = list(self._themes.keys())[0]
 
         effects_file = os.path.join(config.data_dir, "effects.yaml")
         self._effects = load_effects(effects_file)
@@ -125,7 +128,7 @@ class Wheel:
         if "theme" in self._settings:
             theme_id = self._settings["theme"]
             if theme_id in self._themes:
-                self._theme = self._themes[theme_id]
+                self._theme_id = theme_id
             else:
                 _LOGGER.warn("unknown theme id: %s" % (theme_id))
 
@@ -159,12 +162,12 @@ class Wheel:
         if state.theme is not None:
             _LOGGER.info("activate_theme: %s" % (state.theme))
             if state.theme in self._themes:
-                self._theme = self._themes[state.theme]
+                self._theme = state.theme
             else:
                 raise ValueError("unknown theme name")
-            self._settings.set("theme", self._theme._id)
+            self._settings.set("theme", self._theme_id)
             self._publish_update(WheelStateUpdate(
-                theme=self._theme._id,
+                theme=self._theme_id,
             ))
 
         if len(state.sectors) > 0:
@@ -191,7 +194,7 @@ class Wheel:
         
         return WheelState(
             task_name=self._cur_task.value,
-            theme=self._theme._id,
+            theme=self._theme_id,
             sectors=[sector.get_state() for sector in self._sectors],
             encoder=self._encoder.get_state(),
             servos=self._servos.get_state(),
@@ -202,8 +205,8 @@ class Wheel:
     def get_info(self) -> WheelInfo:
         return WheelInfo(
             version=VERSION,
-            themes=[theme.get_info() for theme in self._themes.values()],
-            effects=[effect.get_info() for effect in self._effects.values()],
+            themes={id: theme.get_info() for id, theme in self._themes.items()},
+            effects={id: effect.get_info() for id, effect in self._effects.items()},
             leds=self._leds.get_info(),
             soundsystem=self._soundsystem.get_info(),
         )
@@ -291,12 +294,12 @@ class Wheel:
         await asyncio.sleep(2)
 
     async def _task_idle(self):
-        cur_theme = ""
+        cur_theme = None
         counter = 0
         while True:
-            if cur_theme != self._theme._id:
+            if cur_theme is None or cur_theme != self._theme:
                 await self._leds.set_state(LedsStateIn(segments=self._theme.idle_led_preset))
-                cur_theme = self._theme._id
+                cur_theme = self._theme
             await asyncio.sleep(1.0)
             counter += 1
             if counter % 15 == 0:
@@ -384,6 +387,10 @@ class Wheel:
         if self._active_task is None:
             return TaskType.UNKNOWN
         return TaskType(self._active_task.get_name())
+    
+    @property
+    def _theme(self) -> Theme:
+        return self._themes[self._theme_id]
 
     def _encoder_update(self, state: EncoderState):
         _LOGGER.debug("encoder update: %s" % (state))

@@ -15,6 +15,7 @@
         "fastapi",
         "gpio",
         "leds",
+        "mergedeep",
         "poweroff",
         "pydantic",
         "pygame",

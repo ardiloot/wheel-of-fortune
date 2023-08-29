@@ -126,12 +126,12 @@ class SoundSystemInfo(BaseModel):
 class SectorState(BaseModel):
     index: int
     name: str
-    effect: str
+    effect_id: str
 
 
 class SectorStateIn(BaseModel):
     name: str | None = None
-    effect: str | None = None
+    effect_id: str | None = None
 
 
 # -----------------------------------------------------------------------------
@@ -140,12 +140,14 @@ class SectorStateIn(BaseModel):
 
 
 class ThemeInfo(BaseModel):
-    id: str
     name: str
     description: str
-    based_on: list[str]
+    based_on: list[str] = []
     theme_sound: str
-
+    startup_led_preset: dict[str, LedSegmentStateIn]
+    idle_led_preset: dict[str, LedSegmentStateIn]
+    spinning_led_preset: dict[str, LedSegmentStateIn]
+    poweroff_led_preset: dict[str, LedSegmentStateIn]
 
 # -----------------------------------------------------------------------------
 # Effects
@@ -153,12 +155,11 @@ class ThemeInfo(BaseModel):
 
 
 class EffectInfo(BaseModel):
-    id: str
     name: str
     description: str
-    based_on: list[str]
+    based_on: list[str] = []
     effect_sound: str
-
+    leds_preset: dict[str, LedSegmentStateIn]
 
 # -----------------------------------------------------------------------------
 # Wheel
@@ -195,8 +196,8 @@ class WheelStateUpdate(BaseModel):
 
 class WheelInfo(BaseModel):
     version: str
-    themes: list[ThemeInfo]
-    effects: list[EffectInfo]
+    themes: dict[str, ThemeInfo]
+    effects: dict[str, EffectInfo]
     leds: LedsInfo
     soundsystem: SoundSystemInfo
 

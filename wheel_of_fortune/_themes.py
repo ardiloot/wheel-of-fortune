@@ -11,42 +11,10 @@ __all__ = [
 ]
 
 
-class Theme:
-
-    def __init__(self, _id,
-        name="Example theme",
-        description="Example theme description",
-        based_on=[],
-        theme_sound="example_theme",
-        startup_led_preset={},
-        idle_led_preset={},
-        spinning_led_preset={},
-        poweroff_led_preset={},
-    ):
-        self._id: str = _id
-        self.name: str = name
-        self.description: str = description
-        self.based_on: list[str] = based_on
-        self.theme_sound: str = theme_sound
-        self.startup_led_preset = startup_led_preset
-        self.idle_led_preset = idle_led_preset
-        self.spinning_led_preset = spinning_led_preset
-        self.poweroff_led_preset = poweroff_led_preset
-
-    @staticmethod
-    def from_dict(theme_id, params):
-        params.pop("visible", None)
-        # TODO: params validation
-        return Theme(theme_id, **params)
+class Theme(ThemeInfo):
 
     def get_info(self) -> ThemeInfo:
-        return ThemeInfo(
-            id=self._id,
-            name=self.name,
-            description=self.description,
-            based_on=self.based_on,
-            theme_sound=self.theme_sound,
-        )
+        return self
 
 
 def load_themes(filename: str):
@@ -81,5 +49,5 @@ def load_themes(filename: str):
         if not theme.get("visible", True):
             continue
         params = compile(theme_id)
-        res[theme_id] = Theme.from_dict(theme_id, params)
+        res[theme_id] = Theme.model_validate(params)
     return res

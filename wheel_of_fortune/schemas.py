@@ -167,8 +167,8 @@ class EffectInfo(BaseModel):
 
 
 class WheelState(BaseModel):
-    active_task: str | None
-    theme_is: str
+    active_task: str
+    theme_id: str
     sectors: list[SectorState]
     encoder: EncoderState
     servos: ServosState

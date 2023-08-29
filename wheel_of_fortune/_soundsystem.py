@@ -2,11 +2,11 @@ import os
 import asyncio
 import logging
 import pygame
+from enum import Enum
 from typing import Callable
 from ._config import Config
 from ._settings import Settings
 from .schemas import (
-    SoundChannelName,
     SoundChannelState,
     SoundChannelStateIn,
     SoundState,
@@ -18,13 +18,17 @@ _LOGGER = logging.getLogger(__name__)
 
 __all__ = [
     "SoundSystem",
+    "MAIN_CH",
+    "EFFECT_CH",
 ]
+
+MAIN_CH = "main"
+EFFECT_CH = "effect"
 
 
 class SoundChannel:
 
-    def __init__(self, name, channel, sounds, settings):
-        self.name: str = name
+    def __init__(self, channel, sounds, settings):
         self._channel: pygame.mixer.Channel = channel
         self._sounds: dict[str, pygame.mixer.Sound] = sounds
         self._settings: Settings = settings
@@ -52,7 +56,6 @@ class SoundChannel:
         )
 
     async def play(self, sound_name: str, fade_ms: int = 300):
-        _LOGGER.info("play (%s): %s" % (self.name, sound_name))
         if sound_name not in self._sounds:
             raise ValueError("Sound not found: %s" % (sound_name))
         
@@ -62,12 +65,10 @@ class SoundChannel:
         self._sound_name = sound_name
         
     async def fadeout(self, fade_ms: int = 300):
-        _LOGGER.info("fadeout (%s): %d ms" % (self.name, fade_ms))
         self._channel.fadeout(fade_ms)
         self._sound_name = None
 
     async def volume_sweep(self, volume_from: float, volume_to: float, time_ms: int = 300):
-        _LOGGER.info("volume sweep (%s): %.2f -> %.2f in %d ms" % (self.name, volume_from, volume_to, time_ms))
         steps: int = min(time_ms // 50, 100)
         delta = (volume_to - volume_from) / steps
         for i in range(steps):
@@ -93,21 +94,14 @@ class SoundSystem:
         self._sounds = load_sounds(os.path.join(config.data_dir, "sounds"))
 
         # Channels
-        self._channels: dict[SoundChannelName, SoundChannel] = {}
-        self._channels[SoundChannelName.MAIN] = SoundChannel(
-            SoundChannelName.MAIN,
-            pygame.mixer.Channel(0),
-            self._sounds,
-            settings.subsettings("main"),
-        )
+        self._channels: dict[str, SoundChannel] = {
+            name: SoundChannel(
+                pygame.mixer.Channel(i),
+                self._sounds,
+                settings.subsettings(name),
+            ) for i, name in enumerate([MAIN_CH, EFFECT_CH])
+        }
 
-        self._channels[SoundChannelName.EFFECT] = SoundChannel(
-            SoundChannelName.EFFECT,
-            pygame.mixer.Channel(1),
-            self._sounds,
-            settings.subsettings("effect"),
-        )
-        
     async def open(self):
         _LOGGER.info("open")
         for ch in self._channels.values():
@@ -118,9 +112,11 @@ class SoundSystem:
         pygame.mixer.quit()
 
     async def set_state(self, state: SoundSystemStateIn):
-        for name, ch in self._channels.items():
-            if name in state.channels:
-                await ch.set_state(state.channels[name])
+        for name, ch_state in state.channels.items():
+            if name not in self._channels:
+                _LOGGER.warn("unknown sound channel: %s" % (name))
+                continue
+            await self._channels[name].set_state(ch_state)
         self._loop.call_soon(self._update_cb, self.get_state())
         
     def get_state(self) -> SoundSystemState:
@@ -132,7 +128,7 @@ class SoundSystem:
             )
 
         return SoundSystemState(
-            channels={ch.name: ch.get_state() for ch in self._channels.values()},
+            channels={name: ch.get_state() for name, ch in self._channels.items()},
             sounds=sounds_state,
         )
         
@@ -144,15 +140,18 @@ class SoundSystem:
             # ))
             await asyncio.sleep(2.0)
 
-    async def play(self, channel: SoundChannelName, sound_name: str, **kwargs):
+    async def play(self, channel: str, sound_name: str, **kwargs):
+        _LOGGER.info("play (%s): %s, %s" % (channel, sound_name, kwargs))
         await self._channels[channel].play(sound_name, **kwargs)
         self._loop.call_soon(self._update_cb, self.get_state())
         
-    async def fadeout(self, channel: SoundChannelName, **kwargs):
+    async def fadeout(self, channel: str, **kwargs):
+        _LOGGER.info("fadeout (%s): %s" % (channel, kwargs))
         await self._channels[channel].fadeout(**kwargs)
         self._loop.call_soon(self._update_cb, self.get_state())
 
-    async def volume_sweep(self, channel: SoundChannelName, volume_from: float, volume_to: float, **kwargs):
+    async def volume_sweep(self, channel: str, volume_from: float, volume_to: float, **kwargs):
+        _LOGGER.info("volume sweep (%s): %.2f -> %.2f (%s)" % (channel, volume_from, volume_to, kwargs))
         await self._channels[channel].volume_sweep(volume_from, volume_to, **kwargs)
         
 

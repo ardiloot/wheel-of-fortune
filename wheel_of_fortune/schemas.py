@@ -88,10 +88,6 @@ class LedsStateIn(BaseModel):
 # Sound system
 # -----------------------------------------------------------------------------
 
-class SoundChannelName(str, Enum):
-    MAIN = "main"
-    EFFECT = "effect"
-
 
 class SoundState(BaseModel):
     volume: float
@@ -199,25 +195,25 @@ class WheelStateUpdate(BaseModel):
 # -----------------------------------------------------------------------------
 
 
-class WsCommandType(str, Enum):
-    state = "state"    # Full state (to client)
-    update = "update"       # State update (to client)
-    set_state = "set_state" # Set state (to server)
+class WsCommandType(Enum):
+    STATE = "state"    # Full state (to client)
+    UPDATE = "update"       # State update (to client)
+    SET_STATE = "set_state" # Set state (to server)
 
 
 class WsStatePacket(BaseModel):
-    cmd: WsCommandType = WsCommandType.state
+    cmd: WsCommandType = WsCommandType.STATE
     ts: float
     state: WheelState
 
 
 class WsUpdatePacket(BaseModel):
-    cmd: WsCommandType = WsCommandType.update
+    cmd: WsCommandType = WsCommandType.UPDATE
     ts: float
     update: WheelStateUpdate
 
 
 class WsSetStatePacket(BaseModel):
-    cmd: WsCommandType = WsCommandType.set_state
+    cmd: WsCommandType = WsCommandType.SET_STATE
     ts: float
     state: WheelStateIn

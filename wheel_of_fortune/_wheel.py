@@ -8,7 +8,7 @@ from ._settings import SettingsManager, Settings
 from ._encoder import Encoder
 from ._leds import LedController
 from ._servos import ServoController
-from ._soundsystem import SoundSystem
+from ._soundsystem import SoundSystem, MAIN_CH, EFFECT_CH
 from ._telemetry import Telemetry, Point
 from ._themes import load_themes, Theme
 from ._effects import load_effects, Effect
@@ -16,7 +16,6 @@ from .schemas import (
     EncoderState,
     LedsState,
     LedsStateIn,
-    SoundChannelName,
     ServosState,
     SoundSystemState,
     ServosStateIn,
@@ -280,7 +279,7 @@ class Wheel:
         await asyncio.sleep(2)
 
     async def _task_idle(self):
-        await self._soundsystem.fadeout(SoundChannelName.MAIN)
+        await self._soundsystem.fadeout(MAIN_CH)
         await self._leds.set_state(LedsStateIn(segments=self._theme.idle_led_preset))
         while True:
             _LOGGER.info("idle heartbeat")
@@ -292,9 +291,9 @@ class Wheel:
         start_sector_count = enc_state.total_sectors
         start_time = self._loop.time()
         try:
-            await self._soundsystem.fadeout(SoundChannelName.MAIN)
+            await self._soundsystem.fadeout(MAIN_CH)
             await self._leds.set_state(LedsStateIn(segments=self._theme.spinning_led_preset))
-            await self._soundsystem.play(SoundChannelName.MAIN, self._theme.theme_sound)
+            await self._soundsystem.play(MAIN_CH, self._theme.theme_sound)
             while True:
                 await asyncio.sleep(1.0)
         finally:
@@ -332,26 +331,26 @@ class Wheel:
             await self._servos.set_state(ServosStateIn.model_validate({"motors": {"bottom": {"pos": 1.0}}}))
             await asyncio.sleep(1.0)
 
-            await self._soundsystem.volume_sweep(SoundChannelName.MAIN, 1.0, 0.2)
+            await self._soundsystem.volume_sweep(MAIN_CH, 1.0, 0.2)
             await asyncio.sleep(0.2)
 
             await self._leds.set_state(LedsStateIn(segments=effect.leds_preset))
-            await self._soundsystem.play(SoundChannelName.EFFECT, effect.effect_sound)
+            await self._soundsystem.play(EFFECT_CH, effect.effect_sound)
             await asyncio.sleep(2.0)
 
-            await self._soundsystem.volume_sweep(SoundChannelName.MAIN, 0.2, 1.0, time_ms=1000)
+            await self._soundsystem.volume_sweep(MAIN_CH, 0.2, 1.0, time_ms=1000)
             await asyncio.sleep(4.0)
 
             await self._servos.set_state(ServosStateIn.model_validate({"motors": {"bottom": {"pos": 0.0}}}))
             await asyncio.sleep(3.0)
-            await self._soundsystem.fadeout(SoundChannelName.MAIN, fade_ms=2000)
+            await self._soundsystem.fadeout(MAIN_CH, fade_ms=2000)
 
         finally:
-            await self._soundsystem.fadeout(SoundChannelName.MAIN)
+            await self._soundsystem.fadeout(MAIN_CH)
             await self._servos.set_state(ServosStateIn.model_validate({"motors": {"bottom": {"pos": 0.0}}}))
 
     async def _task_poweroff(self):
-        await self._soundsystem.fadeout(SoundChannelName.MAIN)
+        await self._soundsystem.fadeout(MAIN_CH)
         await self._leds.set_state(LedsStateIn(segments=self._theme.poweroff_led_preset))
         while True:
             await asyncio.sleep(5.0)

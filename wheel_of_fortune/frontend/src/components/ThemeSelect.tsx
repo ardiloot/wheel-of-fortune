@@ -17,9 +17,10 @@ export default function ThemeSelect({
       label="Theme:"
       value={ activeTheme }
       onChange={(themeId) => {
-        setActiveTheme(themeId);
+        if (themeId !== null)
+          setActiveTheme(themeId);
       }}
-      data={ Object.keys(availableThemes).map((themeId: string) => {
+      data={ Object.keys(availableThemes).map((themeId) => {
         const theme = availableThemes[themeId]
         return {
           value: themeId,

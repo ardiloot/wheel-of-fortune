@@ -155,7 +155,7 @@ export default function App() {
 
   function wsSetState(state: WheelStateIn) {
     if (ws.current === null) {
-      console.warn('Websocet down, cannot set state', state);
+      console.warn('Websocket down, cannot set state', state);
       return;
     }
     const newState: WsSetStatePacket = {

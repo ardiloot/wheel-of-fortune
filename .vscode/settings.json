@@ -15,13 +15,14 @@
         "fastapi",
         "gpio",
         "leds",
+        "mantine",
         "mergedeep",
         "poweroff",
         "pydantic",
         "pygame",
         "soundsystem",
         "subsettings",
-        "wled",
-        "mantine"
+        "tabler",
+        "wled"
     ]
 }

@@ -1,6 +1,7 @@
-import { Button, Group, Modal, NativeSelect, TextInput } from "@mantine/core"
+import { Button, Group, Modal, NativeSelect, Select, TextInput } from "@mantine/core"
 import { useState } from "react";
 import { EffectInfo, SectorState, SectorStateIn } from "../schemas";
+import EffectSelect from "./EffectSelect";
 
 
 export interface SectorEditModalProps {
@@ -29,6 +30,7 @@ export default function SectorEditModal({
       opened={sectorIndex !== null}
       onClose={onClose}
       title={'Sector (' + (sectorIndex !== null ? sectorIndex : '') + ') edit'}
+      styles={{ content: { overflow: 'visible !important' } }}
     >
       <TextInput
         placeholder="Name of the sector"
@@ -36,18 +38,10 @@ export default function SectorEditModal({
         value={name}
         onChange={(e) => setName(e.target.value)}
       />
-      <NativeSelect
-        label="Effect:"
-        placeholder="Please select one"
-        value={effectId}
-        onChange={(e) => setEffectId(e.target.value)}
-        data={Object.keys(availableEffects).map((effectId) => {
-          const effect = availableEffects[effectId];
-          return {
-            value: effectId,
-            label: effect.name,
-          };
-        })}
+      <EffectSelect
+        activeEffectId={effectId}
+        availableEffects={availableEffects}
+        setEffectId={setEffectId}
       />
       <Group position="right" mt="md">
         <Button

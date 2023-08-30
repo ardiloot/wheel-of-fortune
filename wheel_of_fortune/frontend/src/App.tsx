@@ -51,7 +51,7 @@ export default function App() {
   // States
 
   const [connectionStatus, setConnectionStatus] = useState<number>(ReconnectingWebSocket.CLOSED);
-  const [activeTheme, setActiveTheme] = useState<string>('');
+  const [activeThemeId, setActiveThemeId] = useState<string>('');
   const [sectors, setSectors] = useState<Array<SectorState>>([]);
   const [encoderState, setEncoderState] = useState<EncoderState>({
     sector: 0,
@@ -135,7 +135,7 @@ export default function App() {
         const state = packet.state;
         console.log('state', state);
         
-        setActiveTheme(state.theme_id);
+        setActiveThemeId(state.theme_id);
         setSectors(state.sectors);
         setEncoderState(state.encoder);
         setLedsState(state.leds);
@@ -150,7 +150,7 @@ export default function App() {
         const update = packet.update;
         console.log('update', update);
         if (update.theme_id !== undefined)
-          setActiveTheme(update.theme_id);
+          setActiveThemeId(update.theme_id);
         if (update.sectors !== undefined)
           setSectors(update.sectors);
         if (update.encoder !== undefined)
@@ -203,11 +203,11 @@ export default function App() {
           <ColorSchemeToggle />
 
           <ThemeSelect
-            activeTheme={activeTheme}
+            activeThemeId={activeThemeId}
             availableThemes={info?.themes || {}}
-            setActiveTheme={(themeId) => {
+            setActiveThemeId={(themeId) => {
               console.log('set theme:', themeId)
-              setActiveTheme(themeId);
+              setActiveThemeId(themeId);
               wsSetState({theme_id: themeId});
             }}
           />

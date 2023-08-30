@@ -1,4 +1,4 @@
-import { ThemeInfo } from "../schemas";
+import { EffectInfo } from "../schemas";
 import { forwardRef } from 'react';
 import { Group, Avatar, Text, Select } from '@mantine/core';
 
@@ -24,43 +24,43 @@ const SelectItem = forwardRef<HTMLDivElement, ItemProps>(
   )
 );
 
-export interface ThemeSelectProps {
-  activeThemeId: string;
-  availableThemes: Record<string, ThemeInfo>;
-  setActiveThemeId: (themeId: string) => void;
+export interface EffectSelectProps {
+  activeEffectId: string;
+  availableEffects: Record<string, EffectInfo>;
+  setEffectId: (effectId: string) => void;
 }
 
 
-export default function ThemeSelect({
-  activeThemeId,
-  availableThemes,
-  setActiveThemeId
-} : ThemeSelectProps ) {
+export default function EffectSelect({
+  activeEffectId,
+  availableEffects,
+  setEffectId,
+} : EffectSelectProps ) {
 
-  const data = Object.keys(availableThemes).map((themeId) => {
-    const theme = availableThemes[themeId]
+  const data = Object.keys(availableEffects).map((effectId) => {
+    const effect = availableEffects[effectId]
     return {
-      image: theme.image_url,
-      value: themeId,
-      label: theme.name,
-      description: theme.description,
+      image: effect.image_url,
+      value: effectId,
+      label: effect.name,
+      description: effect.description,
     }
   });
 
   return (
     <Select
-      label="Theme:"
+      label="Effect:"
       itemComponent={SelectItem}
-      value={ activeThemeId }
+      value={ activeEffectId }
       data={data}
       searchable
       filter={(value, item) =>
         item?.label?.toLowerCase().includes(value.toLowerCase().trim()) ||
         item.description.toLowerCase().includes(value.toLowerCase().trim())
       }
-      onChange={(themeId) => {
-        if (themeId !== null)
-          setActiveThemeId(themeId);
+      onChange={(effectId) => {
+        if (effectId !== null)
+          setEffectId(effectId);
       }}
     />
   )

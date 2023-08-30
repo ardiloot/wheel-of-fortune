@@ -79,6 +79,8 @@ export default function App() {
   });
   const [info, setInfo] = useState<WheelInfo>({
     version: '',
+    name: '',
+    display_name: '',
     themes: {},
     effects: {},
     servos: {
@@ -199,7 +201,7 @@ export default function App() {
             loaderProps={{ size: 'xl', variant: 'bars' }}
             transitionDuration={1000}
           />
-          <Title order={1} align="center">Wheel of Fortune</Title>
+          <Title order={1} align="center">{info.display_name}</Title>
           <ColorSchemeToggle />
 
           <ThemeSelect

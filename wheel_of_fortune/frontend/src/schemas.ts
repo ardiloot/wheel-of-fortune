@@ -227,6 +227,8 @@ export type WheelStateUpdate = z.infer<typeof WheelStateUpdate>;
 
 export const WheelInfo = z.object({
   version: z.string(),
+  name: z.string(),
+  display_name: z.string(),
   themes: z.record(z.string(), ThemeInfo),
   effects: z.record(z.string(), EffectInfo),
   servos: ServosInfo,

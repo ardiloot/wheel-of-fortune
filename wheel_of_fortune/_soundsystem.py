@@ -159,28 +159,15 @@ def load_sounds(sounds_dir: str, suffix: str = ".mp3") -> dict[str, pygame.mixer
     _LOGGER.info("load sounds... (dir: %s)" % (sounds_dir))
     start_time = time.time()
     
-    # List files
-    sound_files = []
+    res = {}
     for fname in os.listdir(sounds_dir):
         if not fname.endswith(suffix):
             _LOGGER.warn("unknown sound file: %s" % (fname))
             continue
         _LOGGER.info("loading sound file: %s" % (fname))
         sound_file_path = os.path.join(sounds_dir, fname)
-        sound_files.append(sound_file_path)
-
-    # Load sounds in threads
-    # loop = asyncio.get_running_loop()
-    # sounds = await asyncio.gather(*[
-    #     loop.run_in_executor(None, lambda x: pygame.mixer.Sound(x), f) for f in sound_files
-    # ])
-    sounds = [pygame.mixer.Sound(f) for f in sound_files]
-
-    # Unpack
-    res = {}
-    for fname, sound in zip(sound_files, sounds):
         name = fname[:-len(suffix)]
+        sound = pygame.mixer.Sound(sound_file_path)
         res[name] = sound
-
     _LOGGER.info("load sounds done in: %.3f s" % (time.time() - start_time))
     return res

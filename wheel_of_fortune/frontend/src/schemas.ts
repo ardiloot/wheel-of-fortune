@@ -161,6 +161,7 @@ export type SectorStateIn = z.infer<typeof SectorStateIn>;
 export const ThemeInfo = z.object({
   name: z.string(),
   description: z.string(),
+  image_url: z.string(),
   based_on: z.array(z.string()),
   theme_sound: z.string(),
   // startup_led_preset: z.record(z.string(), LedSegmentStateIn),
@@ -177,6 +178,7 @@ export type ThemeInfo = z.infer<typeof ThemeInfo>;
 export const EffectInfo = z.object({
   name: z.string(),
   description: z.string(),
+  image_url: z.string(),
   based_on: z.array(z.string()),
   effect_sound: z.string(),
   // leds_preset: z.record(z.string(), LedSegmentStateIn),

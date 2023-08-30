@@ -1,9 +1,14 @@
+import math
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 __all__ = [
     "Config",
 ]
+
+class ServoConfig(BaseSettings):
+    name: str
+    mount_angle: float
 
 
 class WLedSegmentConfig(BaseSettings):
@@ -20,7 +25,11 @@ class Config(BaseSettings):
     wled_url: str | None = None
     wled_segments: list[WLedSegmentConfig] = []
 
-    servo_names: list[str] = ["bottom", "right", "left"]
+    servos: list[ServoConfig] = [
+        ServoConfig(name="bottom", mount_angle=math.radians(0.0)),
+        ServoConfig(name="right", mount_angle=math.radians(-135)),
+        ServoConfig(name="left", mount_angle=math.radians(135)),
+    ]
     servo_zero_duty: float = 0.086
     servo_full_duty: float = 0.516
     servo_mount_duty: float = 0.0473

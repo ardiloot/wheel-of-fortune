@@ -207,6 +207,7 @@ class Wheel:
             version=VERSION,
             themes={id: theme.get_info() for id, theme in self._themes.items()},
             effects={id: effect.get_info() for id, effect in self._effects.items()},
+            servos=self._servos.get_info(),
             leds=self._leds.get_info(),
             soundsystem=self._soundsystem.get_info(),
         )

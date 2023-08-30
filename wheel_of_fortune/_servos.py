@@ -6,8 +6,10 @@ from ._config import Config
 from .schemas import (
     ServoState,
     ServoStateIn,
+    ServoInfo,
     ServosState,
     ServosStateIn,
+    ServosInfo,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -15,8 +17,9 @@ _LOGGER = logging.getLogger(__name__)
 
 class ServoMotor:
 
-    def __init__(self, pwm_id, zero_duty, full_duty, mount_duty):
+    def __init__(self, pwm_id, mount_angle, zero_duty, full_duty, mount_duty):
         self.pwm_id = pwm_id
+        self._mount_angle = mount_angle
         self._zero_duty = zero_duty
         self._full_duty = full_duty
         self._mount_duty = mount_duty
@@ -36,7 +39,15 @@ class ServoMotor:
             duty=self.get_duty(),
             detached=self._detached,
         )
-
+    
+    def get_info(self) -> ServoInfo:
+        return ServoInfo(
+            mount_angle=self._mount_angle,
+            zero_duty=self._zero_duty,
+            full_duty=self._full_duty,
+            mount_duty=self._mount_duty,
+        )
+    
     def get_duty(self):
         if self._detached:
             return 0.0
@@ -60,12 +71,14 @@ class ServoController:
         self._update_cb: Callable[[ServosState], None] = update_cb
         self._loop = asyncio.get_running_loop()
         self._session: aiohttp.ClientSession | None = None
+        self._info = {}
         
         self._motors = {}
-        for i, name in enumerate(config.servo_names):
+        for i, servo_conf in enumerate(config.servos):
             pwm_id = "%d" % (i)
-            self._motors[name] = ServoMotor(
+            self._motors[servo_conf.name] = ServoMotor(
                 pwm_id,
+                servo_conf.mount_angle,
                 self._config.servo_zero_duty,
                 self._config.servo_full_duty,
                 self._config.servo_mount_duty,
@@ -77,6 +90,9 @@ class ServoController:
             base_url=self._config.wled_url,  # type: ignore
             raise_for_status=True,  # type: ignore
         )
+        resp = await self._session.get("/json/info")
+        self._info = await resp.json()
+        _LOGGER.debug("info: %s" % (self._info))
             
     async def close(self):
         if self._session is None:
@@ -95,6 +111,12 @@ class ServoController:
     def get_state(self) -> ServosState:
         return ServosState(
             motors={name: motor.get_state() for name, motor in self._motors.items()}
+        )
+    
+    def get_info(self) -> ServosInfo:
+        return ServosInfo(
+            version=self._info.get("ver", ""),
+            motors={name: motor.get_info() for name, motor in self._motors.items()}
         )
     
     async def maintain(self):

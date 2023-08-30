@@ -32,17 +32,29 @@ class ServoState(BaseModel):
     detached: bool
 
 
-class ServosState(BaseModel):
-    motors: dict[str, ServoState]
-
-
 class ServoStateIn(BaseModel):
     pos: float | None = Field(ge=-0.3, le=1.3, examples=[0.5])
     detached: bool = False
 
 
+class ServoInfo(BaseModel):
+    mount_angle: float
+    zero_duty: float
+    full_duty: float
+    mount_duty: float
+
+
+class ServosState(BaseModel):
+    motors: dict[str, ServoState]
+
+
 class ServosStateIn(BaseModel):
     motors: dict[str, ServoStateIn] = {}
+
+
+class ServosInfo(BaseModel):
+    version: str
+    motors: dict[str, ServoInfo]
 
 
 # -----------------------------------------------------------------------------
@@ -61,12 +73,6 @@ class LedSegmentState(BaseModel):
     effect_intensity: float
 
 
-class LedsState(BaseModel):
-    power_on: bool
-    brightness: float
-    segments: dict[str, LedSegmentState]
-
-
 class LedSegmentStateIn(BaseModel):
     enabled: bool | None = True
     brightness: float | None = Field(default=1.0, ge=0.0, le=1.0)
@@ -76,6 +82,12 @@ class LedSegmentStateIn(BaseModel):
     effect: str | None = "solid"
     effect_speed: float | None = Field(default=0.5, ge=0.0, le=1.0)
     effect_intensity: float | None = Field(default=0.5, ge=0.0, le=1.0)
+
+
+class LedsState(BaseModel):
+    power_on: bool
+    brightness: float
+    segments: dict[str, LedSegmentState]
 
 
 class LedsStateIn(BaseModel):
@@ -92,17 +104,9 @@ class LedsInfo(BaseModel):
 # -----------------------------------------------------------------------------
 
 
-class SoundInfo(BaseModel):
-    duration_secs: float
-
-
 class SoundChannelState(BaseModel):
     volume: float
     sound_name: str | None
-
-
-class SoundSystemState(BaseModel):
-    channels: dict[str, SoundChannelState]
 
 
 class SoundChannelStateIn(BaseModel):
@@ -110,8 +114,16 @@ class SoundChannelStateIn(BaseModel):
     sound_name: str | None = None
 
 
+class SoundSystemState(BaseModel):
+    channels: dict[str, SoundChannelState]
+
+
 class SoundSystemStateIn(BaseModel):
     channels: dict[str, SoundChannelStateIn] = {}
+
+
+class SoundInfo(BaseModel):
+    duration_secs: float
 
 
 class SoundSystemInfo(BaseModel):
@@ -198,6 +210,7 @@ class WheelInfo(BaseModel):
     version: str
     themes: dict[str, ThemeInfo]
     effects: dict[str, EffectInfo]
+    servos: ServosInfo
     leds: LedsInfo
     soundsystem: SoundSystemInfo
 

@@ -33,7 +33,7 @@ export default function Wheel({
     <>
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        viewBox="-500 -500 1000 1000"
+        viewBox="-520 -520 1040 1040"
       >        
         <SvgLedGlow
           id="background"

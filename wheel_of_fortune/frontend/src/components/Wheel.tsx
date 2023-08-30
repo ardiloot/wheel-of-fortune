@@ -57,17 +57,20 @@ function toXY(radius: number, angle: number) {
 }
 
 
+export interface WheelProps {
+  sectors: Array<SectorState>;
+  availableEffects: Record<string, EffectInfo>;
+  encoderState: EncoderState;
+  updateSector: (index: number, name: string, effectId: string) => void;
+}
+
+
 export default function Wheel({
   sectors,
   availableEffects,
   encoderState,
   updateSector,
-} : {
-  sectors: Array<SectorState>,
-  availableEffects: Record<string, EffectInfo>,
-  encoderState: EncoderState,
-  updateSector: (index: number, name: string, effectId: string) => void
-}) {
+} : WheelProps) {
 
   const [editSectorIndex, setEditSectorIndex] = useState<number | null>(null);  
   const { classes } = useStyles();

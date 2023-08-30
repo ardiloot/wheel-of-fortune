@@ -3,15 +3,18 @@ import { IconSun } from "@tabler/icons-react";
 import { Slider, rem } from "@mantine/core";
 
 
+export interface BrightnessSliderProps{
+  brightness: number;
+  setBrightness: (brightness: number) => void;
+  setBrightnessEnd: (brightness: number) => void;
+}
+
+
 export default function BrightnessSlider({
   brightness,
   setBrightness,
   setBrightnessEnd,
-} : {
-  brightness: number,
-  setBrightness: (brightness: number) => void,
-  setBrightnessEnd: (brightness: number) => void,
-}) {
+} : BrightnessSliderProps) {
   const brightnessPercent = Math.round(100 * brightness);
 
   return (

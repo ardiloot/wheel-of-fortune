@@ -2,15 +2,18 @@ import { Select } from "@mantine/core";
 import { ThemeInfo } from "../schemas";
 
 
+export interface ThemeSelectProps {
+  activeTheme: string;
+  availableThemes: Record<string, ThemeInfo>;
+  setActiveTheme: (themeId: string) => void;
+}
+
+
 export default function ThemeSelect({
   activeTheme,
   availableThemes,
   setActiveTheme
-} : {
-  activeTheme: string,
-  availableThemes: Record<string, ThemeInfo>,
-  setActiveTheme: (themeId: string) => void
-}) {
+} : ThemeSelectProps ) {
 
   return (
     <Select

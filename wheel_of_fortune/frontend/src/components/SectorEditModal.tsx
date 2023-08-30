@@ -3,19 +3,22 @@ import { useState } from "react";
 import { EffectInfo, SectorState } from "../schemas";
 
 
+export interface SectorEditModalProps {
+  sectors: Array<SectorState>;
+  sectorIndex: number | null;
+  availableEffects: Record<string, EffectInfo>;
+  onClose: () => void;
+  onSave: (index: number, name: string, effect: string) => void;
+}
+
+
 export default function SectorEditModal({
   sectors,
   sectorIndex,
   availableEffects,
   onClose,
   onSave
-} : {
-  sectors: Array<SectorState>,
-  sectorIndex: number | null,
-  availableEffects: Record<string, EffectInfo>,
-  onClose: () => void,
-  onSave: (index: number, name: string, effect: string) => void 
-}) {
+} : SectorEditModalProps) {
 
   const sector = sectorIndex !== null ? sectors[sectorIndex] : null;
   const [name, setName] = useState<string>(sector?.name ?? '');

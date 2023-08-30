@@ -15,6 +15,51 @@ export const EncoderState = z.object({
 export type EncoderState = z.infer<typeof EncoderState>;
 
 // ----------------------------------------------------------------------------
+// Servos
+// ----------------------------------------------------------------------------
+
+export const ServoState = z.object({
+  pos: z.number(),
+  duty: z.number(),
+  detached: z.boolean(),
+});
+export type ServoState = z.infer<typeof ServoState>;
+
+
+export const ServoStateIn = z.object({
+  pos: z.number().optional(),
+  detached: z.boolean().optional(),
+});
+export type ServoStateIn = z.infer<typeof ServoStateIn>;
+
+export const ServoInfo = z.object({
+  mount_angle: z.number(),
+  zero_duty: z.number(),
+  full_duty: z.number(),
+  mount_duty: z.number(),
+});
+export type ServoInfo = z.infer<typeof ServoInfo>;
+
+
+export const ServosState = z.object({
+  motors: z.record(z.string(), ServoState)
+});
+export type ServosState = z.infer<typeof ServosState>;
+
+
+export const ServosStateIn = z.object({
+  motors: z.record(z.string(), ServoState).default({})
+});
+export type ServosStateIn = z.infer<typeof ServosStateIn>;
+
+
+export const ServosInfo = z.object({
+  version: z.string(),
+  motors: z.record(z.string(), ServoInfo)
+});
+export type ServosInfo = z.infer<typeof ServosInfo>;
+
+// ----------------------------------------------------------------------------
 // LEDs
 // ----------------------------------------------------------------------------
 
@@ -116,6 +161,7 @@ export type SectorStateIn = z.infer<typeof SectorStateIn>;
 export const ThemeInfo = z.object({
   name: z.string(),
   description: z.string(),
+  image_url: z.string(),
   based_on: z.array(z.string()),
   theme_sound: z.string(),
   // startup_led_preset: z.record(z.string(), LedSegmentStateIn),
@@ -132,6 +178,8 @@ export type ThemeInfo = z.infer<typeof ThemeInfo>;
 export const EffectInfo = z.object({
   name: z.string(),
   description: z.string(),
+  image_url: z.string(),
+  color: z.string(),
   based_on: z.array(z.string()),
   effect_sound: z.string(),
   // leds_preset: z.record(z.string(), LedSegmentStateIn),
@@ -149,6 +197,7 @@ export const WheelState = z.object({
   sectors: z.array(SectorState),
   encoder: EncoderState,
   leds: LedsState,
+  servos: ServosState,
   soundsystem: SoundSystemState,
 });
 export type WheelState = z.infer<typeof WheelState>;
@@ -158,6 +207,7 @@ export const WheelStateIn = z.object({
   theme_id: z.string().optional(),
   sectors: z.record(z.number().int(), SectorStateIn).optional(),
   leds: LedsStateIn.optional(),
+  servos: ServosStateIn.optional(),
   soundsystem: SoundSystemStateIn.optional(),
 });
 export type WheelStateIn = z.infer<typeof WheelStateIn>;
@@ -168,6 +218,7 @@ export const WheelStateUpdate = z.object({
   theme_id: z.string().optional(),
   sectors: z.array(SectorState).optional(),
   encoder: EncoderState.optional(),
+  servos: ServosState.optional(),
   leds: LedsState.optional(),
   soundsystem: SoundSystemState.optional(),
 });
@@ -176,8 +227,11 @@ export type WheelStateUpdate = z.infer<typeof WheelStateUpdate>;
 
 export const WheelInfo = z.object({
   version: z.string(),
+  name: z.string(),
+  display_name: z.string(),
   themes: z.record(z.string(), ThemeInfo),
   effects: z.record(z.string(), EffectInfo),
+  servos: ServosInfo,
   leds: LedsInfo,
   soundsystem: SoundSystemInfo,
 });

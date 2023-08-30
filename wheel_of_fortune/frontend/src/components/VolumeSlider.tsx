@@ -2,15 +2,17 @@ import { IconVolume2 } from "@tabler/icons-react";
 import { Slider, rem } from "@mantine/core";
 
 
+export interface VolumeSliderProps {
+  volume: number;
+  setVolume: (volume: number) => void;
+  setVolumeEnd: (volume: number) => void;
+}
+
 export default function VolumeSlider({
   volume,
   setVolume,
   setVolumeEnd,
-} : {
-  volume: number,
-  setVolume: (volume: number) => void,
-  setVolumeEnd: (volume: number) => void,
-}) {
+} : VolumeSliderProps) {
   const volumePercent = Math.round(100 * volume);
 
   return (

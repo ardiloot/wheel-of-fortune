@@ -145,6 +145,7 @@ class LedController:
 
         resp = await self._session.get("/json/info")
         self._info = await resp.json()
+        _LOGGER.debug("info: %s" % (self._info))
             
     async def close(self):
         if self._session is None:

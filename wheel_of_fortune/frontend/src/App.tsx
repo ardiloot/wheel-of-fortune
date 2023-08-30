@@ -18,15 +18,15 @@ import BrightnessSlider from './components/BrightnessSlider';
 import ThemeSelect from './components/ThemeSelect';
 import {
   WsInitPacket,
-  ThemeInfo,
   WsUpdatePacket,
   WsSetStatePacket,
   SectorState,
-  EffectInfo,
   EncoderState,
   LedsState,
   SoundSystemState,
-  WheelStateIn
+  WheelStateIn,
+  ServosState,
+  WheelInfo
 } from './schemas';
 
 
@@ -50,8 +50,8 @@ export default function App() {
 
   // States
 
-  const [connectionStatus, setConnectionStatus] = useState<number>(-1);
-  const [activeTheme, setActiveTheme] = useState<string>('');
+  const [connectionStatus, setConnectionStatus] = useState<number>(ReconnectingWebSocket.CLOSED);
+  const [activeThemeId, setActiveThemeId] = useState<string>('');
   const [sectors, setSectors] = useState<Array<SectorState>>([]);
   const [encoderState, setEncoderState] = useState<EncoderState>({
     sector: 0,
@@ -60,6 +60,9 @@ export default function App() {
     total_sectors: 0,
     missed_sector_count: 0,
     standstill: true,
+  });
+  const [servosState, setServosState] = useState<ServosState>({
+    motors: {},
   });
   const [ledsState, setLedsState] = useState<LedsState>({
     power_on: true,
@@ -74,8 +77,23 @@ export default function App() {
       }
     },
   });
-  const [availableThemes, setAvailableThemes] = useState<Record<string, ThemeInfo>>({});
-  const [availableEffects, setAvailableEffects] = useState<Record<string, EffectInfo>>({});
+  const [info, setInfo] = useState<WheelInfo>({
+    version: '',
+    name: '',
+    display_name: '',
+    themes: {},
+    effects: {},
+    servos: {
+      version: '',
+      motors: {},
+    },
+    leds: {
+      version: '',
+    },
+    soundsystem: {
+      sounds: {},
+    },
+  });
 
   // Websocket
 
@@ -119,26 +137,28 @@ export default function App() {
         const state = packet.state;
         console.log('state', state);
         
-        setActiveTheme(state.theme_id);
+        setActiveThemeId(state.theme_id);
         setSectors(state.sectors);
         setEncoderState(state.encoder);
         setLedsState(state.leds);
+        setServosState(state.servos);
         setSoundsystemState(state.soundsystem);
 
         const info = packet.info;
         console.log('info', info);
-        setAvailableThemes(info.themes);
-        setAvailableEffects(info.effects);
+        setInfo(info);
       } else if (message.cmd === 'update') {
         const packet = WsUpdatePacket.parse(message);
         const update = packet.update;
         console.log('update', update);
         if (update.theme_id !== undefined)
-          setActiveTheme(update.theme_id);
+          setActiveThemeId(update.theme_id);
         if (update.sectors !== undefined)
           setSectors(update.sectors);
         if (update.encoder !== undefined)
           setEncoderState(update.encoder);
+        if (update.servos !== undefined)
+          setServosState(update.servos);
         if (update.leds !== undefined)
           setLedsState(update.leds);
         if (update.soundsystem !== undefined)
@@ -155,7 +175,7 @@ export default function App() {
 
   function wsSetState(state: WheelStateIn) {
     if (ws.current === null) {
-      console.warn('Websocet down, cannot set state', state);
+      console.warn('Websocket down, cannot set state', state);
       return;
     }
     const newState: WsSetStatePacket = {
@@ -181,15 +201,15 @@ export default function App() {
             loaderProps={{ size: 'xl', variant: 'bars' }}
             transitionDuration={1000}
           />
-          <Title order={1} align="center">Wheel of Fortune</Title>
+          <Title order={1} align="center">{info.display_name}</Title>
           <ColorSchemeToggle />
 
           <ThemeSelect
-            activeTheme={activeTheme}
-            availableThemes={availableThemes}
-            setActiveTheme={(themeId) => {
+            activeThemeId={activeThemeId}
+            availableThemes={info?.themes || {}}
+            setActiveThemeId={(themeId) => {
               console.log('set theme:', themeId)
-              setActiveTheme(themeId);
+              setActiveThemeId(themeId);
               wsSetState({theme_id: themeId});
             }}
           />
@@ -228,10 +248,11 @@ export default function App() {
 
           <Wheel
             sectors={sectors}
-            availableEffects={availableEffects}
             encoderState={encoderState}
-            updateSector={(index, name, effectId) => {
-              wsSetState({sectors: {[index]: {name: name, effect_id: effectId}}});
+            servosState={servosState}
+            info={info}            
+            updateSector={(index, state) => {
+              wsSetState({sectors: {[index]: state}});
             }}
           />
 

@@ -1,24 +1,34 @@
 import { EffectInfo } from "../schemas";
 import { forwardRef } from 'react';
-import { Group, Avatar, Text, Select } from '@mantine/core';
+import { Group, Avatar, Text, Select, ColorSwatch } from '@mantine/core';
 
 interface ItemProps extends React.ComponentPropsWithoutRef<'div'> {
   image: string;
   label: string;
   description: string;
+  color: string;
 }
 
 const SelectItem = forwardRef<HTMLDivElement, ItemProps>(
-  ({ image, label, description, ...others }: ItemProps, ref) => (
+  ({ image, label, description, color, ...others }: ItemProps, ref) => (
     <div ref={ref} {...others}>
-      <Group noWrap>
-        <Avatar src={image} />
-        <div>
-          <Text size="sm">{label}</Text>
-          <Text size="xs" opacity={0.65}>
-            {description}
-          </Text>
-        </div>
+      <Group position="apart" noWrap>
+        <Group noWrap>
+          <Avatar
+            src={image}
+          />
+          <div>
+            <Text size="sm">{label}</Text>
+            <Text size="xs" opacity={0.65}>
+              {description}
+            </Text>
+          </div>
+        </Group>
+        <ColorSwatch
+            color={color}
+            opacity={0.7}
+            radius="sm"
+          />
       </Group>
     </div>
   )
@@ -44,6 +54,7 @@ export default function EffectSelect({
       value: effectId,
       label: effect.name,
       description: effect.description,
+      color: effect.color,
     }
   });
 

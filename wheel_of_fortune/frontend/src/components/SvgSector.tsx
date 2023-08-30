@@ -61,7 +61,7 @@ export default function SvgSector({
         y={0.0}
         fill={textColor}
         transform={textTransform}
-        opacity={0.8}
+        opacity={0.7}
         fontSize="35px"
         alignmentBaseline="middle"
         pointerEvents="none"

@@ -171,6 +171,7 @@ class EffectInfo(BaseModel):
     name: str
     description: str
     image_url: str
+    color: str
     based_on: list[str] = []
     effect_sound: str
     leds_preset: dict[str, LedSegmentStateIn]

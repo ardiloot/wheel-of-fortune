@@ -230,8 +230,8 @@ export default function App() {
             sectors={sectors}
             availableEffects={availableEffects}
             encoderState={encoderState}
-            updateSector={(index, name, effectId) => {
-              wsSetState({sectors: {[index]: {name: name, effect_id: effectId}}});
+            updateSector={(index, state) => {
+              wsSetState({sectors: {[index]: state}});
             }}
           />
 

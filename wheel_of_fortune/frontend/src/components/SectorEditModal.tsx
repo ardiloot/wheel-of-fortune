@@ -1,6 +1,6 @@
 import { Button, Group, Modal, NativeSelect, TextInput } from "@mantine/core"
 import { useState } from "react";
-import { EffectInfo, SectorState } from "../schemas";
+import { EffectInfo, SectorState, SectorStateIn } from "../schemas";
 
 
 export interface SectorEditModalProps {
@@ -8,7 +8,7 @@ export interface SectorEditModalProps {
   sectorIndex: number | null;
   availableEffects: Record<string, EffectInfo>;
   onClose: () => void;
-  onSave: (index: number, name: string, effect: string) => void;
+  onSave: (index: number, state: SectorStateIn) => void;
 }
 
 
@@ -53,7 +53,10 @@ export default function SectorEditModal({
         <Button
           onClick={() => {
             if (sectorIndex !== null)
-              onSave(sectorIndex, name, effectId)
+              onSave(sectorIndex, {
+                name: name,
+                effect_id: effectId,
+              })
           }}
         >
           Save

@@ -179,6 +179,7 @@ export const EffectInfo = z.object({
   name: z.string(),
   description: z.string(),
   image_url: z.string(),
+  color: z.string(),
   based_on: z.array(z.string()),
   effect_sound: z.string(),
   // leds_preset: z.record(z.string(), LedSegmentStateIn),

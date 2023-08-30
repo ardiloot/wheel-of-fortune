@@ -4,15 +4,6 @@ import SvgSector from "./SvgSector";
 import { toDeg, toXY } from "../utils";
 
 
-const EFFECT_COLORS = [
-  '#4287f5',
-  '#109c10',
-  '#ede73b',
-  '#de6800',
-  '#de0400',
-];
-
-
 export interface SvgWheelProps {
   radius: number;
   wheelAngle: number;
@@ -34,9 +25,7 @@ export default function SvgWheel({
 
   const sectorItems = sectors.map((sector) => {
     const angle = sector.index * angularWidth;
-    const effectIds = Object.keys(availableEffects);
-    const effectNumber = effectIds.indexOf(sector.effect_id);
-    const effectColor = EFFECT_COLORS[effectNumber]; 
+    const effect = availableEffects[sector.effect_id];
     return (
       <SvgSector
         key={`${sector.index}`}  
@@ -44,7 +33,7 @@ export default function SvgWheel({
         angularWidth={angularWidth}
         radius={radius}
         text={sector.name}
-        textColor={effectColor}
+        textColor={effect?.color || '#00FFFF'}
         onClick={() => onSectorClick(sector.index)}
       />
     );

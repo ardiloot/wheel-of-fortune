@@ -26,7 +26,8 @@ import {
   EncoderState,
   LedsState,
   SoundSystemState,
-  WheelStateIn
+  WheelStateIn,
+  ServosState
 } from './schemas';
 
 
@@ -60,6 +61,9 @@ export default function App() {
     total_sectors: 0,
     missed_sector_count: 0,
     standstill: true,
+  });
+  const [servosState, setServosState] = useState<ServosState>({
+    motors: {},
   });
   const [ledsState, setLedsState] = useState<LedsState>({
     power_on: true,
@@ -123,6 +127,7 @@ export default function App() {
         setSectors(state.sectors);
         setEncoderState(state.encoder);
         setLedsState(state.leds);
+        setServosState(state.servos);
         setSoundsystemState(state.soundsystem);
 
         const info = packet.info;
@@ -139,6 +144,8 @@ export default function App() {
           setSectors(update.sectors);
         if (update.encoder !== undefined)
           setEncoderState(update.encoder);
+        if (update.servos !== undefined)
+          setServosState(update.servos);
         if (update.leds !== undefined)
           setLedsState(update.leds);
         if (update.soundsystem !== undefined)
@@ -228,6 +235,7 @@ export default function App() {
 
           <Wheel
             sectors={sectors}
+            servosState={servosState}
             availableEffects={availableEffects}
             encoderState={encoderState}
             updateSector={(index, state) => {

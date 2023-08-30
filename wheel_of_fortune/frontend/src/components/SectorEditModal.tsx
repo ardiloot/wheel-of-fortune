@@ -1,4 +1,4 @@
-import { Button, Group, Modal, NativeSelect, Select, TextInput } from "@mantine/core"
+import { Button, Group, Modal, TextInput } from "@mantine/core"
 import { useState } from "react";
 import { EffectInfo, SectorState, SectorStateIn } from "../schemas";
 import EffectSelect from "./EffectSelect";

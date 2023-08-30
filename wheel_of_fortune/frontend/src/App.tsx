@@ -50,7 +50,7 @@ export default function App() {
 
   // States
 
-  const [connectionStatus, setConnectionStatus] = useState<number>(-1);
+  const [connectionStatus, setConnectionStatus] = useState<number>(ReconnectingWebSocket.CLOSED);
   const [activeTheme, setActiveTheme] = useState<string>('');
   const [sectors, setSectors] = useState<Array<SectorState>>([]);
   const [encoderState, setEncoderState] = useState<EncoderState>({

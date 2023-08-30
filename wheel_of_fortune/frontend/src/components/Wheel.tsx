@@ -57,12 +57,12 @@ export default function Wheel({
             const angleDeg: number = servoAnglesDeg[name as keyof typeof servoAnglesDeg];
             if (!(name in servosState.motors))
               return;
-            const servo = servosState.motors[name];
+            const servoState = servosState.motors[name];
             return (
               <SvgServo
                 key={name}
                 angle={toRad(angleDeg)}
-                pos={servo.pos}
+                servoState={servoState}
                 onClick={() => {console.log('servo', angleDeg)}}
               />
             );

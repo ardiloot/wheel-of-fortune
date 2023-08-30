@@ -211,6 +211,8 @@ class WheelStateUpdate(BaseModel):
 
 class WheelInfo(BaseModel):
     version: str
+    name: str
+    display_name: str
     themes: dict[str, ThemeInfo]
     effects: dict[str, EffectInfo]
     servos: ServosInfo

@@ -205,6 +205,8 @@ class Wheel:
     def get_info(self) -> WheelInfo:
         return WheelInfo(
             version=VERSION,
+            name=self._config.name,
+            display_name=self._config.display_name,
             themes={id: theme.get_info() for id, theme in self._themes.items()},
             effects={id: effect.get_info() for id, effect in self._effects.items()},
             servos=self._servos.get_info(),

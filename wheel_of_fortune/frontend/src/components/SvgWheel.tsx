@@ -1,4 +1,4 @@
-import { createStyles } from "@mantine/core";
+import { useMantineTheme } from "@mantine/core";
 import { EffectInfo, SectorState } from "../schemas";
 import SvgSector from "./SvgSector";
 import { toDeg, toXY } from "../utils";
@@ -11,15 +11,6 @@ const EFFECT_COLORS = [
   '#de6800',
   '#de0400',
 ];
-
-
-const useStyles = createStyles((theme) => ({
-  separator: {
-    fill: theme.colors.gray[1],
-    strokeWidth: 0,
-    stroke: theme.colors.dark[3],
-  },
-}));
 
 
 export interface SvgWheelProps {
@@ -38,8 +29,7 @@ export default function SvgWheel({
   availableEffects,
   onSectorClick,
 } : SvgWheelProps) {
-  
-  const { classes } = useStyles();
+  const theme = useMantineTheme();
   const angularWidth = 2.0 * Math.PI / Math.max(1, sectors.length);
 
   const sectorItems = sectors.map((sector) => {
@@ -70,7 +60,9 @@ export default function SvgWheel({
         cx={p.x}
         cy={p.y}
         r={7}
-        className={classes.separator}
+        fill={theme.colors.gray[1]}
+        strokeWidth={0}
+        stroke={theme.colors.dark[3]}
       ></circle>
     );
   });

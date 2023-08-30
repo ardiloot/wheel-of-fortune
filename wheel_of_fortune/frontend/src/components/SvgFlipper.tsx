@@ -1,12 +1,4 @@
-import { createStyles } from "@mantine/core";
-
-const useStyles = createStyles((theme) => ({
-  flipper: {
-    fill: theme.colors.dark[5],
-    strokeWidth: 2,
-    stroke: theme.colors.gray[5],
-  },
-}));
+import { useMantineTheme } from "@mantine/core";
 
 
 export interface SvgFlipperProps {
@@ -19,13 +11,15 @@ export default function SvgFlipper({
   y,
 } : SvgFlipperProps) {
   
-  const { classes } = useStyles();
+  const theme = useMantineTheme();
 
   return (
     <path
       d="M 0 78.39 L -27.7 11.48 A 30 30 0 1 1 27.7 11.48 Z"
-      className={classes.flipper}
       transform={`translate(${x}, ${y})`}
+      fill={theme.colors.dark[5]}
+      strokeWidth={2}
+      stroke={theme.colors.gray[5]}
     />
   );
  

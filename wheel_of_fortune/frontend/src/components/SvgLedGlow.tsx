@@ -1,5 +1,5 @@
 import { MantineColor } from "@mantine/core";
-import { cond } from "lodash";
+
 
 export interface SvgLedGlowProps {
   id: string;
@@ -7,13 +7,12 @@ export interface SvgLedGlowProps {
   stops: Array<{offset: string, color: MantineColor, opacity: number}>;
 }
 
+
 export default function SvgLedGlow({
   id,
   radius,
   stops,
 } : SvgLedGlowProps) {
-
-  cond
 
   return (
     <>

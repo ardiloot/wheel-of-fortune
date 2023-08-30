@@ -87,9 +87,7 @@ export default function Wheel({
           x={0}
           y={-460}
         />
-        
       </svg>
-
 
       <SectorEditModal
         key={editSectorIndex}

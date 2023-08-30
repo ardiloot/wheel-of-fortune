@@ -3,6 +3,7 @@ export interface SvgLogoProps {
   radius: number;
 }
 
+
 export default function SvgLogo({
   radius,
 } : SvgLogoProps) {

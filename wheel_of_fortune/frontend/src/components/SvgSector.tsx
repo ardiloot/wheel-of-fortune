@@ -1,20 +1,12 @@
-import { createStyles } from "@mantine/core";
+import { createStyles, useMantineTheme } from "@mantine/core";
 import { toDeg, toXY } from "../utils";
 
+
 const useStyles = createStyles((theme) => ({
-  sector: {
-    stroke: theme.colors.gray[0],
-    fill: theme.colors.dark[6],
-    strokeWidth: 1,
+  hover: {
     '&:hover': {
       fill: theme.colors.dark[2],
     },
-  },
-  text: {
-    fontSize: "35px",
-    alignmentBaseline: "middle",
-    pointerEvents: "none",
-    fontFamily: "Verdana, sans-serif",
   },
 }));
 
@@ -38,7 +30,7 @@ export default function SvgSector({
 } : SvgSectorProps) {
 
   const { classes } = useStyles();
-
+  const theme = useMantineTheme();
 
   const p0 = toXY(radius, angle - 0.5 * angularWidth);
   const p1 = toXY(radius, angle + 0.5 * angularWidth);
@@ -58,16 +50,22 @@ export default function SvgSector({
     <>
       <path
         d={d}
-        className={classes.sector}
+        stroke={theme.colors.gray[0]}
+        fill={theme.colors.dark[6]}
+        strokeWidth={1}
+        className={classes.hover}
         onClick={onClick}
       />
       <text
         x={0.0}
         y={0.0}
-        className={classes.text}
         fill={textColor}
         transform={textTransform}
         opacity={0.8}
+        fontSize="35px"
+        alignmentBaseline="middle"
+        pointerEvents="none"
+        fontFamily="Verdana, sans-serif"
       >
         {text}
       </text>

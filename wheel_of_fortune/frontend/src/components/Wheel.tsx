@@ -5,8 +5,9 @@ import SvgFlipper from "./SvgFlipper";
 import SvgLogo from "./SvgLogo";
 import SvgLedGlow from "./SvgLedGlow";
 import SvgWheel from "./SvgWheel";
-
-
+import SvgServo from "./SvgServo";
+import { Switch } from "@mantine/core";
+import { toRad } from "../utils";
 
 
 export interface WheelProps {
@@ -24,7 +25,8 @@ export default function Wheel({
   updateSector,
 } : WheelProps) {
 
-  const [editSectorIndex, setEditSectorIndex] = useState<number | null>(null);  
+  const [editSectorIndex, setEditSectorIndex] = useState<number | null>(null);
+  const [servoPos, setServoPos] = useState<number>(0);
   const angularWidth = 2.0 * Math.PI / Math.max(1, sectors.length);
   const curWheelAngle = angularWidth * encoderState.sector;
 
@@ -42,6 +44,17 @@ export default function Wheel({
             {offset: "100%", color: "blue", opacity: 0.0},
           ]}
         />
+
+        {/* Servos */}
+        {
+          [0, 135, -135].map((angleDeg) => (
+            <SvgServo
+            angle={toRad(angleDeg)}
+            pos={servoPos}
+            onClick={() => {console.log('servo', angleDeg)}}
+          />
+          ))
+        }
           
         <SvgWheel
           radius={400}
@@ -68,7 +81,13 @@ export default function Wheel({
           x={0}
           y={-460}
         />
+        
       </svg>
+
+      <Switch
+        label="Servo pos"
+        onChange={(event) => setServoPos(event.currentTarget.checked ? 1.0 : 0.0)}
+      />
 
       <SectorEditModal
         key={editSectorIndex}

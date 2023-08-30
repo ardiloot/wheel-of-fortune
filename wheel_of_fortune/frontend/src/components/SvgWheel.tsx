@@ -1,6 +1,7 @@
 import { createStyles } from "@mantine/core";
 import { EffectInfo, SectorState } from "../schemas";
 import SvgSector from "./SvgSector";
+import { toDeg, toXY } from "../utils";
 
 
 const EFFECT_COLORS = [
@@ -81,20 +82,4 @@ export default function SvgWheel({
     </g>
   );
  
-}
-
-
-function toXY(radius: number, angle: number): {x: number, y: number} {
-  // 0 deg = upwards
-  // 90 deg = to right
-  // ...
-  return {
-    x: radius * Math.sin(angle),
-    y: radius * -Math.cos(angle),
-  }
-}
-
-
-function toDeg(radians: number): number {
-  return radians * (180 / Math.PI);
 }

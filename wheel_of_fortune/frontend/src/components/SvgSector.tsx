@@ -1,4 +1,5 @@
 import { createStyles } from "@mantine/core";
+import { toDeg, toXY } from "../utils";
 
 const useStyles = createStyles((theme) => ({
   sector: {
@@ -74,18 +75,3 @@ export default function SvgSector({
   );
 }
 
-
-function toXY(radius: number, angle: number): {x: number, y: number} {
-  // 0 deg = upwards
-  // 90 deg = to right
-  // ...
-  return {
-    x: radius * Math.sin(angle),
-    y: radius * -Math.cos(angle),
-  }
-}
-
-
-function toDeg(radians: number): number {
-  return radians * (180 / Math.PI);
-}

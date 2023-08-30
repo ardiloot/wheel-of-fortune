@@ -154,6 +154,7 @@ class SectorStateIn(BaseModel):
 class ThemeInfo(BaseModel):
     name: str
     description: str
+    image_url: str
     based_on: list[str] = []
     theme_sound: str
     startup_led_preset: dict[str, LedSegmentStateIn]
@@ -169,6 +170,7 @@ class ThemeInfo(BaseModel):
 class EffectInfo(BaseModel):
     name: str
     description: str
+    image_url: str
     based_on: list[str] = []
     effect_sound: str
     leds_preset: dict[str, LedSegmentStateIn]

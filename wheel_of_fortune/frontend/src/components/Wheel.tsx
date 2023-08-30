@@ -1,40 +1,33 @@
 import { useState } from "react";
 import SectorEditModal from "./SectorEditModal";
-import { EffectInfo, EncoderState, SectorState, SectorStateIn, ServosState } from "../schemas";
+import { EncoderState, SectorState, SectorStateIn, ServosState, WheelInfo } from "../schemas";
 import SvgFlipper from "./SvgFlipper";
 import SvgLogo from "./SvgLogo";
 import SvgLedGlow from "./SvgLedGlow";
 import SvgWheel from "./SvgWheel";
 import SvgServo from "./SvgServo";
-import { toRad } from "../utils";
 
 
 export interface WheelProps {
-  servosState: ServosState;
   sectors: Array<SectorState>;
-  availableEffects: Record<string, EffectInfo>;
   encoderState: EncoderState;
+  servosState: ServosState;
+  info: WheelInfo;
   updateSector: (index: number, state: SectorStateIn) => void;
 }
 
 
 export default function Wheel({
-  servosState,
   sectors,
-  availableEffects,
   encoderState,
+  servosState,
+  info,
   updateSector,
 } : WheelProps) {
 
   const [editSectorIndex, setEditSectorIndex] = useState<number | null>(null);
   const angularWidth = 2.0 * Math.PI / Math.max(1, sectors.length);
   const curWheelAngle = angularWidth * encoderState.sector;
-
-  const servoAnglesDeg = {
-    bottom: 0,
-    right: -135,
-    left: 135,
-  };
 
   return (
     <>
@@ -53,17 +46,17 @@ export default function Wheel({
 
         {/* Servos */}
         {
-          Object.keys(servoAnglesDeg).map((name) => {
-            const angleDeg: number = servoAnglesDeg[name as keyof typeof servoAnglesDeg];
+          Object.keys(info.servos.motors).map((name) => {
+            const servoInfo = info.servos.motors[name];
             if (!(name in servosState.motors))
               return;
             const servoState = servosState.motors[name];
             return (
               <SvgServo
                 key={name}
-                angle={toRad(angleDeg)}
+                servoInfo={servoInfo}
                 servoState={servoState}
-                onClick={() => {console.log('servo', angleDeg)}}
+                onClick={() => {console.log('servo', name, servoState, servoInfo)}}
               />
             );
           })
@@ -73,7 +66,7 @@ export default function Wheel({
           radius={400}
           wheelAngle={curWheelAngle}
           sectors={sectors}
-          availableEffects={availableEffects}
+          availableEffects={info.effects}
           onSectorClick={setEditSectorIndex}
         />
 
@@ -109,7 +102,7 @@ export default function Wheel({
           setEditSectorIndex(null);
           updateSector(index, state);
         }}
-        availableEffects={availableEffects}
+        availableEffects={info.effects}
       />
 
     </>

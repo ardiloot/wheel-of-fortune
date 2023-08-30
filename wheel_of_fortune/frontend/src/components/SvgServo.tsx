@@ -1,6 +1,6 @@
 import { createStyles, useMantineTheme } from "@mantine/core";
 import { toDeg } from "../utils";
-import { ServoState } from "../schemas";
+import { ServoInfo, ServoState } from "../schemas";
 
 
 const useStyles = createStyles((theme) => ({
@@ -13,14 +13,14 @@ const useStyles = createStyles((theme) => ({
 
 
 export interface SvgServoProps {
-  angle: number;
+  servoInfo: ServoInfo;
   servoState: ServoState;
   onClick: () => void;
 }
 
 
 export default function SvgServo({
-  angle,
+  servoInfo,
   servoState,
   onClick,
 } : SvgServoProps) {
@@ -35,7 +35,7 @@ export default function SvgServo({
   const stroke = servoState.detached ? theme.colors.red[9] : theme.colors.dark[3];
 
   return (
-    <g transform={`rotate(${toDeg(angle)}) translate(0, ${y})`}>
+    <g transform={`rotate(${toDeg(servoInfo.mount_angle)}) translate(0, ${y})`}>
       <rect
         x={-5}
         y={-200}

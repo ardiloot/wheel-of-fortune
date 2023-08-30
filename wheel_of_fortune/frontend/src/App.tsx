@@ -18,16 +18,15 @@ import BrightnessSlider from './components/BrightnessSlider';
 import ThemeSelect from './components/ThemeSelect';
 import {
   WsInitPacket,
-  ThemeInfo,
   WsUpdatePacket,
   WsSetStatePacket,
   SectorState,
-  EffectInfo,
   EncoderState,
   LedsState,
   SoundSystemState,
   WheelStateIn,
-  ServosState
+  ServosState,
+  WheelInfo
 } from './schemas';
 
 
@@ -78,8 +77,21 @@ export default function App() {
       }
     },
   });
-  const [availableThemes, setAvailableThemes] = useState<Record<string, ThemeInfo>>({});
-  const [availableEffects, setAvailableEffects] = useState<Record<string, EffectInfo>>({});
+  const [info, setInfo] = useState<WheelInfo>({
+    version: '',
+    themes: {},
+    effects: {},
+    servos: {
+      version: '',
+      motors: {},
+    },
+    leds: {
+      version: '',
+    },
+    soundsystem: {
+      sounds: {},
+    },
+  });
 
   // Websocket
 
@@ -132,8 +144,7 @@ export default function App() {
 
         const info = packet.info;
         console.log('info', info);
-        setAvailableThemes(info.themes);
-        setAvailableEffects(info.effects);
+        setInfo(info);
       } else if (message.cmd === 'update') {
         const packet = WsUpdatePacket.parse(message);
         const update = packet.update;
@@ -193,7 +204,7 @@ export default function App() {
 
           <ThemeSelect
             activeTheme={activeTheme}
-            availableThemes={availableThemes}
+            availableThemes={info?.themes || {}}
             setActiveTheme={(themeId) => {
               console.log('set theme:', themeId)
               setActiveTheme(themeId);
@@ -235,9 +246,9 @@ export default function App() {
 
           <Wheel
             sectors={sectors}
-            servosState={servosState}
-            availableEffects={availableEffects}
             encoderState={encoderState}
+            servosState={servosState}
+            info={info}            
             updateSector={(index, state) => {
               wsSetState({sectors: {[index]: state}});
             }}

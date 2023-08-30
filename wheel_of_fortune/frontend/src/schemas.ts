@@ -32,6 +32,14 @@ export const ServoStateIn = z.object({
 });
 export type ServoStateIn = z.infer<typeof ServoStateIn>;
 
+export const ServoInfo = z.object({
+  mount_angle: z.number(),
+  zero_duty: z.number(),
+  full_duty: z.number(),
+  mount_duty: z.number(),
+});
+export type ServoInfo = z.infer<typeof ServoInfo>;
+
 
 export const ServosState = z.object({
   motors: z.record(z.string(), ServoState)
@@ -43,6 +51,13 @@ export const ServosStateIn = z.object({
   motors: z.record(z.string(), ServoState).default({})
 });
 export type ServosStateIn = z.infer<typeof ServosStateIn>;
+
+
+export const ServosInfo = z.object({
+  version: z.string(),
+  motors: z.record(z.string(), ServoInfo)
+});
+export type ServosInfo = z.infer<typeof ServosInfo>;
 
 // ----------------------------------------------------------------------------
 // LEDs
@@ -211,6 +226,7 @@ export const WheelInfo = z.object({
   version: z.string(),
   themes: z.record(z.string(), ThemeInfo),
   effects: z.record(z.string(), EffectInfo),
+  servos: ServosInfo,
   leds: LedsInfo,
   soundsystem: SoundSystemInfo,
 });

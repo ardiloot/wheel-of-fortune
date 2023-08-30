@@ -30,6 +30,7 @@ CLOUDFLARE_DNS_API_TOKEN=
 
 # Wheel of Fortune configuration
 WHEEL_NAME=test-wheel
+WHEEL_DISPLAY_NAME="Wheel of Fortune"
 WHEEL_WLED_URL=
 WHEEL_WLED_SEGMENTS='[
     {"name": "ambilight", "start": 0, "stop": 133},

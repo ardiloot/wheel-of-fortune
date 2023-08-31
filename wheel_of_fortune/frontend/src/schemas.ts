@@ -150,7 +150,9 @@ export const ThemeInfo = z.object({
   description: z.string(),
   image_url: z.string(),
   based_on: z.array(z.string()),
+  startup_sound: z.string(),
   theme_sound: z.string(),
+  poweroff_sound: z.string(),
   // startup_led_preset: z.record(z.string(), LedSegmentStateIn),
   // idle_led_preset: z.record(z.string(), LedSegmentStateIn),
   // spinning_led_preset: z.record(z.string(), LedSegmentStateIn),
@@ -170,6 +172,7 @@ export const EffectInfo = z.object({
   based_on: z.array(z.string()),
   effect_sound: z.string(),
   // leds_preset: z.record(z.string(), LedSegmentStateIn),
+  active_servos: z.array(z.string()),
 });
 
 export type EffectInfo = z.infer<typeof EffectInfo>;

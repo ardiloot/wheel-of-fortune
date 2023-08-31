@@ -178,6 +178,7 @@ class EffectInfo(BaseModel):
     based_on: list[str] = []
     effect_sound: str
     leds_preset: dict[str, LedSegmentStateIn]
+    active_servos: list[str]
 
 
 # -----------------------------------------------------------------------------

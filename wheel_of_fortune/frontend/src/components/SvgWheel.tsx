@@ -49,7 +49,7 @@ export default function SvgWheel({ radius, wheelAngle, sectors, availableEffects
   });
 
   return (
-    <g transform={`rotate(${toDeg(wheelAngle).toFixed(3)})`}>
+    <g transform={`rotate(${toDeg(-wheelAngle).toFixed(3)})`}>
       {sectorItems}
       {sectorSeparatorItems}
     </g>

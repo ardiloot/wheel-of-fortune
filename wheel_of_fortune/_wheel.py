@@ -377,11 +377,12 @@ class Wheel:
         try:
             enc_state = self._encoder.get_state()
             effect = self._sectors[enc_state.sector].effect
+            _LOGGER.info("Effect: %s" % (effect.name))
 
-            await self._servos.set_state(
-                ServosStateIn.model_validate({"motors": {"bottom": {"pos": 1.0}}})
+            await self._servos.move_to_pos(
+                names=effect.active_servos,
+                target_pos=1.0,
             )
-            await asyncio.sleep(1.0)
 
             await self._soundsystem.volume_sweep(MAIN_CH, 1.0, 0.2)
             await asyncio.sleep(0.2)
@@ -393,16 +394,17 @@ class Wheel:
             await self._soundsystem.volume_sweep(MAIN_CH, 0.2, 1.0, time_ms=1000)
             await asyncio.sleep(4.0)
 
-            await self._servos.set_state(
-                ServosStateIn.model_validate({"motors": {"bottom": {"pos": 0.0}}})
+            await self._servos.move_to_pos(
+                names=effect.active_servos,
+                target_pos=0.0,
             )
-            await asyncio.sleep(3.0)
             await self._soundsystem.fadeout(MAIN_CH, fade_ms=2000)
 
         finally:
             await self._soundsystem.fadeout(MAIN_CH)
-            await self._servos.set_state(
-                ServosStateIn.model_validate({"motors": {"bottom": {"pos": 0.0}}})
+            await self._servos.move_to_pos(
+                names=effect.active_servos,
+                target_pos=0.0,
             )
 
     async def _task_poweroff(self):

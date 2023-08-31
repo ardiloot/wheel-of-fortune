@@ -2,6 +2,7 @@
 	"recommendations": [
         "ms-python.python",
         "ms-python.flake8",
+        "ms-python.black-formatter",
         "dbaeumer.vscode-eslint",
         "esbenp.prettier-vscode",
         "streetsidesoftware.code-spell-checker",

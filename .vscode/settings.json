@@ -4,25 +4,40 @@
     ],
     "python.analysis.typeCheckingMode": "basic",
     "[typescriptreact]": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.formatOnSave": true
     },
     "[typescript]": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.formatOnSave": true
+    },
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.black-formatter",
+        "editor.formatOnSave": true
     },
     "prettier.configPath": "wheel_of_fortune/frontend/prettierrc.cjs",
     "cSpell.words": [
+        "aiofiles",
         "aiohttp",
+        "coloredlogs",
+        "dpulses",
+        "dtime",
         "fastapi",
+        "gethostname",
         "gpio",
         "leds",
+        "levelname",
         "mantine",
         "mergedeep",
         "poweroff",
         "pydantic",
         "pygame",
+        "setwarnings",
         "soundsystem",
         "subsettings",
+        "SUNXI",
         "tabler",
+        "uvicorn",
         "wled"
     ]
 }

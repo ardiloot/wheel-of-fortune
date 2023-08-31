@@ -44,6 +44,3 @@ dev = [
 include = ["wheel_of_fortune*"]
 
 [tool.setuptools_scm]
-
-[tool.black]
-line-length = 119

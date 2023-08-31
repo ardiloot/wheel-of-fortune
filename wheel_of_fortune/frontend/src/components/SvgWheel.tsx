@@ -1,8 +1,7 @@
-import { useMantineTheme } from "@mantine/core";
-import { EffectInfo, SectorState } from "../schemas";
-import SvgSector from "./SvgSector";
-import { toDeg, toXY } from "../utils";
-
+import { useMantineTheme } from '@mantine/core';
+import { EffectInfo, SectorState } from '../schemas';
+import SvgSector from './SvgSector';
+import { toDeg, toXY } from '../utils';
 
 export interface SvgWheelProps {
   radius: number;
@@ -12,23 +11,16 @@ export interface SvgWheelProps {
   onSectorClick: (index: number) => void;
 }
 
-
-export default function SvgWheel({
-  radius,
-  wheelAngle,
-  sectors,
-  availableEffects,
-  onSectorClick,
-} : SvgWheelProps) {
+export default function SvgWheel({ radius, wheelAngle, sectors, availableEffects, onSectorClick }: SvgWheelProps) {
   const theme = useMantineTheme();
-  const angularWidth = 2.0 * Math.PI / Math.max(1, sectors.length);
+  const angularWidth = (2.0 * Math.PI) / Math.max(1, sectors.length);
 
   const sectorItems = sectors.map((sector) => {
     const angle = sector.index * angularWidth;
     const effect = availableEffects[sector.effect_id];
     return (
       <SvgSector
-        key={`${sector.index}`}  
+        key={`${sector.index}`}
         angle={angle}
         angularWidth={angularWidth}
         radius={radius}
@@ -40,7 +32,7 @@ export default function SvgWheel({
   });
 
   const sectorSeparatorItems = sectors.map((sector) => {
-    const r = 0.97 * radius
+    const r = 0.97 * radius;
     const angle = (sector.index - 0.5) * angularWidth;
     const p = toXY(r, angle);
     return (
@@ -62,5 +54,4 @@ export default function SvgWheel({
       {sectorSeparatorItems}
     </g>
   );
- 
 }

@@ -1,7 +1,6 @@
-import { createStyles, useMantineTheme } from "@mantine/core";
-import { toDeg } from "../utils";
-import { ServoInfo, ServoState } from "../schemas";
-
+import { createStyles, useMantineTheme } from '@mantine/core';
+import { toDeg } from '../utils';
+import { ServoInfo, ServoState } from '../schemas';
 
 const useStyles = createStyles((theme) => ({
   hover: {
@@ -11,20 +10,13 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-
 export interface SvgServoProps {
   servoInfo: ServoInfo;
   servoState: ServoState;
   onClick: () => void;
 }
 
-
-export default function SvgServo({
-  servoInfo,
-  servoState,
-  onClick,
-} : SvgServoProps) {
-  
+export default function SvgServo({ servoInfo, servoState, onClick }: SvgServoProps) {
   const { classes } = useStyles();
   const theme = useMantineTheme();
 
@@ -69,5 +61,4 @@ export default function SvgServo({
       />
     </g>
   );
-
 }

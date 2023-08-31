@@ -1,6 +1,5 @@
-import { createStyles, useMantineTheme } from "@mantine/core";
-import { toDeg, toXY } from "../utils";
-
+import { createStyles, useMantineTheme } from '@mantine/core';
+import { toDeg, toXY } from '../utils';
 
 const useStyles = createStyles((theme) => ({
   hover: {
@@ -9,7 +8,6 @@ const useStyles = createStyles((theme) => ({
     },
   },
 }));
-
 
 export interface SvgSectorProps {
   angle: number;
@@ -20,21 +18,14 @@ export interface SvgSectorProps {
   onClick: () => void;
 }
 
-export default function SvgSector({
-  angle,
-  angularWidth,
-  radius,
-  text,
-  textColor,
-  onClick,
-} : SvgSectorProps) {
-
+export default function SvgSector({ angle, angularWidth, radius, text, textColor, onClick }: SvgSectorProps) {
   const { classes } = useStyles();
   const theme = useMantineTheme();
 
   const p0 = toXY(radius, angle - 0.5 * angularWidth);
   const p1 = toXY(radius, angle + 0.5 * angularWidth);
-  const d = 'M 0 0 L ' +
+  const d =
+    'M 0 0 L ' +
     `${p0.x.toFixed(3)} ${p0.y.toFixed(3)}` +
     `A ${radius} ${radius} 0 0 1 ` +
     `${p1.x.toFixed(3)} ${p1.y.toFixed(3)} ` +
@@ -43,8 +34,7 @@ export default function SvgSector({
   const textRadius = 0.95 * radius;
   const textPos = toXY(textRadius, angle);
   const textTransform =
-    `translate(${textPos.x.toFixed(3)}, ${textPos.y.toFixed(3)}) ` +
-    `rotate(${toDeg(angle  + Math.PI / 2).toFixed(3)})`;
+    `translate(${textPos.x.toFixed(3)}, ${textPos.y.toFixed(3)}) ` + `rotate(${toDeg(angle + Math.PI / 2).toFixed(3)})`;
 
   return (
     <>
@@ -72,4 +62,3 @@ export default function SvgSector({
     </>
   );
 }
-

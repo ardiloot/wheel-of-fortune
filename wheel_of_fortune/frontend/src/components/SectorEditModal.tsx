@@ -1,8 +1,7 @@
-import { Button, Group, Modal, TextInput } from "@mantine/core"
-import { useState } from "react";
-import { EffectInfo, SectorState, SectorStateIn } from "../schemas";
-import EffectSelect from "./EffectSelect";
-
+import { Button, Group, Modal, TextInput } from '@mantine/core';
+import { useState } from 'react';
+import { EffectInfo, SectorState, SectorStateIn } from '../schemas';
+import EffectSelect from './EffectSelect';
 
 export interface SectorEditModalProps {
   sectors: Array<SectorState>;
@@ -12,15 +11,13 @@ export interface SectorEditModalProps {
   onSave: (index: number, state: SectorStateIn) => void;
 }
 
-
 export default function SectorEditModal({
   sectors,
   sectorIndex,
   availableEffects,
   onClose,
-  onSave
-} : SectorEditModalProps) {
-
+  onSave,
+}: SectorEditModalProps) {
   const sector = sectorIndex !== null ? sectors[sectorIndex] : null;
   const [name, setName] = useState<string>(sector?.name ?? '');
   const [effectId, setEffectId] = useState<string>(sector?.effect_id ?? '');
@@ -38,11 +35,7 @@ export default function SectorEditModal({
         value={name}
         onChange={(e) => setName(e.target.value)}
       />
-      <EffectSelect
-        activeEffectId={effectId}
-        availableEffects={availableEffects}
-        setEffectId={setEffectId}
-      />
+      <EffectSelect activeEffectId={effectId} availableEffects={availableEffects} setEffectId={setEffectId} />
       <Group position="right" mt="md">
         <Button
           onClick={() => {
@@ -50,12 +43,12 @@ export default function SectorEditModal({
               onSave(sectorIndex, {
                 name: name,
                 effect_id: effectId,
-              })
+              });
           }}
         >
           Save
         </Button>
       </Group>
     </Modal>
-  )
+  );
 }

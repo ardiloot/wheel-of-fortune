@@ -1,6 +1,5 @@
-import { IconVolume2 } from "@tabler/icons-react";
-import { Slider, rem } from "@mantine/core";
-
+import { IconVolume2 } from '@tabler/icons-react';
+import { Slider, rem } from '@mantine/core';
 
 export interface VolumeSliderProps {
   volume: number;
@@ -8,11 +7,7 @@ export interface VolumeSliderProps {
   setVolumeEnd: (volume: number) => void;
 }
 
-export default function VolumeSlider({
-  volume,
-  setVolume,
-  setVolumeEnd,
-} : VolumeSliderProps) {
+export default function VolumeSlider({ volume, setVolume, setVolumeEnd }: VolumeSliderProps) {
   const volumePercent = Math.round(100 * volume);
 
   return (
@@ -21,9 +16,9 @@ export default function VolumeSlider({
       mt="lg"
       mb="lg"
       thumbChildren={<IconVolume2 size="1.5rem" />}
-      value={ volumePercent }
-      onChange={ (value) => setVolume(value / 100) }
-      onChangeEnd={ (value) => setVolumeEnd(value / 100) }
+      value={volumePercent}
+      onChange={(value) => setVolume(value / 100)}
+      onChangeEnd={(value) => setVolumeEnd(value / 100)}
       thumbSize={25}
       styles={{
         thumb: {
@@ -31,5 +26,5 @@ export default function VolumeSlider({
         },
       }}
     />
-  )
+  );
 }

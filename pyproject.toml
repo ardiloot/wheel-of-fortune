@@ -37,9 +37,13 @@ dev = [
     "pip-tools",
     "pydub",
     "python-dotenv",
+    "black",
 ]
 
 [tool.setuptools.packages.find]
 include = ["wheel_of_fortune*"]
 
 [tool.setuptools_scm]
+
+[tool.black]
+line-length = 119

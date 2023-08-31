@@ -27,11 +27,11 @@ export default function BrightnessSlider({
     onChange={(value) => setBrightness(value / 100)}
     onChangeEnd={(value) => setBrightnessEnd(value / 100)}
     thumbSize={25}
-    styles={(_) => ({
+    styles={{
       thumb: {
         borderWidth: rem(1),
       },
-    })}
+    }}
   />
   )
 }

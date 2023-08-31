@@ -25,11 +25,11 @@ export default function VolumeSlider({
       onChange={ (value) => setVolume(value / 100) }
       onChangeEnd={ (value) => setVolumeEnd(value / 100) }
       thumbSize={25}
-      styles={(_) => ({
+      styles={{
         thumb: {
           borderWidth: rem(1),
         },
-      })}
+      }}
     />
   )
 }

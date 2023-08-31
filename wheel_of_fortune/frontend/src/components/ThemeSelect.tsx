@@ -23,6 +23,7 @@ const SelectItem = forwardRef<HTMLDivElement, ItemProps>(
     </div>
   )
 );
+SelectItem.displayName = 'SelectItem';
 
 export interface ThemeSelectProps {
   activeThemeId: string;

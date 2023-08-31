@@ -33,6 +33,7 @@ const SelectItem = forwardRef<HTMLDivElement, ItemProps>(
     </div>
   )
 );
+SelectItem.displayName = 'SelectItem';
 
 export interface EffectSelectProps {
   activeEffectId: string;

@@ -310,6 +310,7 @@ class Wheel:
                 raise RuntimeError("ERROR cancelling task")
 
     async def _task_startup(self):
+        await self._soundsystem.play(EFFECT_CH, self._theme.startup_sound)
         await self._leds.set_state(LedsStateIn(segments=self._theme.startup_led_preset))
         await asyncio.sleep(2)
 
@@ -406,6 +407,7 @@ class Wheel:
 
     async def _task_poweroff(self):
         await self._soundsystem.fadeout(MAIN_CH)
+        await self._soundsystem.play(EFFECT_CH, self._theme.poweroff_sound)
         await self._leds.set_state(
             LedsStateIn(segments=self._theme.poweroff_led_preset)
         )

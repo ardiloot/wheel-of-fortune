@@ -156,7 +156,9 @@ class ThemeInfo(BaseModel):
     description: str
     image_url: str
     based_on: list[str] = []
+    startup_sound: str
     theme_sound: str
+    poweroff_sound: str
     startup_led_preset: dict[str, LedSegmentStateIn]
     idle_led_preset: dict[str, LedSegmentStateIn]
     spinning_led_preset: dict[str, LedSegmentStateIn]

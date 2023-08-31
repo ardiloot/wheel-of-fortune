@@ -40,9 +40,12 @@ export default function ThemeSelect({ activeThemeId, availableThemes, setActiveT
     };
   });
 
+  const activeTheme = availableThemes[activeThemeId];
+
   return (
     <Select
       label="Theme:"
+      icon={<Avatar size="1.5rem" src={activeTheme?.image_url} />}
       itemComponent={SelectItem}
       value={activeThemeId}
       data={data}

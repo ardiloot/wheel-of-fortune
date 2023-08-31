@@ -47,9 +47,12 @@ export default function EffectSelect({ activeEffectId, availableEffects, setEffe
     };
   });
 
+  const activeEffect = availableEffects[activeEffectId];
+
   return (
     <Select
       label="Effect:"
+      icon={<Avatar size="1.5rem" src={activeEffect?.image_url} />}
       itemComponent={SelectItem}
       value={activeEffectId}
       data={data}

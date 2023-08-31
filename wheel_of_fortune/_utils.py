@@ -25,7 +25,6 @@ def encode_gray_code(num: int) -> int:
 
 
 class AsyncTimer:
-
     def __init__(self, timeout: float, callback):
         self._callback: Callable[[], None] = callback
         self._timeout: float = timeout
@@ -34,7 +33,7 @@ class AsyncTimer:
     def start(self):
         self.cancel()
         self._task = asyncio.create_task(self._run())
-        
+
     def cancel(self):
         if self._task is not None:
             self._task.cancel()

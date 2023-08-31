@@ -27,7 +27,6 @@ async def get_ws_manager() -> WsManager:
 
 
 async def startup_event():
-
     async def maintain_wheel():
         if wheel is None:
             raise ValueError("Cannot maintain wheel")
@@ -38,7 +37,7 @@ async def startup_event():
             await wheel.maintain()
         except Exception:
             _LOGGER.exception("Unrecoverable error in maintain_wheel")
-            sys.exit("Unrecoverable error in maintain_wheel") 
+            sys.exit("Unrecoverable error in maintain_wheel")
         finally:
             await wheel.close()
         _LOGGER.info("maintain_wheel finished.")
@@ -48,11 +47,11 @@ async def startup_event():
     global ws_manager
     if wheel is None:
         config = Config()
-    
+
         gpio = GPIO
         gpio.setwarnings(False)
         gpio.setmode(GPIO.SUNXI)
-    
+
         wheel = Wheel(config, gpio)
         ws_manager = WsManager(wheel)
         maintain_wheel_task = asyncio.create_task(maintain_wheel())
@@ -61,7 +60,7 @@ async def startup_event():
 async def shutdown_event():
     if maintain_wheel_task is None:
         return
-    
+
     maintain_wheel_task.cancel()
     # Wait for cancel
     try:

@@ -42,7 +42,11 @@ class WsConnection:
             self._mgr._disconnect(self)
 
     async def send(self, data: str):
-        await self._websocket.send_text(data)
+        try:
+            await self._websocket.send_text(data)
+        except Exception:
+            _LOGGER.exception("Unable to send WS data")
+            self._mgr._disconnect(self)
 
     async def _send_init(self):
         wheel = self._mgr._wheel
@@ -61,14 +65,19 @@ class WsManager:
         self._wheel.subscribe(self._wheel_update_received)
         self._background_tasks = set()
 
-    async def connect(self, websocket: WebSocket) -> WsConnection:
+    async def add_client(self, websocket: WebSocket) -> WsConnection | None:
         _LOGGER.info(
-            "WsManager: add connection %s (num_connections: %d)"
+            "WsManager: add client %s (num_connections: %d)"
             % (websocket, len(self._connections) + 1)
         )
-        connection = WsConnection(self, websocket)
-        self._connections.add(connection)
-        await connection.connect()
+
+        try:
+            connection = WsConnection(self, websocket)
+            await connection.connect()
+            self._connections.add(connection)
+        except Exception:
+            _LOGGER.exception("Failed to connect to WS client")
+            connection = None
         return connection
 
     async def _broadcast_update(self, update: WheelStateUpdate):
@@ -88,6 +97,8 @@ class WsManager:
         await asyncio.gather(*r)
 
     def _disconnect(self, connection: WsConnection):
+        if connection not in self._connections:
+            return
         _LOGGER.info(
             "WsManager: disconnected %s (num_connections: %d)"
             % (connection._websocket, len(self._connections) - 1)

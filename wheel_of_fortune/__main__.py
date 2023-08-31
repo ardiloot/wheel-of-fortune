@@ -18,10 +18,7 @@ from fastapi.staticfiles import StaticFiles
 _LOGGER = logging.getLogger(__name__)
 _VERSION = importlib.metadata.version("wheel_of_fortune")
 
-app = FastAPI(
-    docs_url="/api/v1/docs",
-    openapi_url="/api/v1/openapi.json"
-)
+app = FastAPI(docs_url="/api/v1/docs", openapi_url="/api/v1/openapi.json")
 
 app.include_router(encoder.router)
 app.include_router(servos.router)
@@ -56,11 +53,10 @@ async def api_shutdown_event():
 
 
 if __name__ == "__main__":
-    
     coloredlogs.install(
         level="debug",
         fmt="%(asctime)s %(name)s:%(lineno)d %(levelname)s %(message)s",
-        milliseconds=True
+        milliseconds=True,
     )
 
     uvicorn.run(app, host="0.0.0.0", port=8000)

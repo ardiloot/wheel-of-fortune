@@ -16,7 +16,6 @@ _LOGGER = logging.getLogger(__name__)
 
 
 class ServoMotor:
-
     def __init__(self, pwm_id, mount_angle, zero_duty, full_duty, mount_duty):
         self.pwm_id = pwm_id
         self._mount_angle = mount_angle
@@ -39,7 +38,7 @@ class ServoMotor:
             duty=self.get_duty(),
             detached=self._detached,
         )
-    
+
     def get_info(self) -> ServoInfo:
         return ServoInfo(
             mount_angle=self._mount_angle,
@@ -47,12 +46,12 @@ class ServoMotor:
             full_duty=self._full_duty,
             mount_duty=self._mount_duty,
         )
-    
+
     def get_duty(self):
         if self._detached:
             return 0.0
         return self._pos_to_duty(self._pos)
-        
+
     def _pos_to_duty(self, pos: float | None) -> float:
         if pos is None:
             return 0.0
@@ -65,14 +64,13 @@ class ServoMotor:
 
 
 class ServoController:
-
     def __init__(self, config, update_cb):
         self._config: Config = config
         self._update_cb: Callable[[ServosState], None] = update_cb
         self._loop = asyncio.get_running_loop()
         self._session: aiohttp.ClientSession | None = None
         self._info = {}
-        
+
         self._motors = {}
         for i, servo_conf in enumerate(config.servos):
             pwm_id = "%d" % (i)
@@ -93,7 +91,7 @@ class ServoController:
         resp = await self._session.get("/json/info")
         self._info = await resp.json()
         _LOGGER.debug("info: %s" % (self._info))
-            
+
     async def close(self):
         if self._session is None:
             return
@@ -112,13 +110,13 @@ class ServoController:
         return ServosState(
             motors={name: motor.get_state() for name, motor in self._motors.items()}
         )
-    
+
     def get_info(self) -> ServosInfo:
         return ServosInfo(
             version=self._info.get("ver", ""),
-            motors={name: motor.get_info() for name, motor in self._motors.items()}
+            motors={name: motor.get_info() for name, motor in self._motors.items()},
         )
-    
+
     async def maintain(self):
         while True:
             state = self.get_state()
@@ -129,10 +127,10 @@ class ServoController:
         _LOGGER.info("sync state")
         if self._session is None:
             raise ConnectionError("Session is not opened")
-        
+
         pwm_data = {}
         for motor in self._motors.values():
             pwm_data[motor.pwm_id] = {"duty": motor.get_duty()}
-        
+
         await self._session.post("/json/state", json={"pwm": pwm_data})
         self._loop.call_soon(self._update_cb, self.get_state())

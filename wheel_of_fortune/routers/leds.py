@@ -18,4 +18,3 @@ async def get_info(wheel=Depends(get_wheel)) -> LedsInfo:
 @router.patch("/api/v1/leds/state")
 async def set_state(state: LedsStateIn, wheel=Depends(get_wheel)):
     await wheel.leds.set_state(state)
-    

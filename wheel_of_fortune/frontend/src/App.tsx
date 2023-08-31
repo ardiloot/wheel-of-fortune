@@ -1,12 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import {
-  ColorScheme,
-  ColorSchemeProvider,
-  Container,
-  LoadingOverlay,
-  MantineProvider,
-  Title
-} from '@mantine/core';
+import { ColorScheme, ColorSchemeProvider, Container, LoadingOverlay, MantineProvider, Title } from '@mantine/core';
 import { Notifications, notifications } from '@mantine/notifications';
 import { useLocalStorage } from '@mantine/hooks';
 import { IconCheck, IconX } from '@tabler/icons-react';
@@ -26,17 +19,14 @@ import {
   SoundSystemState,
   WheelStateIn,
   ServosState,
-  WheelInfo
+  WheelInfo,
 } from './schemas';
 
-
-const WS_URL = (
-  import.meta.env.VITE_WS_URL ?? 
-  (window.location.protocol === 'http:' ? 'ws://' : 'wss://') + window.location.host + '/api/v1/ws'
-);
+const WS_URL =
+  import.meta.env.VITE_WS_URL ??
+  (window.location.protocol === 'http:' ? 'ws://' : 'wss://') + window.location.host + '/api/v1/ws';
 
 export default function App() {
-
   // Color scheme
 
   const [colorScheme, setColorScheme] = useLocalStorage<ColorScheme>({
@@ -74,7 +64,7 @@ export default function App() {
       main: {
         volume: 0.0,
         sound_name: '',
-      }
+      },
     },
   });
   const [info, setInfo] = useState<WheelInfo>({
@@ -97,7 +87,7 @@ export default function App() {
 
   // Websocket
 
-  const ws = useRef<ReconnectingWebSocket | null>(null)
+  const ws = useRef<ReconnectingWebSocket | null>(null);
   useEffect(() => {
     console.log('Connect to websocket', WS_URL);
     const wsConn = new ReconnectingWebSocket(WS_URL);
@@ -110,10 +100,9 @@ export default function App() {
         title: 'Websocket connected',
         message: '',
         color: 'green',
-        icon: <IconCheck size="1.1rem" />
+        icon: <IconCheck size="1.1rem" />,
       });
-      
-    }
+    };
     wsConn.onclose = () => {
       console.log('ws closed');
       setConnectionStatus(wsConn.readyState);
@@ -121,14 +110,14 @@ export default function App() {
         title: 'Websocket closed',
         message: '',
         color: 'red',
-        icon: <IconX size="1.1rem" />
+        icon: <IconX size="1.1rem" />,
       });
-    }
+    };
     wsConn.onerror = (event) => {
       console.log('ws error', event);
       setConnectionStatus(wsConn.readyState);
-    }
-    wsConn.onmessage = e => {
+    };
+    wsConn.onmessage = (e) => {
       const message = JSON.parse(e.data);
       console.log('ws message', message);
 
@@ -136,7 +125,7 @@ export default function App() {
         const packet = WsInitPacket.parse(message);
         const state = packet.state;
         console.log('state', state);
-        
+
         setActiveThemeId(state.theme_id);
         setSectors(state.sectors);
         setEncoderState(state.encoder);
@@ -151,18 +140,12 @@ export default function App() {
         const packet = WsUpdatePacket.parse(message);
         const update = packet.update;
         console.log('update', update);
-        if (update.theme_id !== undefined)
-          setActiveThemeId(update.theme_id);
-        if (update.sectors !== undefined)
-          setSectors(update.sectors);
-        if (update.encoder !== undefined)
-          setEncoderState(update.encoder);
-        if (update.servos !== undefined)
-          setServosState(update.servos);
-        if (update.leds !== undefined)
-          setLedsState(update.leds);
-        if (update.soundsystem !== undefined)
-          setSoundsystemState(update.soundsystem);
+        if (update.theme_id !== undefined) setActiveThemeId(update.theme_id);
+        if (update.sectors !== undefined) setSectors(update.sectors);
+        if (update.encoder !== undefined) setEncoderState(update.encoder);
+        if (update.servos !== undefined) setServosState(update.servos);
+        if (update.leds !== undefined) setLedsState(update.leds);
+        if (update.soundsystem !== undefined) setSoundsystemState(update.soundsystem);
       }
     };
 
@@ -184,15 +167,11 @@ export default function App() {
       state: state,
     };
     ws.current.send(JSON.stringify(newState));
-  };
+  }
 
   return (
     <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
-      <MantineProvider
-        withGlobalStyles
-        withNormalizeCSS
-        theme={{ colorScheme }}
-      >
+      <MantineProvider withGlobalStyles withNormalizeCSS theme={{ colorScheme }}>
         <Notifications />
         <Container size={600}>
           <LoadingOverlay
@@ -201,16 +180,18 @@ export default function App() {
             loaderProps={{ size: 'xl', variant: 'bars' }}
             transitionDuration={1000}
           />
-          <Title order={1} align="center">{info.display_name}</Title>
+          <Title order={1} align="center">
+            {info.display_name}
+          </Title>
           <ColorSchemeToggle />
 
           <ThemeSelect
             activeThemeId={activeThemeId}
             availableThemes={info?.themes || {}}
             setActiveThemeId={(themeId) => {
-              console.log('set theme:', themeId)
+              console.log('set theme:', themeId);
               setActiveThemeId(themeId);
-              wsSetState({theme_id: themeId});
+              wsSetState({ theme_id: themeId });
             }}
           />
 
@@ -224,12 +205,12 @@ export default function App() {
                   main: {
                     ...soundsystemState.channels.main,
                     volume: volume,
-                  }
-                }
+                  },
+                },
               });
             }}
             setVolumeEnd={(volume) => {
-              wsSetState({soundsystem: {channels: {main: {volume: volume}}}});
+              wsSetState({ soundsystem: { channels: { main: { volume: volume } } } });
             }}
           />
 
@@ -242,7 +223,7 @@ export default function App() {
               });
             }}
             setBrightnessEnd={(brightness) => {
-              wsSetState({leds: {brightness: brightness}});
+              wsSetState({ leds: { brightness: brightness } });
             }}
           />
 
@@ -250,14 +231,13 @@ export default function App() {
             sectors={sectors}
             encoderState={encoderState}
             servosState={servosState}
-            info={info}            
+            info={info}
             updateSector={(index, state) => {
-              wsSetState({sectors: {[index]: state}});
+              wsSetState({ sectors: { [index]: state } });
             }}
           />
-
         </Container>
       </MantineProvider>
     </ColorSchemeProvider>
-  )
+  );
 }

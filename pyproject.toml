@@ -37,6 +37,7 @@ dev = [
     "pip-tools",
     "pydub",
     "python-dotenv",
+    "black",
 ]
 
 [tool.setuptools.packages.find]

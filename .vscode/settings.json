@@ -1,28 +1,43 @@
 {
     "flake8.args": [
-        "--max-line-length=120",
-        "--ignore=E124,E128,E261,W293,W504,F722,F403,F401",
+        "--max-line-length=88"
     ],
     "python.analysis.typeCheckingMode": "basic",
     "[typescriptreact]": {
-        "editor.tabSize": 2
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.formatOnSave": true
     },
     "[typescript]": {
-        "editor.tabSize": 2
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.formatOnSave": true
     },
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.black-formatter",
+        "editor.formatOnSave": true
+    },
+    "prettier.configPath": "wheel_of_fortune/frontend/prettierrc.cjs",
     "cSpell.words": [
+        "aiofiles",
         "aiohttp",
+        "coloredlogs",
+        "dpulses",
+        "dtime",
         "fastapi",
+        "gethostname",
         "gpio",
         "leds",
+        "levelname",
         "mantine",
         "mergedeep",
         "poweroff",
         "pydantic",
         "pygame",
+        "setwarnings",
         "soundsystem",
         "subsettings",
+        "SUNXI",
         "tabler",
+        "uvicorn",
         "wled"
     ]
 }

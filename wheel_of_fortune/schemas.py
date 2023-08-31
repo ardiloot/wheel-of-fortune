@@ -162,6 +162,7 @@ class ThemeInfo(BaseModel):
     spinning_led_preset: dict[str, LedSegmentStateIn]
     poweroff_led_preset: dict[str, LedSegmentStateIn]
 
+
 # -----------------------------------------------------------------------------
 # Effects
 # -----------------------------------------------------------------------------
@@ -175,6 +176,7 @@ class EffectInfo(BaseModel):
     based_on: list[str] = []
     effect_sound: str
     leds_preset: dict[str, LedSegmentStateIn]
+
 
 # -----------------------------------------------------------------------------
 # Wheel
@@ -226,9 +228,9 @@ class WheelInfo(BaseModel):
 
 
 class WsCommandType(Enum):
-    INIT = "init"           # Full state and info (to client)
-    UPDATE = "update"       # State update (to client)
-    SET_STATE = "set_state" # Set state (to server)
+    INIT = "init"  # Full state and info (to client)
+    UPDATE = "update"  # State update (to client)
+    SET_STATE = "set_state"  # Set state (to server)
 
 
 class WsInitPacket(BaseModel):

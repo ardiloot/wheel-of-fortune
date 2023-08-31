@@ -32,7 +32,6 @@ EFFECT_MAP = {
 
 
 class LedSegment:
-
     def __init__(self, start, stop):
         self._start = start
         self._stop = stop
@@ -69,9 +68,8 @@ class LedSegment:
         )
 
     def compile_state(self) -> dict[str, int | float | str | list]:
-
         def to_rgb(h: str) -> tuple[int, int, int]:
-            return tuple(int(h[i:i + 2], 16) for i in (1, 3, 5))
+            return tuple(int(h[i : i + 2], 16) for i in (1, 3, 5))  # noqa: E203
 
         def normalize(v: float) -> int:
             return int(max(0, min(255, round(255 * v))))
@@ -81,44 +79,39 @@ class LedSegment:
 
         # https://kno.wled.ge/interfaces/json-api/
         return {
-            
-            "start": self._start,               # start led
-            "stop": self._stop,                 # stop led
-            "grp": 1,                           # grouping
-            "spc": 0,                           # spacing
-            "of": 0,                            # offset
-            "rev": False,                       # flips the segment
-            "mi": False,                        # mirrors the segment
-            "on": self._enabled,                # on/off
-            "bri": normalize(self._brightness), # brightness
-            
-            "pal": palette_id,                  # palette id
+            "start": self._start,  # start led
+            "stop": self._stop,  # stop led
+            "grp": 1,  # grouping
+            "spc": 0,  # spacing
+            "of": 0,  # offset
+            "rev": False,  # flips the segment
+            "mi": False,  # mirrors the segment
+            "on": self._enabled,  # on/off
+            "bri": normalize(self._brightness),  # brightness
+            "pal": palette_id,  # palette id
             "col": [
-                to_rgb(self._primary_color),    # primary color
+                to_rgb(self._primary_color),  # primary color
                 to_rgb(self._secondary_color),  # secondary (bg) color
-                [0, 0, 0],                      # tertiary color
+                [0, 0, 0],  # tertiary color
             ],
-            "cct": 127,                         # white spectrum color temperature
-            
-            "fx": effect_id,                    # effect id
-            "sx": normalize(self._effect_speed),        # relative effect speed
-            "ix": normalize(self._effect_intensity),    # effect intensity
-            "c1": 128,                          # effect custom slider 1
-            "c2": 128,                          # effect custom slider 2
-            "c3": 16,                           # effect custom slider 3
-            "o1": False,                        # effect option 1
-            "o2": False,                        # effect option 2
-            "o3": False,                        # effect option 3
-
-            "sel": False,                       # selected
-            "frz": False,                       # freeze
-            "si": 0,                            # sound setting
-            "m12": 2                            # expand 1d fx
+            "cct": 127,  # white spectrum color temperature
+            "fx": effect_id,  # effect id
+            "sx": normalize(self._effect_speed),  # relative effect speed
+            "ix": normalize(self._effect_intensity),  # effect intensity
+            "c1": 128,  # effect custom slider 1
+            "c2": 128,  # effect custom slider 2
+            "c3": 16,  # effect custom slider 3
+            "o1": False,  # effect option 1
+            "o2": False,  # effect option 2
+            "o3": False,  # effect option 3
+            "sel": False,  # selected
+            "frz": False,  # freeze
+            "si": 0,  # sound setting
+            "m12": 2,  # expand 1d fx
         }
-    
+
 
 class LedController:
-
     def __init__(self, config, settings, update_cb):
         self._config: Config = config
         self._settings: Settings = settings
@@ -130,7 +123,7 @@ class LedController:
 
         for segment in config.wled_segments:
             self._segments[segment.name] = LedSegment(segment.start, segment.stop)
-        
+
         self._session: aiohttp.ClientSession | None = None
         self._info = {}
 
@@ -146,14 +139,14 @@ class LedController:
         resp = await self._session.get("/json/info")
         self._info = await resp.json()
         _LOGGER.debug("info: %s" % (self._info))
-            
+
     async def close(self):
         if self._session is None:
             return
         _LOGGER.info("close")
         await self._session.close()
         _LOGGER.info("close done.")
-    
+
     async def set_state(self, state: LedsStateIn):
         _LOGGER.info("set_state: %s %s" % (state.brightness, state.segments))
         if state.brightness is not None:
@@ -170,9 +163,11 @@ class LedController:
         return LedsState(
             power_on=self._brightness > 0.0,
             brightness=self._brightness,
-            segments=dict((name, segment.get_state()) for name, segment in self._segments.items()),
+            segments=dict(
+                (name, segment.get_state()) for name, segment in self._segments.items()
+            ),
         )
-    
+
     def get_info(self) -> LedsInfo:
         return LedsInfo(
             version=self._info.get("ver", "unknown"),
@@ -185,11 +180,11 @@ class LedController:
                 state = await resp.json()
                 _LOGGER.info("led state: %s" % (state))
             await asyncio.sleep(100.0)
-            
+
     async def _sync_state(self, sync_segments=True):
         if self._session is None:
             raise ConnectionError("Session is not opened.")
-        
+
         int_brightness = int(round(255 * self._brightness))
         state = {
             "on": int_brightness > 0,

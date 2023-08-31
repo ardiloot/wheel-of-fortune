@@ -13,7 +13,6 @@ __all__ = [
 
 
 class Effect(EffectInfo):
-
     def get_info(self) -> EffectInfo:
         return self
 
@@ -21,7 +20,7 @@ class Effect(EffectInfo):
 def load_effects(filename: str):
     _LOGGER.info("load effects: %s" % (filename))
 
-    def merge(base, addition): 
+    def merge(base, addition):
         res = mergedeep.merge({}, base, addition)
         res["based_on"] = base.get("based_on", []) + addition.get("based_on", [])
         res["visible"] = addition.get("visible", True)
@@ -37,7 +36,7 @@ def load_effects(filename: str):
             return res
         else:
             return effect
-    
+
     try:
         with open(filename, "r") as fin:
             effects = yaml.safe_load(fin)

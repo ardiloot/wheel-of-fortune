@@ -12,13 +12,11 @@ __all__ = [
 
 
 class Theme(ThemeInfo):
-
     def get_info(self) -> ThemeInfo:
         return self
 
 
 def load_themes(filename: str):
-
     _LOGGER.info("load themes: %s" % (filename))
 
     def merge(base, addition):
@@ -37,7 +35,7 @@ def load_themes(filename: str):
             return res
         else:
             return theme
-    
+
     try:
         with open(filename, "r") as fin:
             themes = yaml.safe_load(fin)

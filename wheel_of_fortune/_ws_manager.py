@@ -19,9 +19,8 @@ _LOGGER = logging.getLogger(__name__)
 
 
 class WsConnection:
-
     def __init__(self, mgr, websocket):
-        self._mgr: 'WsManager' = mgr
+        self._mgr: "WsManager" = mgr
         self._websocket: WebSocket = websocket
 
     async def connect(self):
@@ -56,7 +55,6 @@ class WsConnection:
 
 
 class WsManager:
-
     def __init__(self, wheel):
         self._wheel: Wheel = wheel
         self._connections: set[WsConnection] = set()
@@ -64,15 +62,15 @@ class WsManager:
         self._background_tasks = set()
 
     async def connect(self, websocket: WebSocket) -> WsConnection:
-        _LOGGER.info("WsManager: add connection %s (num_connections: %d)" % (
-            websocket,
-            len(self._connections) + 1
-        ))
+        _LOGGER.info(
+            "WsManager: add connection %s (num_connections: %d)"
+            % (websocket, len(self._connections) + 1)
+        )
         connection = WsConnection(self, websocket)
         self._connections.add(connection)
         await connection.connect()
         return connection
-    
+
     async def _broadcast_update(self, update: WheelStateUpdate):
         packet = WsUpdatePacket(
             ts=time.time(),
@@ -81,17 +79,19 @@ class WsManager:
         await self._broadcast(packet.model_dump_json(exclude_none=True))
 
     async def _broadcast(self, data: str):
-        _LOGGER.info("WsManager: broadcast json to %d clients" % (len(self._connections)))
+        _LOGGER.info(
+            "WsManager: broadcast json to %d clients" % (len(self._connections))
+        )
         r = []
         for connection in self._connections:
             r.append(connection.send(data))
         await asyncio.gather(*r)
 
     def _disconnect(self, connection: WsConnection):
-        _LOGGER.info("WsManager: disconnected %s (num_connections: %d)" % (
-            connection._websocket,
-            len(self._connections) - 1
-        ))
+        _LOGGER.info(
+            "WsManager: disconnected %s (num_connections: %d)"
+            % (connection._websocket, len(self._connections) - 1)
+        )
         self._connections.remove(connection)
 
     def _wheel_update_received(self, update: WheelStateUpdate):

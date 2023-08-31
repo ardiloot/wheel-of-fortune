@@ -6,6 +6,7 @@ __all__ = [
     "Config",
 ]
 
+
 class ServoConfig(BaseSettings):
     name: str
     mount_angle: float
@@ -34,7 +35,7 @@ class Config(BaseSettings):
     servo_zero_duty: float = 0.086
     servo_full_duty: float = 0.516
     servo_mount_duty: float = 0.0473
-    
+
     influxdb_url: str | None = None
     influxdb_token: str | None = None
     influxdb_org: str | None = None

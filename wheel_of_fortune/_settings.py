@@ -15,7 +15,6 @@ __all__ = [
 
 
 class SettingsManager:
-
     def __init__(self, filename):
         self._filename: str = filename
         self._data: dict[str, Any] = {}
@@ -66,17 +65,16 @@ class SettingsManager:
     @property
     def data(self):
         return self._data
-    
+
 
 class Settings:
-  
     def __init__(self, manager, base_key=[]):
         self._manager: SettingsManager = manager
         self._base_key = base_key
 
     def __contains__(self, key):
         return key in self.data
-    
+
     def __getitem__(self, key):
         return self.data[key]
 
@@ -87,17 +85,16 @@ class Settings:
         return self.data.get(key, default)
 
     def set(self, key, value):
-        _LOGGER.info("Set setting (%s): %s = %s" % (
-            "/".join(["%s" % (k) for k in self._base_key]),
-            key,
-            value
-        ))
+        _LOGGER.info(
+            "Set setting (%s): %s = %s"
+            % ("/".join(["%s" % (k) for k in self._base_key]), key, value)
+        )
         self.data[key] = value
         self._manager.invalidate()
 
     def subsettings(self, name):
         return Settings(self._manager, base_key=self._base_key + [name])
-    
+
     def invalidate(self):
         self._manager.invalidate()
 

@@ -46,7 +46,6 @@ class TaskType(Enum):
 
 
 class Sector:
-
     def __init__(self, index, settings, effects):
         self.index: int = index
         self._settings: Settings = settings
@@ -62,16 +61,21 @@ class Sector:
 
     def set_state(self, state: SectorStateIn):
         if state.name is not None:
-            _LOGGER.info("Set sector %d name: %s -> %s" % (self.index, self.name, state.name))
+            _LOGGER.info(
+                "Set sector %d name: %s -> %s" % (self.index, self.name, state.name)
+            )
             self.name = state.name
             self._settings.set("name", self.name)
         if state.effect_id is not None:
-            _LOGGER.info("Set sector %d effect: %s -> %s" % (self.index, self.effect_id, state.effect_id))
+            _LOGGER.info(
+                "Set sector %d effect: %s -> %s"
+                % (self.index, self.effect_id, state.effect_id)
+            )
             if state.effect_id not in self._effects:
                 raise ValueError("unknown effect id")
             self.effect_id = state.effect_id
             self._settings.set("effect_id", self.effect_id)
-    
+
     def get_state(self) -> SectorState:
         return SectorState(
             index=self.index,
@@ -85,7 +89,6 @@ class Sector:
 
 
 class Wheel:
-    
     def __init__(self, config, gpio):
         self._config: Config = config
         self._loop = asyncio.get_running_loop()
@@ -93,17 +96,25 @@ class Wheel:
         self._subscriptions: list[Callable[[WheelStateUpdate], None]] = []
 
         self._poweroff_pin = "PL8"
-        self._gpio.setup(self._poweroff_pin, self._gpio.IN, pull_up_down=self._gpio.PUD_OFF)
+        self._gpio.setup(
+            self._poweroff_pin, self._gpio.IN, pull_up_down=self._gpio.PUD_OFF
+        )
 
         settings_file = os.path.join(self._config.data_dir, "settings.json")
         self._settings_mgr = SettingsManager(settings_file)
         self._settings = self._settings_mgr["wheel"]
 
         self._telemetry = Telemetry(config)
-        self._encoder = Encoder(config, self._gpio, self._telemetry, self._encoder_update)
-        self._leds = LedController(config, self._settings_mgr["leds"], self._leds_update)
+        self._encoder = Encoder(
+            config, self._gpio, self._telemetry, self._encoder_update
+        )
+        self._leds = LedController(
+            config, self._settings_mgr["leds"], self._leds_update
+        )
         self._servos = ServoController(config, self._servos_update)
-        self._soundsystem = SoundSystem(config, self._settings_mgr["sound"], self._soundsystem_update)
+        self._soundsystem = SoundSystem(
+            config, self._settings_mgr["sound"], self._soundsystem_update
+        )
 
         self._active_task: asyncio.Task | None = None
         self._next_task: TaskType = TaskType.STARTUP
@@ -117,7 +128,9 @@ class Wheel:
 
         self._sectors: list[Sector] = []
         for i in range(config.num_sectors):
-            sector_settings = self._settings.subsettings("sectors").subsettings("%d" % (i))
+            sector_settings = self._settings.subsettings("sectors").subsettings(
+                "%d" % (i)
+            )
             self._sectors.append(Sector(i, sector_settings, self._effects))
 
     async def init(self):
@@ -158,7 +171,6 @@ class Wheel:
             self._active_task.cancel()
 
     async def set_state(self, state: WheelStateIn):
-
         if state.theme_id is not None:
             _LOGGER.info("activate_theme: %s" % (state.theme_id))
             if state.theme_id in self._themes:
@@ -166,9 +178,11 @@ class Wheel:
             else:
                 raise ValueError("unknown theme name")
             self._settings.set("theme_id", self._theme_id)
-            self._publish_update(WheelStateUpdate(
-                theme_id=self._theme_id,
-            ))
+            self._publish_update(
+                WheelStateUpdate(
+                    theme_id=self._theme_id,
+                )
+            )
 
         if len(state.sectors) > 0:
             for index, sector_state in state.sectors.items():
@@ -176,10 +190,12 @@ class Wheel:
                     raise ValueError("Sector index out of bounds")
                 sector = self._sectors[index]
                 sector.set_state(sector_state)
-            
-            self._publish_update(WheelStateUpdate(
-                sectors=[sector.get_state() for sector in self._sectors]
-            ))
+
+            self._publish_update(
+                WheelStateUpdate(
+                    sectors=[sector.get_state() for sector in self._sectors]
+                )
+            )
 
         if state.servos:
             await self._servos.set_state(state.servos)
@@ -191,7 +207,6 @@ class Wheel:
             await self._soundsystem.set_state(state.soundsystem)
 
     def get_state(self) -> WheelState:
-        
         return WheelState(
             active_task=self._cur_task.value,
             theme_id=self._theme_id,
@@ -258,9 +273,11 @@ class Wheel:
             _LOGGER.info("start task: %s" % (task))
             active_task_name = task.value
             self._active_task = asyncio.create_task(task_co, name=active_task_name)
-            self._publish_update(WheelStateUpdate(
-                active_task=active_task_name,
-            ))
+            self._publish_update(
+                WheelStateUpdate(
+                    active_task=active_task_name,
+                )
+            )
 
             # Wait for task
             try:
@@ -273,7 +290,7 @@ class Wheel:
     def _schedule_task(self, task: TaskType):
         if task == self._cur_task:
             return
-        
+
         if self._cur_task == TaskType.POWEROFF:
             _LOGGER.warn("Cannot schedule tasks after poweroff")
             return
@@ -284,7 +301,7 @@ class Wheel:
             success = self._active_task.cancel()
             if not success:
                 raise RuntimeError("ERROR cancelling task")
-            
+
     def _reload_task(self):
         _LOGGER.info("reload task")
         if self._active_task is not None and not self._active_task.done():
@@ -301,7 +318,9 @@ class Wheel:
         counter = 0
         while True:
             if cur_theme is None or cur_theme != self._theme:
-                await self._leds.set_state(LedsStateIn(segments=self._theme.idle_led_preset))
+                await self._leds.set_state(
+                    LedsStateIn(segments=self._theme.idle_led_preset)
+                )
                 cur_theme = self._theme
             await asyncio.sleep(1.0)
             counter += 1
@@ -315,7 +334,9 @@ class Wheel:
         start_time = self._loop.time()
         try:
             await self._soundsystem.fadeout(MAIN_CH)
-            await self._leds.set_state(LedsStateIn(segments=self._theme.spinning_led_preset))
+            await self._leds.set_state(
+                LedsStateIn(segments=self._theme.spinning_led_preset)
+            )
             await self._soundsystem.play(MAIN_CH, self._theme.theme_sound)
             while True:
                 await asyncio.sleep(1.0)
@@ -327,23 +348,28 @@ class Wheel:
             total_sectors = end_sector_count - start_sector_count
             avg_rpm = total_sectors / self._config.num_sectors / duration * 60.0
 
-            _LOGGER.info("Spin: sector: %d -> %d, total_sectors: %d -> %d (%d), duration %.1fs, avg_rpm: %.2f" % (
-                start_sector,
-                end_sector,
-                start_sector_count,
-                end_sector_count,
-                total_sectors,
-                duration,
-                avg_rpm
-            ))
+            _LOGGER.info(
+                "Spin: sector: %d -> %d, total_sectors: %d -> %d (%d), duration %.1fs, avg_rpm: %.2f"
+                % (
+                    start_sector,
+                    end_sector,
+                    start_sector_count,
+                    end_sector_count,
+                    total_sectors,
+                    duration,
+                    avg_rpm,
+                )
+            )
 
-            point = Point("spin") \
-                .field("start_sector", start_sector) \
-                .field("end_sector", end_sector) \
-                .field("start_sector_count", start_sector_count) \
-                .field("total_sectors", total_sectors) \
-                .field("duration", duration) \
+            point = (
+                Point("spin")
+                .field("start_sector", start_sector)
+                .field("end_sector", end_sector)
+                .field("start_sector_count", start_sector_count)
+                .field("total_sectors", total_sectors)
+                .field("duration", duration)
                 .field("avg_rpm", avg_rpm)
+            )
             self._telemetry.report_point(point)
 
     async def _task_stopped(self):
@@ -351,7 +377,9 @@ class Wheel:
             enc_state = self._encoder.get_state()
             effect = self._sectors[enc_state.sector].effect
 
-            await self._servos.set_state(ServosStateIn.model_validate({"motors": {"bottom": {"pos": 1.0}}}))
+            await self._servos.set_state(
+                ServosStateIn.model_validate({"motors": {"bottom": {"pos": 1.0}}})
+            )
             await asyncio.sleep(1.0)
 
             await self._soundsystem.volume_sweep(MAIN_CH, 1.0, 0.2)
@@ -364,17 +392,23 @@ class Wheel:
             await self._soundsystem.volume_sweep(MAIN_CH, 0.2, 1.0, time_ms=1000)
             await asyncio.sleep(4.0)
 
-            await self._servos.set_state(ServosStateIn.model_validate({"motors": {"bottom": {"pos": 0.0}}}))
+            await self._servos.set_state(
+                ServosStateIn.model_validate({"motors": {"bottom": {"pos": 0.0}}})
+            )
             await asyncio.sleep(3.0)
             await self._soundsystem.fadeout(MAIN_CH, fade_ms=2000)
 
         finally:
             await self._soundsystem.fadeout(MAIN_CH)
-            await self._servos.set_state(ServosStateIn.model_validate({"motors": {"bottom": {"pos": 0.0}}}))
+            await self._servos.set_state(
+                ServosStateIn.model_validate({"motors": {"bottom": {"pos": 0.0}}})
+            )
 
     async def _task_poweroff(self):
         await self._soundsystem.fadeout(MAIN_CH)
-        await self._leds.set_state(LedsStateIn(segments=self._theme.poweroff_led_preset))
+        await self._leds.set_state(
+            LedsStateIn(segments=self._theme.poweroff_led_preset)
+        )
         while True:
             await asyncio.sleep(5.0)
 
@@ -390,7 +424,7 @@ class Wheel:
         if self._active_task is None:
             return TaskType.UNKNOWN
         return TaskType(self._active_task.get_name())
-    
+
     @property
     def _theme(self) -> Theme:
         return self._themes[self._theme_id]
@@ -401,25 +435,33 @@ class Wheel:
             self._schedule_task(TaskType.STOPPED)
         else:
             self._schedule_task(TaskType.SPINNING)
-            
-        self._publish_update(WheelStateUpdate(
-            encoder=state,
-        ))
+
+        self._publish_update(
+            WheelStateUpdate(
+                encoder=state,
+            )
+        )
 
     def _leds_update(self, state: LedsState):
-        self._publish_update(WheelStateUpdate(
-            leds=state,
-        ))
+        self._publish_update(
+            WheelStateUpdate(
+                leds=state,
+            )
+        )
 
     def _servos_update(self, state: ServosState):
-        self._publish_update(WheelStateUpdate(
-            servos=state,
-        ))
+        self._publish_update(
+            WheelStateUpdate(
+                servos=state,
+            )
+        )
 
     def _soundsystem_update(self, state: SoundSystemState):
-        self._publish_update(WheelStateUpdate(
-            soundsystem=state,
-        ))
+        self._publish_update(
+            WheelStateUpdate(
+                soundsystem=state,
+            )
+        )
 
     def _publish_update(self, update: WheelStateUpdate):
         for callback in self._subscriptions:
@@ -436,12 +478,11 @@ class Wheel:
     @property
     def leds(self):
         return self._leds
-    
+
     @property
     def sound(self):
         return self._soundsystem
-    
+
     @property
     def sectors(self):
         return self._sectors
-    

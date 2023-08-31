@@ -1,4 +1,4 @@
-import { EffectInfo } from "../schemas";
+import { EffectInfo } from '../schemas';
 import { forwardRef } from 'react';
 import { Group, Avatar, Text, Select, ColorSwatch } from '@mantine/core';
 
@@ -14,9 +14,7 @@ const SelectItem = forwardRef<HTMLDivElement, ItemProps>(
     <div ref={ref} {...others}>
       <Group position="apart" noWrap>
         <Group noWrap>
-          <Avatar
-            src={image}
-          />
+          <Avatar src={image} />
           <div>
             <Text size="sm">{label}</Text>
             <Text size="xs" opacity={0.65}>
@@ -24,15 +22,12 @@ const SelectItem = forwardRef<HTMLDivElement, ItemProps>(
             </Text>
           </div>
         </Group>
-        <ColorSwatch
-            color={color}
-            opacity={0.7}
-            radius="sm"
-          />
+        <ColorSwatch color={color} opacity={0.7} radius="sm" />
       </Group>
     </div>
-  )
+  ),
 );
+SelectItem.displayName = 'SelectItem';
 
 export interface EffectSelectProps {
   activeEffectId: string;
@@ -40,29 +35,26 @@ export interface EffectSelectProps {
   setEffectId: (effectId: string) => void;
 }
 
-
-export default function EffectSelect({
-  activeEffectId,
-  availableEffects,
-  setEffectId,
-} : EffectSelectProps ) {
-
+export default function EffectSelect({ activeEffectId, availableEffects, setEffectId }: EffectSelectProps) {
   const data = Object.keys(availableEffects).map((effectId) => {
-    const effect = availableEffects[effectId]
+    const effect = availableEffects[effectId];
     return {
       image: effect.image_url,
       value: effectId,
       label: effect.name,
       description: effect.description,
       color: effect.color,
-    }
+    };
   });
+
+  const activeEffect = availableEffects[activeEffectId];
 
   return (
     <Select
       label="Effect:"
+      icon={<Avatar size="1.5rem" src={activeEffect?.image_url} />}
       itemComponent={SelectItem}
-      value={ activeEffectId }
+      value={activeEffectId}
       data={data}
       searchable
       filter={(value, item) =>
@@ -70,9 +62,8 @@ export default function EffectSelect({
         item.description.toLowerCase().includes(value.toLowerCase().trim())
       }
       onChange={(effectId) => {
-        if (effectId !== null)
-          setEffectId(effectId);
+        if (effectId !== null) setEffectId(effectId);
       }}
     />
-  )
+  );
 }

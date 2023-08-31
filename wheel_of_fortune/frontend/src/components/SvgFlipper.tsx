@@ -1,16 +1,11 @@
-import { useMantineTheme } from "@mantine/core";
-
+import { useMantineTheme } from '@mantine/core';
 
 export interface SvgFlipperProps {
   x: number;
   y: number;
 }
 
-export default function SvgFlipper({
-  x,
-  y,
-} : SvgFlipperProps) {
-  
+export default function SvgFlipper({ x, y }: SvgFlipperProps) {
   const theme = useMantineTheme();
 
   return (
@@ -22,5 +17,4 @@ export default function SvgFlipper({
       stroke={theme.colors.gray[5]}
     />
   );
- 
 }

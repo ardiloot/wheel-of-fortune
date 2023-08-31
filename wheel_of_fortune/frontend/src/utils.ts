@@ -1,20 +1,17 @@
-
-export function toXY(radius: number, angle: number): {x: number, y: number} {
+export function toXY(radius: number, angle: number): { x: number; y: number } {
   // 0 deg = upwards
   // 90 deg = to right
   // ...
   return {
     x: radius * Math.sin(angle),
     y: radius * -Math.cos(angle),
-  }
+  };
 }
-
 
 export function toDeg(radians: number): number {
   return radians * (180 / Math.PI);
 }
 
-
 export function toRad(degrees: number): number {
-  return Math.PI / 180 * degrees;
+  return (Math.PI / 180) * degrees;
 }

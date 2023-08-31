@@ -1,10 +1,12 @@
 {
 	"recommendations": [
-        "eamodio.gitlens",
         "ms-python.python",
-        "streetsidesoftware.code-spell-checker",
-        "mhutchie.git-graph",
         "ms-python.flake8",
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "streetsidesoftware.code-spell-checker",
+        "eamodio.gitlens",
+        "mhutchie.git-graph",
         "github.vscode-pull-request-github"
     ]
 }

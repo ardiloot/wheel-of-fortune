@@ -19,7 +19,6 @@ from .schemas import (
     LedsStateIn,
     ServosState,
     SoundSystemState,
-    ServosStateIn,
     SectorState,
     SectorStateIn,
     WheelState,
@@ -329,9 +328,7 @@ class Wheel:
                 _LOGGER.info("idle heartbeat")
 
     async def _task_spinning(self):
-        enc_state = self._encoder.get_state()
-        start_sector = enc_state.sector
-        start_sector_count = enc_state.total_sectors
+        start_state = self._encoder.get_state()
         start_time = self._loop.time()
         try:
             await self._soundsystem.fadeout(MAIN_CH)
@@ -342,20 +339,19 @@ class Wheel:
             while True:
                 await asyncio.sleep(1.0)
         finally:
-            end_sector = enc_state.sector
-            end_sector_count = enc_state.total_sectors
+            end_state = self._encoder.get_state()
             end_time = self._loop.time()
             duration = end_time - start_time
-            total_sectors = end_sector_count - start_sector_count
+            total_sectors = end_state.total_sectors - start_state.total_sectors
             avg_rpm = total_sectors / self._config.num_sectors / duration * 60.0
+            end_sector_name = self._sectors[end_state.sector].name
 
             _LOGGER.info(
-                "Spin: sector: %d -> %d, total_sectors: %d -> %d (%d), duration %.1fs, avg_rpm: %.2f"
+                "Spin: sector: %d -> %d (%s), sectors: %d, duration %.1fs, avg_rpm: %.2f"
                 % (
-                    start_sector,
-                    end_sector,
-                    start_sector_count,
-                    end_sector_count,
+                    start_state.sector,
+                    end_state.sector,
+                    end_sector_name,
                     total_sectors,
                     duration,
                     avg_rpm,
@@ -364,21 +360,22 @@ class Wheel:
 
             point = (
                 Point("spin")
-                .field("start_sector", start_sector)
-                .field("end_sector", end_sector)
-                .field("start_sector_count", start_sector_count)
+                .field("start_sector", start_state.sector)
+                .field("end_sector", end_state.sector)
+                .field("start_sector_count", start_state.total_sectors)
                 .field("total_sectors", total_sectors)
                 .field("duration", duration)
                 .field("avg_rpm", avg_rpm)
+                .field("end_sector_name", end_sector_name)
             )
             self._telemetry.report_point(point)
 
     async def _task_stopped(self):
-        try:
-            enc_state = self._encoder.get_state()
-            effect = self._sectors[enc_state.sector].effect
-            _LOGGER.info("Effect: %s" % (effect.name))
+        enc_state = self._encoder.get_state()
+        effect = self._sectors[enc_state.sector].effect
+        _LOGGER.info("Effect: %s" % (effect.name))
 
+        try:
             await self._servos.move_to_pos(
                 names=effect.active_servos,
                 target_pos=1.0,

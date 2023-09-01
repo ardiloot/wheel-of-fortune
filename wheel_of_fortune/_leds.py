@@ -175,10 +175,10 @@ class LedController:
 
     async def maintain(self):
         while True:
-            if self._session:
-                resp = await self._session.get("/json/state")
-                state = await resp.json()
-                _LOGGER.info("led state: %s" % (state))
+            # if self._session:
+            #     resp = await self._session.get("/json/state")
+            #     state = await resp.json()
+            #     _LOGGER.info("led state: %s" % (state))
             await asyncio.sleep(100.0)
 
     async def _sync_state(self, sync_segments=True):

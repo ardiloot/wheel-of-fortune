@@ -119,8 +119,8 @@ class ServoController:
 
     async def maintain(self):
         while True:
-            state = self.get_state()
-            _LOGGER.info("servos state: %s" % (state))
+            # state = self.get_state()
+            # _LOGGER.info("servos state: %s" % (state))
             await asyncio.sleep(100.0)
 
     async def move_to_pos(

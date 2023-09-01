@@ -85,10 +85,10 @@ class Encoder:
             self._last_speed_pulse_count = self._speed_pulse_count
             self._last_rpm_update = now
 
-            report_cycles = 10 if self._is_standstill else 1
-            if counter % report_cycles == 0:
+            log_cycles = 120 if self._is_standstill else 1
+            if counter % log_cycles == 0:
                 state = self.get_state()
-                _LOGGER.debug(
+                _LOGGER.info(
                     "sector: %d, rpm %.1f (%d pulses in %.1f ms), total_revs: %.1f, missed_sectors: %d"
                     % (
                         state.sector,
@@ -100,6 +100,9 @@ class Encoder:
                     )
                 )
 
+            report_cycles = 10 if self._is_standstill else 1
+            if counter % report_cycles == 0:
+                state = self.get_state()
                 point = (
                     Point("encoder")
                     .field("sector", state.sector)

@@ -148,7 +148,7 @@ class LedController:
         _LOGGER.info("close done.")
 
     async def set_state(self, state: LedsStateIn):
-        _LOGGER.info("set_state: %s %s" % (state.brightness, state.segments))
+        _LOGGER.info("set_state: %s" % (state))
         if state.brightness is not None:
             self._brightness = state.brightness
             self._settings.set("brightness", state.brightness)
@@ -175,10 +175,10 @@ class LedController:
 
     async def maintain(self):
         while True:
-            if self._session:
-                resp = await self._session.get("/json/state")
-                state = await resp.json()
-                _LOGGER.info("led state: %s" % (state))
+            # if self._session:
+            #     resp = await self._session.get("/json/state")
+            #     state = await resp.json()
+            #     _LOGGER.info("led state: %s" % (state))
             await asyncio.sleep(100.0)
 
     async def _sync_state(self, sync_segments=True):

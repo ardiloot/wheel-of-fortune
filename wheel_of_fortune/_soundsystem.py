@@ -111,6 +111,7 @@ class SoundSystem:
         pygame.mixer.quit()
 
     async def set_state(self, state: SoundSystemStateIn):
+        _LOGGER.info("set state: %s" % (state))
         for name, ch_state in state.channels.items():
             if name not in self._channels:
                 _LOGGER.warn("unknown sound channel: %s" % (name))

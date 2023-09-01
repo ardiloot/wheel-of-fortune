@@ -88,7 +88,7 @@ class Encoder:
             log_cycles = 120 if self._is_standstill else 1
             if counter % log_cycles == 0:
                 state = self.get_state()
-                _LOGGER.debug(
+                _LOGGER.info(
                     "sector: %d, rpm %.1f (%d pulses in %.1f ms), total_revs: %.1f, missed_sectors: %d"
                     % (
                         state.sector,

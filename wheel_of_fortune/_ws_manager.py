@@ -24,7 +24,7 @@ class WsConnection:
         self._websocket: WebSocket = websocket
 
     async def connect(self):
-        _LOGGER.info("Accept WS connection %s" % (self._websocket))
+        _LOGGER.info("Accept WS connection %s" % (str(self._websocket.client)))
         await self._websocket.accept()
         await self._send_init()
 
@@ -45,7 +45,9 @@ class WsConnection:
         try:
             await self._websocket.send_text(data)
         except Exception:
-            _LOGGER.exception("Unable to send WS data")
+            _LOGGER.exception(
+                "Unable to send WS data: %s" % (str(self._websocket.client))
+            )
             self._mgr._disconnect(self)
 
     async def _send_init(self):
@@ -68,7 +70,7 @@ class WsManager:
     async def add_client(self, websocket: WebSocket) -> WsConnection | None:
         _LOGGER.info(
             "WsManager: add client %s (num_connections: %d)"
-            % (websocket, len(self._connections) + 1)
+            % (websocket.client, len(self._connections) + 1)
         )
 
         try:
@@ -76,7 +78,9 @@ class WsManager:
             await connection.connect()
             self._connections.add(connection)
         except Exception:
-            _LOGGER.exception("Failed to connect to WS client")
+            _LOGGER.exception(
+                "Failed to connect to WS client: %s" % (str(websocket.client))
+            )
             connection = None
         return connection
 
@@ -88,9 +92,6 @@ class WsManager:
         await self._broadcast(packet.model_dump_json(exclude_none=True))
 
     async def _broadcast(self, data: str):
-        _LOGGER.info(
-            "WsManager: broadcast json to %d clients" % (len(self._connections))
-        )
         r = []
         for connection in self._connections:
             r.append(connection.send(data))
@@ -101,12 +102,11 @@ class WsManager:
             return
         _LOGGER.info(
             "WsManager: disconnected %s (num_connections: %d)"
-            % (connection._websocket, len(self._connections) - 1)
+            % (str(connection._websocket.client), len(self._connections) - 1)
         )
         self._connections.remove(connection)
 
     def _wheel_update_received(self, update: WheelStateUpdate):
-        _LOGGER.info("WsManager: wheel state update received: %s" % (update))
         task = asyncio.create_task(self._broadcast_update(update))
         self._background_tasks.add(task)
         task.add_done_callback(self._background_tasks.discard)

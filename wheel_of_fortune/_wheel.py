@@ -324,7 +324,7 @@ class Wheel:
                 cur_theme = self._theme
             await asyncio.sleep(1.0)
             counter += 1
-            if counter % 15 == 0:
+            if counter % 120 == 0:
                 _LOGGER.info("idle heartbeat")
 
     async def _task_spinning(self):
@@ -431,7 +431,6 @@ class Wheel:
         return self._themes[self._theme_id]
 
     def _encoder_update(self, state: EncoderState):
-        _LOGGER.debug("encoder update: %s" % (state))
         if state.standstill:
             self._schedule_task(TaskType.STOPPED)
         else:

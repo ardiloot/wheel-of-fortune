@@ -59,17 +59,11 @@ class Sector:
             self.effect_id = self._settings["effect_id"]
 
     def set_state(self, state: SectorStateIn):
+        _LOGGER.info("set state %d: %s" % (self.index, state))
         if state.name is not None:
-            _LOGGER.info(
-                "Set sector %d name: %s -> %s" % (self.index, self.name, state.name)
-            )
             self.name = state.name
             self._settings.set("name", self.name)
         if state.effect_id is not None:
-            _LOGGER.info(
-                "Set sector %d effect: %s -> %s"
-                % (self.index, self.effect_id, state.effect_id)
-            )
             if state.effect_id not in self._effects:
                 raise ValueError("unknown effect id")
             self.effect_id = state.effect_id
@@ -347,7 +341,7 @@ class Wheel:
             end_sector_name = self._sectors[end_state.sector].name
 
             _LOGGER.info(
-                "Spin: sector: %d -> %d (%s), sectors: %d, duration %.1fs, avg_rpm: %.2f"
+                "Spin: %d -> %d (%s), sectors: %d, duration %.1fs, avg_rpm: %.2f"
                 % (
                     start_state.sector,
                     end_state.sector,

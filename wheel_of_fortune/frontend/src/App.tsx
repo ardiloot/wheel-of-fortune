@@ -195,24 +195,28 @@ export default function App() {
             }}
           />
 
-          <VolumeSlider
-            volume={soundsystemState.channels.main.volume}
-            setVolume={(volume) => {
-              setSoundsystemState({
-                ...soundsystemState,
-                channels: {
-                  ...soundsystemState.channels,
-                  main: {
-                    ...soundsystemState.channels.main,
-                    volume: volume,
+          {Object.keys(soundsystemState.channels).map((channelName) => (
+            <VolumeSlider
+              key={channelName}
+              channelName={channelName}
+              volume={soundsystemState.channels[channelName].volume}
+              setVolume={(volume) => {
+                setSoundsystemState({
+                  ...soundsystemState,
+                  channels: {
+                    ...soundsystemState.channels,
+                    [channelName]: {
+                      ...soundsystemState.channels[channelName],
+                      volume: volume,
+                    },
                   },
-                },
-              });
-            }}
-            setVolumeEnd={(volume) => {
-              wsSetState({ soundsystem: { channels: { main: { volume: volume } } } });
-            }}
-          />
+                });
+              }}
+              setVolumeEnd={(volume) => {
+                wsSetState({ soundsystem: { channels: { [channelName]: { volume: volume } } } });
+              }}
+            />
+          ))}
 
           <BrightnessSlider
             brightness={ledsState.brightness}

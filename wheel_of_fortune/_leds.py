@@ -148,7 +148,7 @@ class LedController:
         _LOGGER.info("close done.")
 
     async def set_state(self, state: LedsStateIn):
-        _LOGGER.info("set_state: %s %s" % (state.brightness, state.segments))
+        _LOGGER.info("set_state: %s" % (state))
         if state.brightness is not None:
             self._brightness = state.brightness
             self._settings.set("brightness", state.brightness)

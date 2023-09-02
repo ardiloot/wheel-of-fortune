@@ -4,6 +4,12 @@
 
   (paper "A4")
 
+  (title_block
+    (title "Line sensor encoder")
+    (date "2023-09-02")
+    (rev "v.1.1")
+  )
+
   (lib_symbols
     (symbol "Comparator:LM393" (pin_names (offset 0.127)) (in_bom yes) (on_board yes)
       (property "Reference" "U" (id 0) (at 3.81 3.81 0)

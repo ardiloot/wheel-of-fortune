@@ -1,0 +1,887 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<export version="E">
+  <design>
+    <source>C:\Users\ardil\OneDrive\Minu\Elektroonika\PCB\line_sensor_encoder\line_sensor_encoder.kicad_sch</source>
+    <date>13.11.2022 22:07:18</date>
+    <tool>Eeschema (6.0.8)</tool>
+    <sheet number="1" name="/" tstamps="/">
+      <title_block>
+        <title/>
+        <company/>
+        <rev/>
+        <date/>
+        <source>line_sensor_encoder.kicad_sch</source>
+        <comment number="1" value=""/>
+        <comment number="2" value=""/>
+        <comment number="3" value=""/>
+        <comment number="4" value=""/>
+        <comment number="5" value=""/>
+        <comment number="6" value=""/>
+        <comment number="7" value=""/>
+        <comment number="8" value=""/>
+        <comment number="9" value=""/>
+      </title_block>
+    </sheet>
+  </design>
+  <components>
+    <comp ref="C1">
+      <value>0.1uF</value>
+      <footprint>Capacitor_SMD:C_0805_2012Metric_Pad1.18x1.45mm_HandSolder</footprint>
+      <libsource lib="Device" part="C" description="Unpolarized capacitor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="File: line_sensor_encoder.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>f126aba2-6bde-4df2-ac7c-20927a98bdeb</tstamps>
+    </comp>
+    <comp ref="C2">
+      <value>0.1uF</value>
+      <footprint>Capacitor_SMD:C_0805_2012Metric_Pad1.18x1.45mm_HandSolder</footprint>
+      <libsource lib="Device" part="C" description="Unpolarized capacitor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="File: line_sensor_encoder.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>4135a917-789c-4169-9f07-0fffaad8b03b</tstamps>
+    </comp>
+    <comp ref="C3">
+      <value>0.1uF</value>
+      <footprint>Capacitor_SMD:C_0805_2012Metric_Pad1.18x1.45mm_HandSolder</footprint>
+      <libsource lib="Device" part="C" description="Unpolarized capacitor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="File: line_sensor_encoder.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>9cf279c4-4b59-4cbf-b3bc-0c6f04ba6053</tstamps>
+    </comp>
+    <comp ref="D1">
+      <value>LED</value>
+      <footprint>LED_SMD:LED_0805_2012Metric_Pad1.15x1.40mm_HandSolder</footprint>
+      <libsource lib="Device" part="LED" description="Light emitting diode"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="File: line_sensor_encoder.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>a6fa79a4-0455-4e66-9059-1260e7824e1a</tstamps>
+    </comp>
+    <comp ref="D2">
+      <value>LED</value>
+      <footprint>LED_SMD:LED_0805_2012Metric_Pad1.15x1.40mm_HandSolder</footprint>
+      <libsource lib="Device" part="LED" description="Light emitting diode"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="File: line_sensor_encoder.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>283c08ed-68fe-48c1-b26f-0197b7c977a7</tstamps>
+    </comp>
+    <comp ref="D3">
+      <value>LED</value>
+      <footprint>LED_SMD:LED_0805_2012Metric_Pad1.15x1.40mm_HandSolder</footprint>
+      <libsource lib="Device" part="LED" description="Light emitting diode"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="File: line_sensor_encoder.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>6303f647-99ba-4236-9f0b-42ac1bc3ef7b</tstamps>
+    </comp>
+    <comp ref="D4">
+      <value>LED</value>
+      <footprint>LED_SMD:LED_0805_2012Metric_Pad1.15x1.40mm_HandSolder</footprint>
+      <libsource lib="Device" part="LED" description="Light emitting diode"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="File: line_sensor_encoder.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>4f58de39-d2f5-4c2f-ae49-fd0e1491fcb6</tstamps>
+    </comp>
+    <comp ref="D5">
+      <value>LED</value>
+      <footprint>LED_SMD:LED_0805_2012Metric_Pad1.15x1.40mm_HandSolder</footprint>
+      <libsource lib="Device" part="LED" description="Light emitting diode"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="File: line_sensor_encoder.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>8e04e144-e030-493b-b7bb-c3c4c912966e</tstamps>
+    </comp>
+    <comp ref="H1">
+      <value>MountingHole</value>
+      <footprint>MountingHole:MountingHole_3.2mm_M3_DIN965</footprint>
+      <libsource lib="Mechanical" part="MountingHole" description="Mounting Hole without connection"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="File: line_sensor_encoder.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>aba78907-0d46-4a23-8c9a-ccc0602d5341</tstamps>
+    </comp>
+    <comp ref="H2">
+      <value>MountingHole</value>
+      <footprint>MountingHole:MountingHole_3.2mm_M3_DIN965</footprint>
+      <libsource lib="Mechanical" part="MountingHole" description="Mounting Hole without connection"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="File: line_sensor_encoder.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>623f282c-6da4-47fd-b471-4174820953e3</tstamps>
+    </comp>
+    <comp ref="J1">
+      <value>Conn_02x04_Odd_Even</value>
+      <footprint>Connector_PinHeader_2.54mm:PinHeader_2x04_P2.54mm_Vertical</footprint>
+      <libsource lib="Connector_Generic" part="Conn_02x04_Odd_Even" description="Generic connector, double row, 02x04, odd/even pin numbering scheme (row 1 odd numbers, row 2 even numbers), script generated (kicad-library-utils/schlib/autogen/connector/)"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="File: line_sensor_encoder.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>5990a561-bd44-469d-989a-95829b2434d2</tstamps>
+    </comp>
+    <comp ref="J2">
+      <value>Conn_02x06_Odd_Even</value>
+      <footprint>Connector_PinHeader_2.54mm:PinHeader_2x06_P2.54mm_Vertical</footprint>
+      <libsource lib="Connector_Generic" part="Conn_02x06_Odd_Even" description="Generic connector, double row, 02x06, odd/even pin numbering scheme (row 1 odd numbers, row 2 even numbers), script generated (kicad-library-utils/schlib/autogen/connector/)"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="File: line_sensor_encoder.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>f81109f9-faf4-40eb-8cc6-4e9f00509145</tstamps>
+    </comp>
+    <comp ref="R1">
+      <value>150</value>
+      <footprint>Resistor_SMD:R_0805_2012Metric_Pad1.20x1.40mm_HandSolder</footprint>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="File: line_sensor_encoder.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>87c089ad-4270-4e2b-8177-7c3312a66634</tstamps>
+    </comp>
+    <comp ref="R2">
+      <value>150</value>
+      <footprint>Resistor_SMD:R_0805_2012Metric_Pad1.20x1.40mm_HandSolder</footprint>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="File: line_sensor_encoder.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>6e53e52a-3d43-43c2-848c-117eed3ad905</tstamps>
+    </comp>
+    <comp ref="R3">
+      <value>10k</value>
+      <footprint>Resistor_SMD:R_0805_2012Metric_Pad1.20x1.40mm_HandSolder</footprint>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="File: line_sensor_encoder.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>fed197e9-1d19-4fa4-b78b-48d26bd9f0fe</tstamps>
+    </comp>
+    <comp ref="R4">
+      <value>10k</value>
+      <footprint>Resistor_SMD:R_0805_2012Metric_Pad1.20x1.40mm_HandSolder</footprint>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="File: line_sensor_encoder.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>8d0495a1-0a44-46fa-bb37-3db7b7888e79</tstamps>
+    </comp>
+    <comp ref="R5">
+      <value>10k</value>
+      <footprint>Resistor_SMD:R_0805_2012Metric_Pad1.20x1.40mm_HandSolder</footprint>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="File: line_sensor_encoder.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>282821d0-7f04-46f3-884b-35a850850cbd</tstamps>
+    </comp>
+    <comp ref="R6">
+      <value>1k</value>
+      <footprint>Resistor_SMD:R_0805_2012Metric_Pad1.20x1.40mm_HandSolder</footprint>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="File: line_sensor_encoder.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>c859208b-5c4b-4ac3-b571-73c7f574fd01</tstamps>
+    </comp>
+    <comp ref="R7">
+      <value>10k</value>
+      <footprint>Resistor_SMD:R_0805_2012Metric_Pad1.20x1.40mm_HandSolder</footprint>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="File: line_sensor_encoder.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>c13adf7d-0ac6-4b93-83d6-2211449da972</tstamps>
+    </comp>
+    <comp ref="R8">
+      <value>1k</value>
+      <footprint>Resistor_SMD:R_0805_2012Metric_Pad1.20x1.40mm_HandSolder</footprint>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="File: line_sensor_encoder.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>178bf4f4-6278-4fd8-85ba-cb5e8698e2e3</tstamps>
+    </comp>
+    <comp ref="R9">
+      <value>150</value>
+      <footprint>Resistor_SMD:R_0805_2012Metric_Pad1.20x1.40mm_HandSolder</footprint>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="File: line_sensor_encoder.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>60e0b5ce-b379-4825-ba95-05bc26bfb591</tstamps>
+    </comp>
+    <comp ref="R10">
+      <value>150</value>
+      <footprint>Resistor_SMD:R_0805_2012Metric_Pad1.20x1.40mm_HandSolder</footprint>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="File: line_sensor_encoder.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>a9aa54fc-4cbf-43c9-89ff-4e2c0cc364a7</tstamps>
+    </comp>
+    <comp ref="R11">
+      <value>10k</value>
+      <footprint>Resistor_SMD:R_0805_2012Metric_Pad1.20x1.40mm_HandSolder</footprint>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="File: line_sensor_encoder.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>72d34bb7-75cb-44b5-acc2-f4ab0f4888b4</tstamps>
+    </comp>
+    <comp ref="R12">
+      <value>10k</value>
+      <footprint>Resistor_SMD:R_0805_2012Metric_Pad1.20x1.40mm_HandSolder</footprint>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="File: line_sensor_encoder.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>51bf42b5-60fc-4b2b-ac2e-c414ad9f8778</tstamps>
+    </comp>
+    <comp ref="R13">
+      <value>10k</value>
+      <footprint>Resistor_SMD:R_0805_2012Metric_Pad1.20x1.40mm_HandSolder</footprint>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="File: line_sensor_encoder.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>55c23541-bd5c-4939-9a03-285825671d8f</tstamps>
+    </comp>
+    <comp ref="R14">
+      <value>10k</value>
+      <footprint>Resistor_SMD:R_0805_2012Metric_Pad1.20x1.40mm_HandSolder</footprint>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="File: line_sensor_encoder.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>f7fe94a3-fe0d-43b9-85c6-aa586b053da0</tstamps>
+    </comp>
+    <comp ref="R15">
+      <value>1k</value>
+      <footprint>Resistor_SMD:R_0805_2012Metric_Pad1.20x1.40mm_HandSolder</footprint>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="File: line_sensor_encoder.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>ebab274c-8a52-4795-acba-9e8ba8c4ba7e</tstamps>
+    </comp>
+    <comp ref="R16">
+      <value>1k</value>
+      <footprint>Resistor_SMD:R_0805_2012Metric_Pad1.20x1.40mm_HandSolder</footprint>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="File: line_sensor_encoder.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>66483cd5-10f3-4118-ba09-32adc9eda299</tstamps>
+    </comp>
+    <comp ref="R17">
+      <value>150</value>
+      <footprint>Resistor_SMD:R_0805_2012Metric_Pad1.20x1.40mm_HandSolder</footprint>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="File: line_sensor_encoder.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>970ae30b-d76e-47de-b607-30efffa3398c</tstamps>
+    </comp>
+    <comp ref="R18">
+      <value>10k</value>
+      <footprint>Resistor_SMD:R_0805_2012Metric_Pad1.20x1.40mm_HandSolder</footprint>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="File: line_sensor_encoder.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>cb9ffb70-5e93-4865-a8de-2500ae15e0a2</tstamps>
+    </comp>
+    <comp ref="R19">
+      <value>10k</value>
+      <footprint>Resistor_SMD:R_0805_2012Metric_Pad1.20x1.40mm_HandSolder</footprint>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="File: line_sensor_encoder.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>eacf6eeb-93d9-46cd-8d45-afd0471c0190</tstamps>
+    </comp>
+    <comp ref="R20">
+      <value>1k</value>
+      <footprint>Resistor_SMD:R_0805_2012Metric_Pad1.20x1.40mm_HandSolder</footprint>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="File: line_sensor_encoder.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>bef0a95f-7352-4d90-908a-dfc25cfa9844</tstamps>
+    </comp>
+    <comp ref="RV1">
+      <value>10k</value>
+      <footprint>Potentiometer_THT:Potentiometer_Bourns_3296W_Vertical</footprint>
+      <libsource lib="Device" part="R_Potentiometer" description="Potentiometer"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="File: line_sensor_encoder.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>fa72aacb-f0cd-4169-8366-676aa0f04172</tstamps>
+    </comp>
+    <comp ref="RV2">
+      <value>10k</value>
+      <footprint>Potentiometer_THT:Potentiometer_Bourns_3296W_Vertical</footprint>
+      <libsource lib="Device" part="R_Potentiometer" description="Potentiometer"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="File: line_sensor_encoder.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>735c01fc-a06d-4870-b075-df2a2a09fbd8</tstamps>
+    </comp>
+    <comp ref="RV3">
+      <value>10k</value>
+      <footprint>Potentiometer_THT:Potentiometer_Bourns_3296W_Vertical</footprint>
+      <libsource lib="Device" part="R_Potentiometer" description="Potentiometer"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="File: line_sensor_encoder.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>1469235b-c548-49dc-954b-0c62a5898db8</tstamps>
+    </comp>
+    <comp ref="RV4">
+      <value>10k</value>
+      <footprint>Potentiometer_THT:Potentiometer_Bourns_3296W_Vertical</footprint>
+      <libsource lib="Device" part="R_Potentiometer" description="Potentiometer"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="File: line_sensor_encoder.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>4375e733-ae89-4ad9-bbb3-3049587ce857</tstamps>
+    </comp>
+    <comp ref="RV5">
+      <value>10k</value>
+      <footprint>Potentiometer_THT:Potentiometer_Bourns_3296W_Vertical</footprint>
+      <libsource lib="Device" part="R_Potentiometer" description="Potentiometer"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="File: line_sensor_encoder.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>6ddbb2ad-96ee-4ddb-8176-f3aebf541523</tstamps>
+    </comp>
+    <comp ref="U1">
+      <value>TCRT5000L</value>
+      <footprint>TCRT5000L:XDCR_TCRT5000L</footprint>
+      <fields>
+        <field name="AVAILABILITY">Good</field>
+        <field name="DESCRIPTION">TCRT5000 Series 940 nm 100 mA 60 mA Transistor Output Reflective Optical Sensor</field>
+        <field name="MF">Vishay Semiconductor</field>
+        <field name="MP">TCRT5000L</field>
+        <field name="PACKAGE">PCB Mount Vishay</field>
+        <field name="PRICE">0.60 USD</field>
+      </fields>
+      <libsource lib="TCRT5000L" part="TCRT5000L" description=""/>
+      <property name="PRICE" value="0.60 USD"/>
+      <property name="MP" value="TCRT5000L"/>
+      <property name="AVAILABILITY" value="Good"/>
+      <property name="DESCRIPTION" value="TCRT5000 Series 940 nm 100 mA 60 mA Transistor Output Reflective Optical Sensor"/>
+      <property name="PACKAGE" value="PCB Mount Vishay"/>
+      <property name="MF" value="Vishay Semiconductor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="File: line_sensor_encoder.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>536f214b-2e95-46d5-92f9-af99891c6897</tstamps>
+    </comp>
+    <comp ref="U2">
+      <value>LM393</value>
+      <footprint>Package_SO:SOP-8_5.28x5.23mm_P1.27mm</footprint>
+      <datasheet>http://www.ti.com/lit/ds/symlink/lm393.pdf</datasheet>
+      <libsource lib="Comparator" part="LM393" description="Low-Power, Low-Offset Voltage, Dual Comparators, DIP-8/SOIC-8/TO-99-8"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="File: line_sensor_encoder.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>6529f4a6-2157-4f43-950c-43349fcb9259 5b909c34-3200-4f1f-9bd8-ba6bc2563720 2b23993c-27fa-4304-aa62-a80fe10d4809</tstamps>
+    </comp>
+    <comp ref="U3">
+      <value>TCRT5000L</value>
+      <footprint>TCRT5000L:XDCR_TCRT5000L</footprint>
+      <fields>
+        <field name="AVAILABILITY">Good</field>
+        <field name="DESCRIPTION">TCRT5000 Series 940 nm 100 mA 60 mA Transistor Output Reflective Optical Sensor</field>
+        <field name="MF">Vishay Semiconductor</field>
+        <field name="MP">TCRT5000L</field>
+        <field name="PACKAGE">PCB Mount Vishay</field>
+        <field name="PRICE">0.60 USD</field>
+      </fields>
+      <libsource lib="TCRT5000L" part="TCRT5000L" description=""/>
+      <property name="PRICE" value="0.60 USD"/>
+      <property name="MP" value="TCRT5000L"/>
+      <property name="AVAILABILITY" value="Good"/>
+      <property name="DESCRIPTION" value="TCRT5000 Series 940 nm 100 mA 60 mA Transistor Output Reflective Optical Sensor"/>
+      <property name="PACKAGE" value="PCB Mount Vishay"/>
+      <property name="MF" value="Vishay Semiconductor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="File: line_sensor_encoder.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>0cdfe4e6-69d5-4362-a572-401c39ea543f</tstamps>
+    </comp>
+    <comp ref="U4">
+      <value>TCRT5000L</value>
+      <footprint>TCRT5000L:XDCR_TCRT5000L</footprint>
+      <fields>
+        <field name="AVAILABILITY">Good</field>
+        <field name="DESCRIPTION">TCRT5000 Series 940 nm 100 mA 60 mA Transistor Output Reflective Optical Sensor</field>
+        <field name="MF">Vishay Semiconductor</field>
+        <field name="MP">TCRT5000L</field>
+        <field name="PACKAGE">PCB Mount Vishay</field>
+        <field name="PRICE">0.60 USD</field>
+      </fields>
+      <libsource lib="TCRT5000L" part="TCRT5000L" description=""/>
+      <property name="PRICE" value="0.60 USD"/>
+      <property name="MP" value="TCRT5000L"/>
+      <property name="AVAILABILITY" value="Good"/>
+      <property name="DESCRIPTION" value="TCRT5000 Series 940 nm 100 mA 60 mA Transistor Output Reflective Optical Sensor"/>
+      <property name="PACKAGE" value="PCB Mount Vishay"/>
+      <property name="MF" value="Vishay Semiconductor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="File: line_sensor_encoder.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>00de8f80-d7c0-452c-9075-6a2ba5c46bd9</tstamps>
+    </comp>
+    <comp ref="U5">
+      <value>TCRT5000L</value>
+      <footprint>TCRT5000L:XDCR_TCRT5000L</footprint>
+      <fields>
+        <field name="AVAILABILITY">Good</field>
+        <field name="DESCRIPTION">TCRT5000 Series 940 nm 100 mA 60 mA Transistor Output Reflective Optical Sensor</field>
+        <field name="MF">Vishay Semiconductor</field>
+        <field name="MP">TCRT5000L</field>
+        <field name="PACKAGE">PCB Mount Vishay</field>
+        <field name="PRICE">0.60 USD</field>
+      </fields>
+      <libsource lib="TCRT5000L" part="TCRT5000L" description=""/>
+      <property name="PRICE" value="0.60 USD"/>
+      <property name="MP" value="TCRT5000L"/>
+      <property name="AVAILABILITY" value="Good"/>
+      <property name="DESCRIPTION" value="TCRT5000 Series 940 nm 100 mA 60 mA Transistor Output Reflective Optical Sensor"/>
+      <property name="PACKAGE" value="PCB Mount Vishay"/>
+      <property name="MF" value="Vishay Semiconductor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="File: line_sensor_encoder.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>66ed70a2-a7cb-4aaa-83b2-07e7ffd1adc0</tstamps>
+    </comp>
+    <comp ref="U6">
+      <value>LM393</value>
+      <footprint>Package_SO:SOP-8_5.28x5.23mm_P1.27mm</footprint>
+      <datasheet>http://www.ti.com/lit/ds/symlink/lm393.pdf</datasheet>
+      <libsource lib="Comparator" part="LM393" description="Low-Power, Low-Offset Voltage, Dual Comparators, DIP-8/SOIC-8/TO-99-8"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="File: line_sensor_encoder.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>575ca17b-c5a7-4b71-ac3c-4224ca996e64 8020ea7a-1c94-4370-8b37-f3ba0307ce26 019b9817-f24f-4718-8849-ebd1d88e5395</tstamps>
+    </comp>
+    <comp ref="U7">
+      <value>TCRT5000L</value>
+      <footprint>TCRT5000L:XDCR_TCRT5000L</footprint>
+      <fields>
+        <field name="AVAILABILITY">Good</field>
+        <field name="DESCRIPTION">TCRT5000 Series 940 nm 100 mA 60 mA Transistor Output Reflective Optical Sensor</field>
+        <field name="MF">Vishay Semiconductor</field>
+        <field name="MP">TCRT5000L</field>
+        <field name="PACKAGE">PCB Mount Vishay</field>
+        <field name="PRICE">0.60 USD</field>
+      </fields>
+      <libsource lib="TCRT5000L" part="TCRT5000L" description=""/>
+      <property name="PRICE" value="0.60 USD"/>
+      <property name="MP" value="TCRT5000L"/>
+      <property name="AVAILABILITY" value="Good"/>
+      <property name="DESCRIPTION" value="TCRT5000 Series 940 nm 100 mA 60 mA Transistor Output Reflective Optical Sensor"/>
+      <property name="PACKAGE" value="PCB Mount Vishay"/>
+      <property name="MF" value="Vishay Semiconductor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="File: line_sensor_encoder.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>20830563-ad5c-4e86-abaa-1c9c0ff13c5c</tstamps>
+    </comp>
+    <comp ref="U8">
+      <value>LM393</value>
+      <footprint>Package_SO:SOP-8_5.28x5.23mm_P1.27mm</footprint>
+      <datasheet>http://www.ti.com/lit/ds/symlink/lm393.pdf</datasheet>
+      <libsource lib="Comparator" part="LM393" description="Low-Power, Low-Offset Voltage, Dual Comparators, DIP-8/SOIC-8/TO-99-8"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="File: line_sensor_encoder.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>d26215e4-84dc-4626-8400-86381eaabf67 0dc3a9bf-a468-4eb6-8ce0-5e5f45cca6f6</tstamps>
+    </comp>
+  </components>
+  <libparts>
+    <libpart lib="Comparator" part="LM393">
+      <description>Low-Power, Low-Offset Voltage, Dual Comparators, DIP-8/SOIC-8/TO-99-8</description>
+      <docs>http://www.ti.com/lit/ds/symlink/lm393.pdf</docs>
+      <footprints>
+        <fp>SOIC*3.9x4.9mm*P1.27mm*</fp>
+        <fp>DIP*W7.62mm*</fp>
+        <fp>SOP*5.28x5.23mm*P1.27mm*</fp>
+        <fp>VSSOP*3.0x3.0mm*P0.65mm*</fp>
+        <fp>TSSOP*4.4x3mm*P0.65mm*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">LM393</field>
+        <field name="Datasheet">http://www.ti.com/lit/ds/symlink/lm393.pdf</field>
+      </fields>
+      <pins>
+        <pin num="1" name="" type="open_collector"/>
+        <pin num="2" name="-" type="input"/>
+        <pin num="3" name="+" type="input"/>
+        <pin num="4" name="V-" type="power_in"/>
+        <pin num="5" name="+" type="input"/>
+        <pin num="6" name="-" type="input"/>
+        <pin num="7" name="" type="open_collector"/>
+        <pin num="8" name="V+" type="power_in"/>
+      </pins>
+    </libpart>
+    <libpart lib="Connector_Generic" part="Conn_02x04_Odd_Even">
+      <description>Generic connector, double row, 02x04, odd/even pin numbering scheme (row 1 odd numbers, row 2 even numbers), script generated (kicad-library-utils/schlib/autogen/connector/)</description>
+      <docs>~</docs>
+      <footprints>
+        <fp>Connector*:*_2x??_*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">J</field>
+        <field name="Value">Conn_02x04_Odd_Even</field>
+        <field name="Datasheet">~</field>
+      </fields>
+      <pins>
+        <pin num="1" name="Pin_1" type="passive"/>
+        <pin num="2" name="Pin_2" type="passive"/>
+        <pin num="3" name="Pin_3" type="passive"/>
+        <pin num="4" name="Pin_4" type="passive"/>
+        <pin num="5" name="Pin_5" type="passive"/>
+        <pin num="6" name="Pin_6" type="passive"/>
+        <pin num="7" name="Pin_7" type="passive"/>
+        <pin num="8" name="Pin_8" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="Connector_Generic" part="Conn_02x06_Odd_Even">
+      <description>Generic connector, double row, 02x06, odd/even pin numbering scheme (row 1 odd numbers, row 2 even numbers), script generated (kicad-library-utils/schlib/autogen/connector/)</description>
+      <docs>~</docs>
+      <footprints>
+        <fp>Connector*:*_2x??_*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">J</field>
+        <field name="Value">Conn_02x06_Odd_Even</field>
+        <field name="Datasheet">~</field>
+      </fields>
+      <pins>
+        <pin num="1" name="Pin_1" type="passive"/>
+        <pin num="2" name="Pin_2" type="passive"/>
+        <pin num="3" name="Pin_3" type="passive"/>
+        <pin num="4" name="Pin_4" type="passive"/>
+        <pin num="5" name="Pin_5" type="passive"/>
+        <pin num="6" name="Pin_6" type="passive"/>
+        <pin num="7" name="Pin_7" type="passive"/>
+        <pin num="8" name="Pin_8" type="passive"/>
+        <pin num="9" name="Pin_9" type="passive"/>
+        <pin num="10" name="Pin_10" type="passive"/>
+        <pin num="11" name="Pin_11" type="passive"/>
+        <pin num="12" name="Pin_12" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="Device" part="C">
+      <description>Unpolarized capacitor</description>
+      <docs>~</docs>
+      <footprints>
+        <fp>C_*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">C</field>
+        <field name="Value">C</field>
+        <field name="Datasheet">~</field>
+      </fields>
+      <pins>
+        <pin num="1" name="" type="passive"/>
+        <pin num="2" name="" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="Device" part="LED">
+      <description>Light emitting diode</description>
+      <docs>~</docs>
+      <footprints>
+        <fp>LED*</fp>
+        <fp>LED_SMD:*</fp>
+        <fp>LED_THT:*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">D</field>
+        <field name="Value">LED</field>
+        <field name="Datasheet">~</field>
+      </fields>
+      <pins>
+        <pin num="1" name="K" type="passive"/>
+        <pin num="2" name="A" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="Device" part="R">
+      <description>Resistor</description>
+      <docs>~</docs>
+      <footprints>
+        <fp>R_*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">R</field>
+        <field name="Value">R</field>
+        <field name="Datasheet">~</field>
+      </fields>
+      <pins>
+        <pin num="1" name="" type="passive"/>
+        <pin num="2" name="" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="Device" part="R_Potentiometer">
+      <description>Potentiometer</description>
+      <docs>~</docs>
+      <footprints>
+        <fp>Potentiometer*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">RV</field>
+        <field name="Value">R_Potentiometer</field>
+        <field name="Datasheet">~</field>
+      </fields>
+      <pins>
+        <pin num="1" name="1" type="passive"/>
+        <pin num="2" name="2" type="passive"/>
+        <pin num="3" name="3" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="Mechanical" part="MountingHole">
+      <description>Mounting Hole without connection</description>
+      <docs>~</docs>
+      <footprints>
+        <fp>MountingHole*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">H</field>
+        <field name="Value">MountingHole</field>
+        <field name="Datasheet">~</field>
+      </fields>
+    </libpart>
+    <libpart lib="TCRT5000L" part="TCRT5000L">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">TCRT5000L</field>
+        <field name="Footprint">XDCR_TCRT5000L</field>
+        <field name="PRICE">0.60 USD</field>
+        <field name="MP">TCRT5000L</field>
+        <field name="AVAILABILITY">Good</field>
+        <field name="DESCRIPTION">TCRT5000 Series 940 nm 100 mA 60 mA Transistor Output Reflective Optical Sensor</field>
+        <field name="PACKAGE">PCB Mount Vishay</field>
+        <field name="MF">Vishay Semiconductor</field>
+      </fields>
+      <pins>
+        <pin num="1" name="" type="passive"/>
+        <pin num="2" name="" type="passive"/>
+        <pin num="3" name="" type="passive"/>
+        <pin num="4" name="" type="passive"/>
+      </pins>
+    </libpart>
+  </libparts>
+  <libraries>
+    <library logical="Comparator">
+      <uri>C:\Program Files\KiCad\6.0\share\kicad\symbols\/Comparator.kicad_sym</uri>
+    </library>
+    <library logical="Connector_Generic">
+      <uri>C:\Program Files\KiCad\6.0\share\kicad\symbols\/Connector_Generic.kicad_sym</uri>
+    </library>
+    <library logical="Device">
+      <uri>C:\Program Files\KiCad\6.0\share\kicad\symbols\/Device.kicad_sym</uri>
+    </library>
+    <library logical="Mechanical">
+      <uri>C:\Program Files\KiCad\6.0\share\kicad\symbols\/Mechanical.kicad_sym</uri>
+    </library>
+    <library logical="TCRT5000L">
+      <uri>C:/Users/ardil/OneDrive/Minu/Elektroonika/KiCad/snapeda/TCRT5000L/TCRT5000L.lib</uri>
+    </library>
+  </libraries>
+  <nets>
+    <net code="1" name="+5V">
+      <node ref="C1" pin="2" pintype="passive"/>
+      <node ref="C2" pin="2" pintype="passive"/>
+      <node ref="C3" pin="2" pintype="passive"/>
+      <node ref="D1" pin="2" pinfunction="A" pintype="passive"/>
+      <node ref="D2" pin="2" pinfunction="A" pintype="passive"/>
+      <node ref="D3" pin="2" pinfunction="A" pintype="passive"/>
+      <node ref="D4" pin="2" pinfunction="A" pintype="passive"/>
+      <node ref="D5" pin="2" pinfunction="A" pintype="passive"/>
+      <node ref="J1" pin="1" pinfunction="Pin_1" pintype="passive"/>
+      <node ref="J2" pin="1" pinfunction="Pin_1" pintype="passive"/>
+      <node ref="R1" pin="1" pintype="passive"/>
+      <node ref="R10" pin="1" pintype="passive"/>
+      <node ref="R11" pin="1" pintype="passive"/>
+      <node ref="R12" pin="1" pintype="passive"/>
+      <node ref="R13" pin="1" pintype="passive"/>
+      <node ref="R14" pin="1" pintype="passive"/>
+      <node ref="R17" pin="1" pintype="passive"/>
+      <node ref="R18" pin="1" pintype="passive"/>
+      <node ref="R19" pin="1" pintype="passive"/>
+      <node ref="R2" pin="1" pintype="passive"/>
+      <node ref="R3" pin="1" pintype="passive"/>
+      <node ref="R4" pin="1" pintype="passive"/>
+      <node ref="R5" pin="1" pintype="passive"/>
+      <node ref="R7" pin="1" pintype="passive"/>
+      <node ref="R9" pin="1" pintype="passive"/>
+      <node ref="RV1" pin="1" pinfunction="1" pintype="passive"/>
+      <node ref="RV2" pin="1" pinfunction="1" pintype="passive"/>
+      <node ref="RV3" pin="1" pinfunction="1" pintype="passive"/>
+      <node ref="RV4" pin="1" pinfunction="1" pintype="passive"/>
+      <node ref="RV5" pin="1" pinfunction="1" pintype="passive"/>
+      <node ref="U2" pin="8" pinfunction="V+" pintype="power_in"/>
+      <node ref="U6" pin="8" pinfunction="V+" pintype="power_in"/>
+      <node ref="U8" pin="8" pinfunction="V+" pintype="power_in"/>
+    </net>
+    <net code="2" name="/D1">
+      <node ref="J1" pin="3" pinfunction="Pin_3" pintype="passive"/>
+      <node ref="R5" pin="2" pintype="passive"/>
+      <node ref="R6" pin="2" pintype="passive"/>
+      <node ref="U2" pin="1" pintype="open_collector"/>
+    </net>
+    <net code="3" name="/D2">
+      <node ref="J1" pin="4" pinfunction="Pin_4" pintype="passive"/>
+      <node ref="R7" pin="2" pintype="passive"/>
+      <node ref="R8" pin="2" pintype="passive"/>
+      <node ref="U2" pin="7" pintype="open_collector"/>
+    </net>
+    <net code="4" name="/D3">
+      <node ref="J1" pin="5" pinfunction="Pin_5" pintype="passive"/>
+      <node ref="R13" pin="2" pintype="passive"/>
+      <node ref="R15" pin="2" pintype="passive"/>
+      <node ref="U6" pin="1" pintype="open_collector"/>
+    </net>
+    <net code="5" name="/D4">
+      <node ref="J1" pin="6" pinfunction="Pin_6" pintype="passive"/>
+      <node ref="R14" pin="2" pintype="passive"/>
+      <node ref="R16" pin="2" pintype="passive"/>
+      <node ref="U6" pin="7" pintype="open_collector"/>
+    </net>
+    <net code="6" name="/D5">
+      <node ref="J1" pin="7" pinfunction="Pin_7" pintype="passive"/>
+      <node ref="R19" pin="2" pintype="passive"/>
+      <node ref="R20" pin="2" pintype="passive"/>
+      <node ref="U8" pin="1" pintype="open_collector"/>
+    </net>
+    <net code="7" name="/OUT1">
+      <node ref="J2" pin="3" pinfunction="Pin_3" pintype="passive"/>
+      <node ref="R3" pin="2" pintype="passive"/>
+      <node ref="U1" pin="1" pintype="passive"/>
+      <node ref="U2" pin="3" pinfunction="+" pintype="input"/>
+    </net>
+    <net code="8" name="/OUT2">
+      <node ref="J2" pin="5" pinfunction="Pin_5" pintype="passive"/>
+      <node ref="R4" pin="2" pintype="passive"/>
+      <node ref="U2" pin="5" pinfunction="+" pintype="input"/>
+      <node ref="U3" pin="1" pintype="passive"/>
+    </net>
+    <net code="9" name="/OUT3">
+      <node ref="J2" pin="7" pinfunction="Pin_7" pintype="passive"/>
+      <node ref="R11" pin="2" pintype="passive"/>
+      <node ref="U4" pin="1" pintype="passive"/>
+      <node ref="U6" pin="3" pinfunction="+" pintype="input"/>
+    </net>
+    <net code="10" name="/OUT4">
+      <node ref="J2" pin="9" pinfunction="Pin_9" pintype="passive"/>
+      <node ref="R12" pin="2" pintype="passive"/>
+      <node ref="U5" pin="1" pintype="passive"/>
+      <node ref="U6" pin="5" pinfunction="+" pintype="input"/>
+    </net>
+    <net code="11" name="/OUT5">
+      <node ref="J2" pin="11" pinfunction="Pin_11" pintype="passive"/>
+      <node ref="R18" pin="2" pintype="passive"/>
+      <node ref="U7" pin="1" pintype="passive"/>
+      <node ref="U8" pin="3" pinfunction="+" pintype="input"/>
+    </net>
+    <net code="12" name="/REF1">
+      <node ref="J2" pin="4" pinfunction="Pin_4" pintype="passive"/>
+      <node ref="RV1" pin="2" pinfunction="2" pintype="passive"/>
+      <node ref="U2" pin="2" pinfunction="-" pintype="input"/>
+    </net>
+    <net code="13" name="/REF2">
+      <node ref="J2" pin="6" pinfunction="Pin_6" pintype="passive"/>
+      <node ref="RV2" pin="2" pinfunction="2" pintype="passive"/>
+      <node ref="U2" pin="6" pinfunction="-" pintype="input"/>
+    </net>
+    <net code="14" name="/REF3">
+      <node ref="J2" pin="8" pinfunction="Pin_8" pintype="passive"/>
+      <node ref="RV3" pin="2" pinfunction="2" pintype="passive"/>
+      <node ref="U6" pin="2" pinfunction="-" pintype="input"/>
+    </net>
+    <net code="15" name="/REF4">
+      <node ref="J2" pin="10" pinfunction="Pin_10" pintype="passive"/>
+      <node ref="RV4" pin="2" pinfunction="2" pintype="passive"/>
+      <node ref="U6" pin="6" pinfunction="-" pintype="input"/>
+    </net>
+    <net code="16" name="/REF5">
+      <node ref="J2" pin="12" pinfunction="Pin_12" pintype="passive"/>
+      <node ref="RV5" pin="2" pinfunction="2" pintype="passive"/>
+      <node ref="U8" pin="2" pinfunction="-" pintype="input"/>
+    </net>
+    <net code="17" name="GND">
+      <node ref="C1" pin="1" pintype="passive"/>
+      <node ref="C2" pin="1" pintype="passive"/>
+      <node ref="C3" pin="1" pintype="passive"/>
+      <node ref="J1" pin="2" pinfunction="Pin_2" pintype="passive"/>
+      <node ref="J2" pin="2" pinfunction="Pin_2" pintype="passive"/>
+      <node ref="RV1" pin="3" pinfunction="3" pintype="passive"/>
+      <node ref="RV2" pin="3" pinfunction="3" pintype="passive"/>
+      <node ref="RV3" pin="3" pinfunction="3" pintype="passive"/>
+      <node ref="RV4" pin="3" pinfunction="3" pintype="passive"/>
+      <node ref="RV5" pin="3" pinfunction="3" pintype="passive"/>
+      <node ref="U1" pin="2" pintype="passive"/>
+      <node ref="U1" pin="3" pintype="passive"/>
+      <node ref="U2" pin="4" pinfunction="V-" pintype="power_in"/>
+      <node ref="U3" pin="2" pintype="passive"/>
+      <node ref="U3" pin="3" pintype="passive"/>
+      <node ref="U4" pin="2" pintype="passive"/>
+      <node ref="U4" pin="3" pintype="passive"/>
+      <node ref="U5" pin="2" pintype="passive"/>
+      <node ref="U5" pin="3" pintype="passive"/>
+      <node ref="U6" pin="4" pinfunction="V-" pintype="power_in"/>
+      <node ref="U7" pin="2" pintype="passive"/>
+      <node ref="U7" pin="3" pintype="passive"/>
+      <node ref="U8" pin="4" pinfunction="V-" pintype="power_in"/>
+    </net>
+    <net code="18" name="Net-(D1-Pad1)">
+      <node ref="D1" pin="1" pinfunction="K" pintype="passive"/>
+      <node ref="R6" pin="1" pintype="passive"/>
+    </net>
+    <net code="19" name="Net-(D2-Pad1)">
+      <node ref="D2" pin="1" pinfunction="K" pintype="passive"/>
+      <node ref="R8" pin="1" pintype="passive"/>
+    </net>
+    <net code="20" name="Net-(D3-Pad1)">
+      <node ref="D3" pin="1" pinfunction="K" pintype="passive"/>
+      <node ref="R15" pin="1" pintype="passive"/>
+    </net>
+    <net code="21" name="Net-(D4-Pad1)">
+      <node ref="D4" pin="1" pinfunction="K" pintype="passive"/>
+      <node ref="R16" pin="1" pintype="passive"/>
+    </net>
+    <net code="22" name="Net-(D5-Pad1)">
+      <node ref="D5" pin="1" pinfunction="K" pintype="passive"/>
+      <node ref="R20" pin="1" pintype="passive"/>
+    </net>
+    <net code="23" name="Net-(R1-Pad2)">
+      <node ref="R1" pin="2" pintype="passive"/>
+      <node ref="U1" pin="4" pintype="passive"/>
+    </net>
+    <net code="24" name="Net-(R2-Pad2)">
+      <node ref="R2" pin="2" pintype="passive"/>
+      <node ref="U3" pin="4" pintype="passive"/>
+    </net>
+    <net code="25" name="Net-(R9-Pad2)">
+      <node ref="R9" pin="2" pintype="passive"/>
+      <node ref="U4" pin="4" pintype="passive"/>
+    </net>
+    <net code="26" name="Net-(R10-Pad2)">
+      <node ref="R10" pin="2" pintype="passive"/>
+      <node ref="U5" pin="4" pintype="passive"/>
+    </net>
+    <net code="27" name="Net-(R17-Pad2)">
+      <node ref="R17" pin="2" pintype="passive"/>
+      <node ref="U7" pin="4" pintype="passive"/>
+    </net>
+    <net code="28" name="unconnected-(J1-Pad8)">
+      <node ref="J1" pin="8" pinfunction="Pin_8" pintype="passive+no_connect"/>
+    </net>
+  </nets>
+</export>

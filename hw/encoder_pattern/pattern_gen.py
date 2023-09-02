@@ -45,12 +45,12 @@ if __name__ == "__main__":
 
     # Lines
     r_lines = 500  # r0 - 20
-    for i, th in enumerate(np.radians(np.linspace(0, 360, 32, endpoint=False))):
+    for i, th in enumerate(np.radians(np.linspace(0, 360, 16, endpoint=False))):
         x, y = r_lines * np.sin(th), r_lines * np.cos(th)
         ax.plot([0.0, x], [0.0, y], lw=0.2, color="k")
 
     # Circles
-    for r in [13.5, 28, 40, 50, 130, 210]:
+    for r in [13.5, 28, 130, 210]:
         ax.add_patch(Circle(center, radius=r, ec="k", fill=False, lw=0.2))
 
     # Holes

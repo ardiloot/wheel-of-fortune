@@ -13,5 +13,5 @@ for filename in glob(
         print("SKIP")
         continue
 
-    stl_mesh.rotate(np.array([1, 0, 0]), np.deg2rad(90))
+    stl_mesh.rotate(np.array([1, 0, 0]), np.deg2rad(-90))
     stl_mesh.save(filename)

@@ -39,11 +39,12 @@ class SoundChannel:
     def open(self):
         if "volume" in self._settings:
             self._volume = self._settings["volume"]
+        self._channel.set_volume(self._volume)
 
     async def set_state(self, state: SoundChannelStateIn):
         if state.volume is not None:
-            self._channel.set_volume(self._volume)
             self._volume = state.volume
+            self._channel.set_volume(self._volume)
             self._settings["volume"] = self._volume
 
         if state.sound_name is not None:
@@ -58,10 +59,9 @@ class SoundChannel:
     async def play(self, sound_name: str, fade_ms: int = 300):
         if sound_name not in self._sounds:
             raise ValueError("Sound not found: %s" % (sound_name))
-
         sound = self._sounds[sound_name]
+        self._channel.set_volume(self._volume)
         self._channel.play(sound, fade_ms=fade_ms)
-        self._channel.set_volume(self._volume)  # Resets with every play command
         self._sound_name = sound_name
 
     async def fadeout(self, fade_ms: int = 300):
@@ -75,7 +75,7 @@ class SoundChannel:
         delta = (volume_to - volume_from) / steps
         for i in range(steps):
             volume = volume_from + (i + 1) * delta
-            self._channel.set_volume(volume)
+            self._channel.set_volume(self._volume * volume)
             await asyncio.sleep(1e-3 * time_ms / steps)
 
 

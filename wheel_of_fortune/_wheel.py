@@ -303,9 +303,9 @@ class Wheel:
                 raise RuntimeError("ERROR cancelling task")
 
     async def _task_startup(self):
-        await self._soundsystem.play(EFFECT_CH, self._theme.startup_sound)
+        await self._soundsystem.play(MAIN_CH, self._theme.startup_sound)
         await self._leds.set_state(LedsStateIn(segments=self._theme.startup_led_preset))
-        await asyncio.sleep(2)
+        await asyncio.sleep(3)
 
     async def _task_idle(self):
         cur_theme = None
@@ -375,12 +375,12 @@ class Wheel:
                 target_pos=1.0,
             )
 
-            await self._soundsystem.volume_sweep(MAIN_CH, 1.0, 0.2)
+            await self._soundsystem.volume_sweep(MAIN_CH, 1.0, 0.2, time_ms=1000)
             await asyncio.sleep(0.2)
 
             await self._leds.set_state(LedsStateIn(segments=effect.leds_preset))
             await self._soundsystem.play(EFFECT_CH, effect.effect_sound)
-            await asyncio.sleep(2.0)
+            await asyncio.sleep(4.0)
 
             await self._soundsystem.volume_sweep(MAIN_CH, 0.2, 1.0, time_ms=1000)
             await asyncio.sleep(4.0)
@@ -389,6 +389,7 @@ class Wheel:
                 names=effect.active_servos,
                 target_pos=0.0,
             )
+            await asyncio.sleep(2.0)
             await self._soundsystem.fadeout(MAIN_CH, fade_ms=2000)
 
         finally:
@@ -400,7 +401,7 @@ class Wheel:
 
     async def _task_poweroff(self):
         await self._soundsystem.fadeout(MAIN_CH)
-        await self._soundsystem.play(EFFECT_CH, self._theme.poweroff_sound)
+        await self._soundsystem.play(MAIN_CH, self._theme.poweroff_sound)
         await self._leds.set_state(
             LedsStateIn(segments=self._theme.poweroff_led_preset)
         )

@@ -25,7 +25,7 @@ class Encoder:
         self._encoder_pins: list[str] = ["PH3", "PH4", "PH6", "PH5"]
         self._speed_pin: str = "PL10"
         self._pulses_per_rev: float = 128.0
-        self._standstill_timeout = 3.5
+        self._standstill_timeout = 4.0
 
         self._encoder_state: list[bool] = []
         self._total_sector_count: int = 0
@@ -85,7 +85,7 @@ class Encoder:
             self._last_speed_pulse_count = self._speed_pulse_count
             self._last_rpm_update = now
 
-            log_cycles = 120 if self._is_standstill else 1
+            log_cycles = 60 if self._is_standstill else 1
             if counter % log_cycles == 0:
                 state = self.get_state()
                 _LOGGER.info(

@@ -388,6 +388,7 @@ class Wheel:
                 names=effect.active_servos,
                 target_pos=0.0,
             )
+            await asyncio.sleep(2.0)
             await self._soundsystem.fadeout(MAIN_CH, fade_ms=2000)
 
         finally:

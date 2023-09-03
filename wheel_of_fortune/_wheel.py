@@ -376,6 +376,7 @@ class Wheel:
             )
 
             await self._soundsystem.volume_sweep(MAIN_CH, 1.0, 0.2, time_ms=1000)
+            await asyncio.sleep(0.2)
 
             await self._leds.set_state(LedsStateIn(segments=effect.leds_preset))
             await self._soundsystem.play(EFFECT_CH, effect.effect_sound)

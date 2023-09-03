@@ -39,6 +39,7 @@ class SoundChannel:
     def open(self):
         if "volume" in self._settings:
             self._volume = self._settings["volume"]
+        self._channel.set_volume(self._volume)
 
     async def set_state(self, state: SoundChannelStateIn):
         if state.volume is not None:

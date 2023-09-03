@@ -85,7 +85,7 @@ class Encoder:
             self._last_speed_pulse_count = self._speed_pulse_count
             self._last_rpm_update = now
 
-            log_cycles = 120 if self._is_standstill else 1
+            log_cycles = 60 if self._is_standstill else 1
             if counter % log_cycles == 0:
                 state = self.get_state()
                 _LOGGER.info(

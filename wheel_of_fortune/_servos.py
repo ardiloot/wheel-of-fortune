@@ -124,7 +124,7 @@ class ServoController:
             await asyncio.sleep(100.0)
 
     async def move_to_pos(
-        self, names: list[str], target_pos: float, duration_secs: float = 3.0
+        self, names: list[str], target_pos: float, duration_secs: float = 2.0
     ):
         _LOGGER.info(
             "move to pos: %s, target: %.3f, duration %.3f s"
@@ -143,7 +143,7 @@ class ServoController:
             selected_motors[name] = motor
             start_positions[name] = motor.get_state().pos
 
-        step_rate_hz = 10.0
+        step_rate_hz = 5.0
         steps = max(1, int(step_rate_hz * duration_secs))
         for i in range(steps):
             t0 = self._loop.time()

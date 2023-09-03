@@ -33,7 +33,7 @@ class Config(BaseSettings):
         ServoConfig(name="left", mount_angle=math.radians(135)),
     ]
     servo_zero_duty: float = 0.086
-    servo_full_duty: float = 0.516
+    servo_full_duty: float = 0.0516
     servo_mount_duty: float = 0.0473
 
     influxdb_url: str | None = None

@@ -1,47 +1,42 @@
-
 # Embedded software
 
-## Orange Pi 3 LTS setup
-
-Manual and downloads: http://www.orangepi.org/html/hardWare/computerAndMicrocontrollers/service-and-support/Orange-pi-3-LTS.html
+## Orange Pi 3 setup
 
 ### Burn image to SD card
 
-Follow steps outlined in chapters 2.4 - 2.5.
-Use `Orangepi3-lts_3.0.8_ubuntu_jammy_server_linux5.16.17.7z` image.
+Follow steps outlined in User Manual (chapters 2.4 - 2.5) to burn Ubuntu server image (`Orangepi3-lts_3.0.8_ubuntu_jammy_server_linux5.16.17.7z`) to SD card.
 
-### Initial config
+[Manual and downloads](http://www.orangepi.org/html/hardWare/computerAndMicrocontrollers/service-and-support/Orange-pi-3-LTS.html)
 
-Install SD card, connect monitor and keyboard
-Login using default username & password: orangepi/orangepi
-Change user password.
+### Initial configuration
 
-### WIfi
+Install SD card and power on the Orange Pi board.
+To complete initial config, monitor and keyboard must be connected (or Ethernet cable for SSH access). Login using default username & password: orangepi/orangepi
 
-Connect to Wifi (Chapter 3.8.2)
+1. Change user password (`passwd`)
+2. Connect to WiFi (User Manual chapter 3.8.2)
 
 ```bash
 nmcli dev wifi
 nmcli dev wifi connect [wifi_name] password [wifi_passwd]
 ```
 
-### Install updates & reboot
+3. Install updates
 
 ```bash
 sudo apt-get update
 sudo apt-get upgrade
-sudo reboot
 ```
 
-### SSH
+4. Add your public SSH key to `~/.ssh/authorized_keys`
+5. Disable password login (`sudo nano /etc/ssh/sshd_config`, edit relevant line to `PasswordAuthentication no`)
+6. Reboot (`sudo reboot`)
 
-Add your public key to `~/.ssh/authorized_keys`
-Disable password login (`sudo nano /etc/ssh/sshd_config`, set `PasswordAuthentication no`)
+This concludes initial configuration, rest of the configuration can be done over SSH.
 
+### Install WiringOP
 
-### WiringOP
-
-User manual: "3.18. How to install wiringOP"
+Install utilities for controlling GPIO. For more information see User Manual chapter "3.18 How to install wiringOP".
 
 ```bash
 git clone https://github.com/orangepi-xunlong/wiringOP
@@ -50,88 +45,57 @@ sudo ./build clean
 sudo ./build
 ```
 
-Test
+Test GPIO (should see a table with GPIO current status):
+
 ```bash
 gpio readall
 ```
 
-### Static ip Ethernet interface (connection to WLED)
+### Set static IP to Ethernet interface
+
+Ethernet port is used to connect to Olimex ESP32 POE running WLED software.
+WLED and Ethernet interface should have IP addresses from the same subnet.
+In this example, WLED is configured to have static IP `192.168.242.3/24`
+and Orange PI's Ethernet port to `192.168.242.2/24`.
 
 ```bash
 nmcli con mod "Wired connection 1" ipv4.addresses "192.168.242.2/24" ipv4.method "manual"
-sudo reboot
 ```
+
+Reboot the system for changes to take effect.
 
 ### GPIO permissions
 
+Modify udev rules to allow acces of non-root users to GPIO. Create file
+
 ```bash
-sudo nano /etc/udev/rules.d/99-gpio.rules 
+sudo nano /etc/udev/rules.d/99-gpio.rules
 ```
 
-```
+with following contents:
+
+```bash
 SUBSYSTEM=="gpio", KERNEL=="gpiochip*", ACTION=="add", PROGRAM="/bin/sh -c 'chown root:orangepi /sys/class/gpio/export /sys/class/gpio/unexport ; chmod 220 /sys/class/gpio/export /sys/class/gpio/unexport'"
 SUBSYSTEM=="gpio", KERNEL=="gpio*", ACTION=="add", PROGRAM="/bin/sh -c 'chown root:orangepi /sys%p/active_low /sys%p/direction /sys%p/edge /sys%p/value ; chmod 660 /sys%p/active_low /sys%p/direction /sys%p/edge /sys%p/value'"
 ```
 
-```bash
-sudo reboot
-```
+Reboot the system for changes to take effect.
 
-## GPIO poweroff
+### Install Docker
 
-Follow instructions from []
+Install Docker following the instructions from the Docker's home page:
+[instructions](https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository).
 
-### Docker
+Also complete [linux postinstall](https://docs.docker.com/engine/install/linux-postinstall/) steps.
 
-https://docs.docker.com/engine/install/ubuntu/
-
-```bash
-sudo apt-get update
-sudo apt-get install ca-certificates curl gnupg
-```
+By default Docker logs to disk and causes SD card wear.
+To avoid that, redirect logging to `journald`. Create file
 
 ```bash
-sudo install -m 0755 -d /etc/apt/keyrings
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-sudo chmod a+r /etc/apt/keyrings/docker.gpg
+sudo nano /etc/docker/daemon.json
 ```
 
-```bash
-echo \
-  "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
-  "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | \
-  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-```
-
-```bash
-sudo apt-get update
-```
-
-```bash
-sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-```
-
-```bash
-sudo groupadd docker
-```
-
-```bash
-sudo groupadd docker
-sudo usermod -aG docker $USER
-newgrp docker
-```
-
-Test:
-
-```bash
-docker run hello-world
-```
-
-### Move docker logs to journald
-
-```bash
-sudo nano /etc/docker/daemon.json 
-```
+with contents
 
 ```
 {
@@ -139,7 +103,11 @@ sudo nano /etc/docker/daemon.json
 }
 ```
 
+## GPIO poweroff service
 
+This service listens GPIO port for shutdown signal (physical poweroff switch).
+Only use this service, if poweroff switch is installed. 
+For installation, follow instructions from [gpio_poweroff/README.md]().
 
 
 

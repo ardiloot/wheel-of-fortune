@@ -104,6 +104,32 @@ docker run hello-world
 
 ## GPIO poweroff
 
+Follow instructions from []
+
+### Static ip Ethernet interface (connection to WLED)
+
+```bash
+nmcli con mod "Wired connection 1" ipv4.addresses "192.168.242.2/24" ipv4.method "manual"
+sudo reboot
+```
+
+### GPIO permissions
+
+```bash
+sudo nano /etc/udev/rules.d/99-gpio.rules 
+```
+
+```
+SUBSYSTEM=="gpio", KERNEL=="gpiochip*", ACTION=="add", PROGRAM="/bin/sh -c 'chown root:orangepi /sys/class/gpio/export /sys/class/gpio/unexport ; chmod 220 /sys/class/gpio/export /sys/class/gpio/unexport'"
+SUBSYSTEM=="gpio", KERNEL=="gpio*", ACTION=="add", PROGRAM="/bin/sh -c 'chown root:orangepi /sys%p/active_low /sys%p/direction /sys%p/edge /sys%p/value ; chmod 660 /sys%p/active_low /sys%p/direction /sys%p/edge /sys%p/value'"
+```
+
+```bash
+sudo reboot
+```
+
 ## WLED
 
+```bash
 git subtree pull --prefix embedded_software/WLED https://github.com/Aircoookie/WLED.git v0.14.0-b4 --squash
+```

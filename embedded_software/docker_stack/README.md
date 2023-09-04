@@ -15,7 +15,7 @@ Copy example data from `wheel-of-fortune/example-data` to `~/data/wheel-of-fortu
 
 ### Docker stack
 
-Copy `wheel-of-fortune/embedded_software/docker_stack` to `~/docker_stack`.
+Copy/Link `wheel-of-fortune/embedded_software/docker_stack` to `~/docker_stack`.
 
 Add `~/docker_stack/.env` file using following example:
 

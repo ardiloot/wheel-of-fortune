@@ -107,7 +107,7 @@ with contents
 
 This service listens GPIO port for shutdown signal (physical poweroff switch).
 Only use this service, if poweroff switch is installed. 
-For installation, follow instructions from [gpio_poweroff/README.md]().
+For installation, follow instructions from [gpio_poweroff/README.md](gpio_poweroff/README.md).
 
 
 

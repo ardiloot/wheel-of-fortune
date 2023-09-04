@@ -1,6 +1,6 @@
 # Embedded software
 
-## Orange Pi 3 setup
+## Orange Pi 3 LTS setup
 
 ### Burn image to SD card
 

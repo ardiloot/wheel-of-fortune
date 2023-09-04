@@ -110,6 +110,33 @@ Only use this service, if poweroff switch is installed.
 For installation, follow instructions from [gpio_poweroff/README.md](gpio_poweroff/README.md).
 
 
+## Setup VPN (optional)
+
+Follow instructions starting from:
+[here] (https://www.digitalocean.com/community/tutorials/how-to-set-up-wireguard-on-ubuntu-22-04#step-7-configuring-a-wireguard-peer)
+
+
+Use following configuration:
+
+```bash
+sudo nano /etc/wireguard/wg0.conf
+```
+
+```
+[Interface]
+Address = 192.168.241.2
+PrivateKey = !REPLACE!
+
+[Peer]
+PublicKey = !REPLACE!
+Endpoint = example.com:51820
+AllowedIPs = 192.168.241.0/24
+PersistentKeepalive = 25
+```
+
+
+## Setup telegraf (optional)
+
 
 ## WLED
 

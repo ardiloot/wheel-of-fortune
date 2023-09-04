@@ -45,8 +45,7 @@ RUN apt-get update \
 ARG PUID=1000
 ARG PGID=1000
 RUN groupadd -g ${PGID} -o user \
-    && groupadd -g 1001 -o gpio \
-    && useradd -m -u ${PUID} -g user -G 20,gpio,audio -o -s /bin/bash user \
+    && useradd -m -u ${PUID} -g user -G 20,audio -o -s /bin/bash user \
     && chown -R user:user /app
 USER user
 

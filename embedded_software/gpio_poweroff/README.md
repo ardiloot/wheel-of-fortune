@@ -13,13 +13,13 @@ During regular operation, the pin should remain in a low state. A transition to 
 Copy Service Files to /opt:
 
 ```bash
-sudo cp -r ~/wheel_of_fortune/embedded_software/gpio_poweroff /opt/
+sudo cp -r ~/wheel-of-fortune/embedded_software/gpio_poweroff /opt/
 ```
 
 Enable and Start the Service:
 
 ```bash
-sudo systemctl enable /opt/gpio-poweroff/gpio_poweroff.service
+sudo systemctl enable /opt/gpio_poweroff/gpio-poweroff.service
 sudo systemctl start gpio-poweroff.service
 ```
 

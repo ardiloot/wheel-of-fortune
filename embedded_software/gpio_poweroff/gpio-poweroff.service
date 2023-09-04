@@ -2,7 +2,7 @@
 Description=GPIO input for poweroff signal
 
 [Service]
-ExecStart=/opt/gpio-poweroff/gpio-poweroff.sh
+ExecStart=/opt/gpio_poweroff/gpio-poweroff.sh
 Restart=on-failure
 
 [Install]

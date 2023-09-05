@@ -137,9 +137,120 @@ PersistentKeepalive = 25
 
 ## Setup telegraf (optional)
 
+https://docs.influxdata.com/telegraf/v1.21/introduction/getting-started/
+
+
+1. Install `sudo apt-get install lm-sensors`
+1. Enable `outputs.influxdb_v2`
+2. Enable `inputs.sensors`
+
+## Setup promtail (optional)
+
+To send logs to Loki, configure promtail to scrape journald.
+
+First, install promtail:
+
+```bash
+wget https://github.com/grafana/loki/releases/download/v2.8.4/promtail-linux-arm64.zip
+unzip promtail-linux-arm64.zip
+rm promtail-linux-arm64.zip
+sudo mv promtail-linux-amd64 /usr/local/bin/promtail
+# Verify
+promtail --version
+```
+
+Create configuration file
+
+```bash
+sudo mkdir -p /etc/promtail
+sudo mkdir -p /var/lib/promtail/
+sudo nano /etc/promtail/config.yaml
+```
+
+with contents (replace server and auth info).
+
+```yaml
+server:
+  disable: true
+
+positions:
+  filename: /var/lib/promtail/positions.yaml
+
+clients:
+  - url: https://[replace]/loki/api/v1/push
+    basic_auth:
+      username: [replace]
+      password: [replace]
+
+scrape_configs:
+  - job_name: journal
+    journal:
+      max_age: 12h
+      json: false
+      labels:
+        job: systemd-journal
+    # see https://www.freedesktop.org/software/systemd/man/systemd.journal-fields.html#Trusted%20Journal%20Fields
+    # see https://grafana.com/docs/loki/latest/clients/promtail/scraping/#journal-scraping-linux-only
+    # NB use `journalctl -n 1 -o json | jq .` to see an actual journal log message (including metadata).
+    # NB use `journalctl -n 1 -o json CONTAINER_NAME=date-ticker | jq .` to see a container log message.
+    relabel_configs:
+      - source_labels: [__journal__hostname]
+        target_label: host
+      - source_labels: [__journal__systemd_unit]
+        target_label: source
+      - source_labels: [__journal_container_name]
+        target_label: container_name
+      - source_labels: [__journal_image_name]
+        target_label: image_name
+      - source_labels: [__journal_workflow_id]
+        target_label: workflow_id
+      - source_labels: [__journal__boot_id]
+        target_label: boot
+      - source_labels: [__journal_priority]
+        target_label: priority
+    pipeline_stages:
+      - template:
+          source: priority
+          template: '{{ if eq .Value "0" }}{{ Replace .Value "0" "emerg" 1 }}{{ else if eq .Value "1" }}{{ Replace .Value "1" "alert" 1 }}{{ else if eq .Value "2" }}{{ Replace .Value "2" "crit" 1 }}{{ else if eq .Value "3" }}{{ Replace .Value "3" "err" 1 }}{{ else if eq .Value "4" }}{{ Replace .Value "4" "warning" 1 }}{{ else if eq .Value "5" }}{{ Replace .Value "5" "notice" 1 }}{{ else if eq .Value "6" }}{{ Replace .Value "6" "info" 1 }}{{ else if eq .Value "7" }}{{ Replace .Value "7" "debug" 1 }}{{ end }}'
+      - labels:
+          priority:
+```
+
+To start promtail automatically, create a systemd service
+
+```
+sudo nano /etc/systemd/system/promtail.service
+```
+
+with content:
+
+```
+[Unit] 
+Description=Promtail service 
+After=network.target 
+ 
+[Service] 
+Type=simple 
+User=root 
+ExecStart=/usr/local/bin/promtail -config.expand-env=true -config.file /etc/promtail/config.yaml 
+Restart=on-failure 
+RestartSec=20 
+ 
+[Install] 
+WantedBy=multi-user.target
+```
+
+To enable and test the service, run:
+
+```bash
+sudo systemctl daemon-reload #To reload systemd
+sudo systemctl start promtail #to start promtail
+sudo systemctl status promtail #to check status
+```
 
 ## WLED
 
 ```bash
 git subtree pull --prefix embedded_software/WLED https://github.com/Aircoookie/WLED.git v0.14.0-b4 --squash
 ```
+

@@ -13,7 +13,7 @@ http:
     wled:
       entryPoints:
         - websecure
-      rule: "Host(`wled.{{ env "DOMAIN_NAME" }}`)"
+      rule: "Host(`wled.{{ env "DOMAIN_NAME" }}`) || Host(`wled.{{ env "INTERNAL_DOMAIN_NAME" }}`)"
       service: wled
       middlewares:
         - ui-auth

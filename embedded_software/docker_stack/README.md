@@ -21,6 +21,7 @@ Add `~/docker_stack/.env` file using following example:
 
 ```bash
 DOMAIN_NAME=wheel.example.com
+INTERNAL_DOMAIN_NAME=wheel.int.example.com
 DATA_DIR=/home/orangepi/data
 
 # Variables for Letsencrypt ACME DNS challenge (Cloudflare in this example)

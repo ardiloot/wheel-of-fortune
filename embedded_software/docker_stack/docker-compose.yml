@@ -15,7 +15,8 @@ services:
       - "--providers.file.filename=/config/dynamic_conf.yml"
        # Certificate resolvers
       - "--certificatesresolvers.letsencrypt.acme.dnschallenge=true"
-      - "--certificatesresolvers.letsencrypt.acme.dnschallenge.provider=cloudflare"
+      # - "--certificatesresolvers.letsencrypt.acme.dnschallenge.provider=cloudflare"
+      - "--certificatesresolvers.letsencrypt.acme.dnschallenge.provider=zoneee"
       - "--certificatesresolvers.letsencrypt.acme.email=${LETSENCRYPT_EMAIL}"
       - "--certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json"
       # HTTP redirect
@@ -28,6 +29,8 @@ services:
       - "--entrypoints.websecure.http.tls.certResolver=letsencrypt"
       - "--entrypoints.websecure.http.tls.domains[0].main=$DOMAIN_NAME"
       - "--entrypoints.websecure.http.tls.domains[0].sans=*.$DOMAIN_NAME"
+      - "--entrypoints.websecure.http.tls.domains[1].main=$INTERNAL_DOMAIN_NAME"
+      - "--entrypoints.websecure.http.tls.domains[1].sans=*.$INTERNAL_DOMAIN_NAME"
       # Access logs
       - "--accesslog=true"
       - "--accesslog.filePath=/logs/access.log"
@@ -44,9 +47,12 @@ services:
       - "--metrics.influxdb2.additionallabels.wheel_name=${WHEEL_NAME}"
     environment:
       - DOMAIN_NAME=${DOMAIN_NAME}
+      - INTERNAL_DOMAIN_NAME=${INTERNAL_DOMAIN_NAME}
       - WLED_URL=${WHEEL_WLED_URL}
-      - CLOUDFLARE_EMAIL=${CLOUDFLARE_EMAIL}
-      - CLOUDFLARE_DNS_API_TOKEN=${CLOUDFLARE_DNS_API_TOKEN}
+      # - CLOUDFLARE_EMAIL=${CLOUDFLARE_EMAIL}
+      # - CLOUDFLARE_DNS_API_TOKEN=${CLOUDFLARE_DNS_API_TOKEN}
+      - ZONEEE_API_USER=${ZONEEE_API_USER}
+      - ZONEEE_API_KEY=${ZONEEE_API_KEY}
     ports:
       - 80:80
       - 443:443
@@ -57,7 +63,7 @@ services:
       - ${DATA_DIR}/traefik/logs:/logs
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.traefik-dashboard.rule=Host(`traefik.$DOMAIN_NAME`)"
+      - "traefik.http.routers.traefik-dashboard.rule=Host(`traefik.$DOMAIN_NAME`) || Host(`traefik.$INTERNAL_DOMAIN_NAME`)"
       - "traefik.http.routers.traefik-dashboard.entrypoints=websecure"
       - "traefik.http.routers.traefik-dashboard.tls.certresolver=letsencrypt"
       - "traefik.http.routers.traefik-dashboard.service=api@internal"
@@ -69,7 +75,7 @@ services:
 
   wheel_of_fortune:
     container_name: wheel_of_fortune
-    image: ghcr.io/ardiloot/wheel-of-fortune:v0.1.6
+    image: ghcr.io/ardiloot/wheel-of-fortune:v0.1.7.dev43-g93f9b61
     volumes:
       - /sys:/sys           # required to control GPIO
       - ${DATA_DIR}/wheel-of-fortune:/app/data
@@ -87,7 +93,7 @@ services:
       - WHEEL_INFLUXDB_BUCKET=${WHEEL_INFLUXDB_BUCKET}
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.wheel-of-fortune.rule=Host(`$DOMAIN_NAME`)"
+      - "traefik.http.routers.wheel-of-fortune.rule=Host(`$DOMAIN_NAME`) || Host(`$INTERNAL_DOMAIN_NAME`)"
       - "traefik.http.routers.wheel-of-fortune.entrypoints=websecure"
       - "traefik.http.routers.wheel-of-fortune.tls.certresolver=letsencrypt"
       - "traefik.http.routers.wheel-of-fortune.middlewares=ui-auth@file"

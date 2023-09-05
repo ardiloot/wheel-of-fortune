@@ -134,6 +134,19 @@ AllowedIPs = 192.168.241.0/24
 PersistentKeepalive = 25
 ```
 
+Configure VPN to always restart:
+
+`sudo systemctl edit wg-quick@wg0.service`
+
+```
+[Unit]
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=5s
+```
 
 ## Setup telegraf (optional)
 
@@ -243,9 +256,10 @@ WantedBy=multi-user.target
 To enable and test the service, run:
 
 ```bash
-sudo systemctl daemon-reload #To reload systemd
-sudo systemctl start promtail #to start promtail
-sudo systemctl status promtail #to check status
+sudo systemctl daemon-reload
+sudo systemctl enable promtail
+sudo systemctl start promtail
+sudo systemctl status promtail
 ```
 
 ## WLED

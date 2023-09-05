@@ -141,6 +141,8 @@ Configure VPN to always restart:
 ```
 [Unit]
 StartLimitIntervalSec=0
+After=network-online.target
+Wants=network-online.target
 
 [Service]
 Type=simple
@@ -240,8 +242,9 @@ with content:
 ```
 [Unit] 
 Description=Promtail service 
-After=network.target 
- 
+After=network-online.target
+Wants=network-online.target 
+
 [Service] 
 Type=simple 
 User=root 

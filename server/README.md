@@ -79,6 +79,20 @@ Subdomain `*.int.example.com` correspond to resources accessible over VPN (every
 
 Follow steps in: [Installing docker on Ubuntu](https://docs.docker.com/engine/install/ubuntu)
 
+Redirect logging to `journald` for easier scaping by promtail. Create file
+
+```bash
+sudo nano /etc/docker/daemon.json
+```
+
+with contents
+
+```json
+{
+   "log-driver": "journald"
+}
+```
+
 ## Setup metrics stack
 
 Clone repository:

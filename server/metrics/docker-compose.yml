@@ -116,7 +116,10 @@ services:
     image: grafana/promtail:2.8.2 
     volumes:
       - /var/log:/var/log:ro
+      - /run/log/journal/:/run/log/journal:ro
+      - /etc/machine-id:/etc/machine-id
       - ./config/promtail/config.yml:/etc/promtail/promtail-config.yml
+      - ${DATA_DIR}/promtail:/data
     command: -config.file=/etc/promtail/promtail-config.yml -config.expand-env
     environment:
       - LOKI_URL=http://loki:3100/loki/api/v1/push

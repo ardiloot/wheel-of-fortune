@@ -97,7 +97,7 @@ sudo nano /etc/docker/daemon.json
 
 with contents
 
-```
+```json
 {
    "log-driver": "journald"
 }

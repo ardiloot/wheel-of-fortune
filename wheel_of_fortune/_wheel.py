@@ -380,6 +380,7 @@ class Wheel:
         effect = winning_sector.effect
         _LOGGER.info("Victory effect: %s" % (winning_sector.effect_id))
 
+        completed = False
         try:
             await self._servos.move_to_pos(1.0, motor_names=effect.active_servos)
             await asyncio.sleep(2.0)
@@ -399,12 +400,13 @@ class Wheel:
             await self._servos.move_to_pos(0.0)
             await asyncio.sleep(4.0)
             await self._soundsystem.fadeout(MAIN_CH, fade_ms=2000)
-
+            completed = True
         finally:
-            await asyncio.gather(
-                self._soundsystem.fadeout(MAIN_CH),
-                self._servos.move_to_pos(0.0),
-            )
+            if not completed:
+                await asyncio.gather(
+                    self._soundsystem.fadeout(MAIN_CH, fade_ms=2000),
+                    self._servos.move_to_pos(0.0),
+                )
 
     async def _task_poweroff(self):
         await asyncio.gather(

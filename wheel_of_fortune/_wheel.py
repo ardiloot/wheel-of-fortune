@@ -370,33 +370,29 @@ class Wheel:
         _LOGGER.info("Effect: %s" % (effect.name))
 
         try:
-            await self._servos.move_to_pos(
-                names=effect.active_servos,
-                target_pos=1.0,
-            )
+            await self._servos.move_to_pos(1.0, motor_names=effect.active_servos)
+            await asyncio.sleep(2.0)
 
             await self._soundsystem.volume_sweep(MAIN_CH, 1.0, 0.2, time_ms=1000)
             await asyncio.sleep(0.2)
 
-            await self._leds.set_state(LedsStateIn(segments=effect.leds_preset))
-            await self._soundsystem.play(EFFECT_CH, effect.effect_sound)
-            await asyncio.sleep(4.0)
+            await asyncio.gather(
+                self._leds.set_state(LedsStateIn(segments=effect.leds_preset)),
+                self._soundsystem.play(EFFECT_CH, effect.effect_sound),
+                asyncio.sleep(4.0),
+            )
 
             await self._soundsystem.volume_sweep(MAIN_CH, 0.2, 1.0, time_ms=1000)
             await asyncio.sleep(4.0)
 
-            await self._servos.move_to_pos(
-                names=effect.active_servos,
-                target_pos=0.0,
-            )
-            await asyncio.sleep(2.0)
+            await self._servos.move_to_pos(0.0)
+            await asyncio.sleep(4.0)
             await self._soundsystem.fadeout(MAIN_CH, fade_ms=2000)
 
         finally:
-            await self._soundsystem.fadeout(MAIN_CH)
-            await self._servos.move_to_pos(
-                names=effect.active_servos,
-                target_pos=0.0,
+            await asyncio.gather(
+                self._soundsystem.fadeout(MAIN_CH),
+                self._servos.move_to_pos(0.0),
             )
 
     async def _task_poweroff(self):

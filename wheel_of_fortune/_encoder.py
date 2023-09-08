@@ -25,7 +25,7 @@ class Encoder:
         self._encoder_pins: list[str] = ["PH3", "PH4", "PH6", "PH5"]
         self._speed_pin: str = "PL10"
         self._pulses_per_rev: float = 128.0
-        self._standstill_timeout = 4.0
+        self._standstill_timeout = 5.0
 
         self._encoder_state: list[bool] = []
         self._total_sector_count: int = 0
@@ -172,7 +172,9 @@ class Encoder:
             if (old_sector + 1) % n != new_sector and (
                 old_sector - 1 + n
             ) % n != new_sector:
-                _LOGGER.warning("WARN: skipped sector %d -> %d" % (old_sector, new_sector))
+                _LOGGER.warning(
+                    "WARN: skipped sector %d -> %d" % (old_sector, new_sector)
+                )
                 self._missed_sector_count += 1
 
             self._sector = new_sector

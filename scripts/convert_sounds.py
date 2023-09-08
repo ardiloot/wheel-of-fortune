@@ -6,7 +6,7 @@ import argparse
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         prog="Sound converter",
-        description="Converts sound files from input directory to output directory (44.1 kHz 128 kbit/s MP3)",
+        description="Converts sound files from input directory to output directory (44.1 kHz 128 kbit/s WAV)",
     )
     parser.add_argument(
         "--input-dir", type=str, default="~/data/wheel-of-fortune/input_sounds/"
@@ -14,8 +14,8 @@ if __name__ == "__main__":
     parser.add_argument(
         "--output-dir", type=str, default="~/data/wheel-of-fortune/sounds/"
     )
-    parser.add_argument("--max-duration-secs", type=float, default=30.0)
-    parser.add_argument("--format", type=str, default="mp3")
+    parser.add_argument("--max-duration-secs", type=float, default=90.0)
+    parser.add_argument("--format", type=str, default="wav")
     args = parser.parse_args()
 
     input_dir = os.path.expanduser(args.input_dir)

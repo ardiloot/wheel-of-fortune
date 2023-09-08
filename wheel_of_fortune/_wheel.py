@@ -378,7 +378,7 @@ class Wheel:
         enc_state = self._encoder.get_state()
         winning_sector = self._sectors[enc_state.sector]
         effect = winning_sector.effect
-        _LOGGER.info("Victory effect: %s" % (winning_sector.effect_id))
+        _LOGGER.info("victory effect: %s" % (winning_sector.effect_id))
 
         completed = False
         try:

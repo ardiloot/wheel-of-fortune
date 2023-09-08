@@ -1,5 +1,4 @@
 import os
-import io
 import time
 import pydub
 import argparse
@@ -16,6 +15,7 @@ if __name__ == "__main__":
         "--output-dir", type=str, default="~/data/wheel-of-fortune/sounds/"
     )
     parser.add_argument("--max-duration-secs", type=float, default=30.0)
+    parser.add_argument("--format", type=str, default="mp3")
     args = parser.parse_args()
 
     input_dir = os.path.expanduser(args.input_dir)
@@ -25,7 +25,9 @@ if __name__ == "__main__":
 
     for fname in os.listdir(input_dir):
         input_file = os.path.join(input_dir, fname)
-        output_file = os.path.join(output_dir, "%s.mp3" % (os.path.splitext(fname)[0]))
+        output_file = os.path.join(
+            output_dir, "%s.%s" % (os.path.splitext(fname)[0], args.format)
+        )
         print("Input: %s" % (input_file))
         print("Output: %s" % (output_file))
 
@@ -42,7 +44,9 @@ if __name__ == "__main__":
         start = time.time()
         with open(output_file, "wb") as fout:
             audio = audio.set_frame_rate(44100)
-            audio[: int(1000 * args.max_duration_secs)].export(fout)
+            audio[: int(1000 * args.max_duration_secs)].export(
+                fout, format=args.format, bitrate="128k"
+            )
         print(
             "Conversion done in %.1f s (%.3f MB)"
             % (time.time() - start, os.path.getsize(output_file) / 1024.0**2)

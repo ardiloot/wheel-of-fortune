@@ -1,7 +1,7 @@
 import os
 import asyncio
 import logging
-import pygame
+import pygame.mixer
 import time
 from typing import Callable
 from ._config import Config
@@ -162,7 +162,7 @@ class SoundSystem:
         await self._channels[channel].volume_sweep(volume_from, volume_to, **kwargs)
 
 
-def load_sounds(sounds_dir: str, suffix: str = ".mp3") -> dict[str, pygame.mixer.Sound]:
+def load_sounds(sounds_dir: str, suffix: str = ".wav") -> dict[str, pygame.mixer.Sound]:
     _LOGGER.info("load sounds... (dir: %s)" % (sounds_dir))
     start_time = time.time()
 

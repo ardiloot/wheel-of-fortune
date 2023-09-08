@@ -77,8 +77,12 @@ class Sector:
         )
 
     @property
-    def effect(self):
+    def effect(self) -> Effect:
         return self._effects[self.effect_id]
+    
+    @property
+    def effect_id(self) -> str:
+        return self.effect_id
 
 
 class Wheel:
@@ -136,7 +140,7 @@ class Wheel:
             if theme_id in self._themes:
                 self._theme_id = theme_id
             else:
-                _LOGGER.warn("unknown theme id: %s" % (theme_id))
+                _LOGGER.warning("unknown theme id: %s" % (theme_id))
 
         for sector in self._sectors:
             sector.init()
@@ -273,19 +277,24 @@ class Wheel:
             )
 
             # Wait for task
+            cancelled = False
             try:
                 await self._active_task
             except asyncio.CancelledError:
-                _LOGGER.info("task was cancelled: %s" % (self._cur_task))
+                cancelled = True
                 pass
-            _LOGGER.info("task finished: %s" % (self._cur_task))
+
+            if cancelled:
+                _LOGGER.info("task was cancelled: %s" % (self._cur_task))
+            else:
+                _LOGGER.info("task finished: %s" % (self._cur_task))
 
     def _schedule_task(self, task: TaskType):
         if task == self._cur_task:
             return
 
         if self._cur_task == TaskType.POWEROFF:
-            _LOGGER.warn("Cannot schedule tasks after poweroff")
+            _LOGGER.warning("Cannot schedule tasks after poweroff")
             return
 
         _LOGGER.info("_schedule_task %s -> %s:" % (self._cur_task, task))
@@ -303,19 +312,24 @@ class Wheel:
                 raise RuntimeError("ERROR cancelling task")
 
     async def _task_startup(self):
-        await self._soundsystem.play(MAIN_CH, self._theme.startup_sound)
-        await self._leds.set_state(LedsStateIn(segments=self._theme.startup_led_preset))
-        await asyncio.sleep(3)
+        await asyncio.gather(
+            self._leds.set_state(LedsStateIn(segments=self._theme.startup_led_preset)),
+            self._servos.move_to_pos(0.0),
+            self._soundsystem.play(MAIN_CH, self._theme.startup_sound),
+            asyncio.sleep(3),
+        )
 
     async def _task_idle(self):
         cur_theme = None
         counter = 0
         while True:
+            # Change theme if it has changed
             if cur_theme is None or cur_theme != self._theme:
                 await self._leds.set_state(
                     LedsStateIn(segments=self._theme.idle_led_preset)
                 )
                 cur_theme = self._theme
+
             await asyncio.sleep(1.0)
             counter += 1
             if counter % 120 == 0:
@@ -325,23 +339,23 @@ class Wheel:
         start_state = self._encoder.get_state()
         start_time = self._loop.time()
         try:
-            await self._soundsystem.fadeout(MAIN_CH)
-            await self._leds.set_state(
-                LedsStateIn(segments=self._theme.spinning_led_preset)
+            await asyncio.gather(
+                self._leds.set_state(
+                    LedsStateIn(segments=self._theme.spinning_led_preset)
+                ),
+                self._soundsystem.play(MAIN_CH, self._theme.theme_sound),
             )
-            await self._soundsystem.play(MAIN_CH, self._theme.theme_sound)
             while True:
                 await asyncio.sleep(1.0)
         finally:
             end_state = self._encoder.get_state()
-            end_time = self._loop.time()
-            duration = end_time - start_time
+            duration = self._loop.time() - start_time
             total_sectors = end_state.total_sectors - start_state.total_sectors
             avg_rpm = total_sectors / self._config.num_sectors / duration * 60.0
             end_sector_name = self._sectors[end_state.sector].name
 
             _LOGGER.info(
-                "Spin: %d -> %d (%s), sectors: %d, duration %.1fs, avg_rpm: %.2f"
+                "Spin ended: %d -> %d (%s), sectors: %d, duration %.1fs, avg_rpm: %.2f"
                 % (
                     start_state.sector,
                     end_state.sector,
@@ -366,8 +380,9 @@ class Wheel:
 
     async def _task_stopped(self):
         enc_state = self._encoder.get_state()
-        effect = self._sectors[enc_state.sector].effect
-        _LOGGER.info("Effect: %s" % (effect.name))
+        winning_sector = self._sectors[enc_state.sector]
+        effect = winning_sector.effect
+        _LOGGER.info("Victory effect: %s" % (winning_sector.effect_id))
 
         try:
             await self._servos.move_to_pos(1.0, motor_names=effect.active_servos)
@@ -396,10 +411,10 @@ class Wheel:
             )
 
     async def _task_poweroff(self):
-        await self._soundsystem.fadeout(MAIN_CH)
-        await self._soundsystem.play(MAIN_CH, self._theme.poweroff_sound)
-        await self._leds.set_state(
-            LedsStateIn(segments=self._theme.poweroff_led_preset)
+        await asyncio.gather(
+            self._soundsystem.fadeout(MAIN_CH),
+            self._soundsystem.play(MAIN_CH, self._theme.poweroff_sound),
+            self._leds.set_state(LedsStateIn(segments=self._theme.poweroff_led_preset)),
         )
         while True:
             await asyncio.sleep(5.0)

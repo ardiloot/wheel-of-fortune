@@ -1,1 +1,7 @@
 graft wheel_of_fortune/frontend/dist
+prune .vscode
+prune .github
+prune hw
+prune server
+prune embedded_software
+exclude .gitattributes .gitignore MANIFEST.in .dockerignore Dockerfile

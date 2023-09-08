@@ -33,7 +33,7 @@ class SoundChannel:
         self._sounds: dict[str, pygame.mixer.Sound] = sounds
         self._settings: Settings = settings
 
-        self._volume: float = 0.1
+        self._volume: float = 0.5
         self._sound_name: str | None = None
 
     def open(self):
@@ -48,7 +48,7 @@ class SoundChannel:
             self._settings["volume"] = self._volume
 
         if state.sound_name is not None:
-            await self.play(state.sound_name)
+            self.play(state.sound_name)
 
     def get_state(self) -> SoundChannelState:
         return SoundChannelState(
@@ -56,7 +56,7 @@ class SoundChannel:
             sound_name=self._sound_name,
         )
 
-    async def play(self, sound_name: str, fade_ms: int = 300):
+    def play(self, sound_name: str, fade_ms: int = 300):
         if sound_name not in self._sounds:
             raise ValueError("Sound not found: %s" % (sound_name))
         sound = self._sounds[sound_name]
@@ -64,7 +64,7 @@ class SoundChannel:
         self._channel.play(sound, fade_ms=fade_ms)
         self._sound_name = sound_name
 
-    async def fadeout(self, fade_ms: int = 300):
+    def fadeout(self, fade_ms: int = 300):
         self._channel.fadeout(fade_ms)
         self._sound_name = None
 
@@ -144,12 +144,12 @@ class SoundSystem:
 
     async def play(self, channel: str, sound_name: str, **kwargs):
         _LOGGER.info("play (%s): %s, %s" % (channel, sound_name, kwargs))
-        await self._channels[channel].play(sound_name, **kwargs)
+        self._channels[channel].play(sound_name, **kwargs)
         self._loop.call_soon(self._update_cb, self.get_state())
 
     async def fadeout(self, channel: str, **kwargs):
         _LOGGER.info("fadeout (%s): %s" % (channel, kwargs))
-        await self._channels[channel].fadeout(**kwargs)
+        self._channels[channel].fadeout(**kwargs)
         self._loop.call_soon(self._update_cb, self.get_state())
 
     async def volume_sweep(

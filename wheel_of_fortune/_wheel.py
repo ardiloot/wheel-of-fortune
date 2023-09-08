@@ -80,10 +80,6 @@ class Sector:
     def effect(self) -> Effect:
         return self._effects[self.effect_id]
     
-    @property
-    def effect_id(self) -> str:
-        return self.effect_id
-
 
 class Wheel:
     def __init__(self, config, gpio):

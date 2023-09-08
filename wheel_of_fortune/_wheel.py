@@ -79,7 +79,7 @@ class Sector:
     @property
     def effect(self) -> Effect:
         return self._effects[self.effect_id]
-    
+
 
 class Wheel:
     def __init__(self, config, gpio):
@@ -401,8 +401,10 @@ class Wheel:
             await asyncio.sleep(4.0)
             await self._soundsystem.fadeout(MAIN_CH, fade_ms=2000)
             completed = True
+            await asyncio.sleep(2.0)
         finally:
             if not completed:
+                _LOGGER.info("task was not completed, cleaning up")
                 await asyncio.gather(
                     self._soundsystem.fadeout(MAIN_CH, fade_ms=2000),
                     self._servos.move_to_pos(0.0),

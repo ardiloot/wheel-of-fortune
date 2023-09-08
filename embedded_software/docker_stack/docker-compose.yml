@@ -3,7 +3,7 @@ services:
 
   traefik:
     container_name: traefik
-    image: traefik:v2.9.8
+    image: traefik:v2.10.4
     command:
       - "--log.level=INFO"
       # Dashboard
@@ -75,7 +75,7 @@ services:
 
   wheel_of_fortune:
     container_name: wheel_of_fortune
-    image: ghcr.io/ardiloot/wheel-of-fortune:v0.1.7.dev43-g93f9b61
+    image: ghcr.io/ardiloot/wheel-of-fortune:v0.1.7.dev66-gac33b6c
     volumes:
       - /sys:/sys           # required to control GPIO
       - ${DATA_DIR}/wheel-of-fortune:/app/data

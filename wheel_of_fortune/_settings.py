@@ -26,7 +26,7 @@ class SettingsManager:
             _LOGGER.info("Open settings (%s)" % (self._filename))
 
             if not os.path.isfile(self._filename):
-                _LOGGER.warn("Settings file not found: %s", self._filename)
+                _LOGGER.warning("Settings file not found: %s", self._filename)
                 self._data = {}
                 self._saved = True
                 return

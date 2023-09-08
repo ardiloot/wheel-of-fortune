@@ -114,7 +114,7 @@ class SoundSystem:
         _LOGGER.info("set state: %s" % (state))
         for name, ch_state in state.channels.items():
             if name not in self._channels:
-                _LOGGER.warn("unknown sound channel: %s" % (name))
+                _LOGGER.warning("unknown sound channel: %s" % (name))
                 continue
             await self._channels[name].set_state(ch_state)
         self._loop.call_soon(self._update_cb, self.get_state())
@@ -169,7 +169,7 @@ def load_sounds(sounds_dir: str, suffix: str = ".mp3") -> dict[str, pygame.mixer
     res = {}
     for fname in os.listdir(sounds_dir):
         if not fname.endswith(suffix):
-            _LOGGER.warn("unknown sound file: %s" % (fname))
+            _LOGGER.warning("unknown sound file: %s" % (fname))
             continue
         _LOGGER.info("loading sound file: %s" % (fname))
         sound_file_path = os.path.join(sounds_dir, fname)

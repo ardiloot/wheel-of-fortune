@@ -123,8 +123,12 @@ class ServoController:
             # _LOGGER.info("servos state: %s" % (state))
             await asyncio.sleep(100.0)
 
-    async def move_to_pos(self, target_pos: float, motor_names: list[str] | None = None):
-        _LOGGER.info("move to pos: motors: %s, target: %.3f" % (motor_names, target_pos))
+    async def move_to_pos(
+        self, target_pos: float, motor_names: list[str] | None = None
+    ):
+        _LOGGER.info(
+            "move to pos: motors: %s, target: %.3f" % (motor_names, target_pos)
+        )
 
         if motor_names is None:
             selected_motors = self._motors
@@ -132,7 +136,7 @@ class ServoController:
             selected_motors = {}
             for name in motor_names:
                 if name not in self._motors:
-                    _LOGGER.warn("unknown servo name: %s" % (name))
+                    _LOGGER.warning("unknown servo name: %s" % (name))
                     continue
                 selected_motors[name] = self._motors[name]
 

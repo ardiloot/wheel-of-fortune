@@ -159,7 +159,7 @@ class Encoder:
         try:
             delay = self._loop.time() - t
             if delay > 10e-3:
-                _LOGGER.warn("encoder_update delay %.3f ms" % (1e3 * delay))
+                _LOGGER.warning("encoder_update delay %.3f ms" % (1e3 * delay))
 
             self._speed_pulse_count += 1
             old_sector = self._sector
@@ -172,7 +172,7 @@ class Encoder:
             if (old_sector + 1) % n != new_sector and (
                 old_sector - 1 + n
             ) % n != new_sector:
-                _LOGGER.warn("WARN: skipped sector %d -> %d" % (old_sector, new_sector))
+                _LOGGER.warning("WARN: skipped sector %d -> %d" % (old_sector, new_sector))
                 self._missed_sector_count += 1
 
             self._sector = new_sector

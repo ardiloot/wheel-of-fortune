@@ -30,8 +30,6 @@ class Telemetry:
         _LOGGER.info(
             "open, name: %s, hostname: %s" % (self._config.name, self._hostname)
         )
-        influxdb_ready = await self._influxdb.ping()
-        _LOGGER.info("InfluxDB ready: %s" % (influxdb_ready))
 
     async def close(self):
         if self._influxdb is None:
@@ -64,6 +62,9 @@ class Telemetry:
         try:
             task.result()
         except asyncio.TimeoutError:
-            _LOGGER.error("Timeout (%d in queue)" % (len(self._background_tasks)))
+            _LOGGER.error(
+                "Timeout, discard datapoint (%d in queue)"
+                % (len(self._background_tasks))
+            )
         finally:
             self._background_tasks.discard(task)

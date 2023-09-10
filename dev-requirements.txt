@@ -28,7 +28,7 @@ attrs==23.1.0
     # via aiohttp
 black==23.7.0
     # via wheel-of-fortune (pyproject.toml)
-build==0.10.0
+build==1.0.3
     # via pip-tools
 certifi==2023.7.22
     # via influxdb-client

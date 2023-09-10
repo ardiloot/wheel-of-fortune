@@ -8,8 +8,9 @@
     ],
     "timezone": "Europe/Tallinn",
     "enabledManagers": [
-        "docker",
-        "ci"
+        "docker-compose",
+        "dockerfile",
+        "github-actions"
     ],
     "ignorePaths": [
         "**/embedded_software/WLED/**"

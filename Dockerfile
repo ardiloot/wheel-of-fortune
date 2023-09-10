@@ -6,7 +6,7 @@ COPY wheel_of_fortune/frontend/ /app
 RUN npm run build
 
 
-FROM python:3.11.4-slim as python_builder
+FROM python:3.11.5-slim as python_builder
 RUN apt-get update \
     && apt-get install -y libglib2.0-0 libasound2 build-essential git --no-install-recommends \
     && rm -rf \
@@ -32,7 +32,7 @@ RUN python -m build --wheel \
     && pip install --user --no-cache-dir --no-warn-script-location dist/*.whl
 
 
-FROM python:3.11.4-slim
+FROM python:3.11.5-slim
 WORKDIR /app
 
 RUN apt-get update \

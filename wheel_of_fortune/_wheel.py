@@ -339,7 +339,7 @@ class Wheel:
                 self._leds.set_state(
                     LedsStateIn(segments=self._theme.spinning_led_preset)
                 ),
-                self._soundsystem.play(MAIN_CH, self._theme.theme_sound),
+                self._soundsystem.play(MAIN_CH, self._theme.next_theme_sound()),
             )
             while True:
                 await asyncio.sleep(1.0)

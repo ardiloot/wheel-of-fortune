@@ -6,6 +6,9 @@
       ":prHourlyLimitNone",
       ":enableVulnerabilityAlerts"
     ],
+    "schedule": [
+        "before 9am on Sunday"
+    ],
     "timezone": "Europe/Tallinn",
     "enabledManagers": [
         "docker-compose",

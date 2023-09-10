@@ -26,7 +26,7 @@ async-timeout==4.0.3
     # via aiohttp
 attrs==23.1.0
     # via aiohttp
-black==23.7.0
+black==23.9.0
     # via wheel-of-fortune (pyproject.toml)
 build==0.10.0
     # via pip-tools

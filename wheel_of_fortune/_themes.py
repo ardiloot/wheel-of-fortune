@@ -12,6 +12,17 @@ __all__ = [
 
 
 class Theme(ThemeInfo):
+    def __init__(self, *args, **kwargs):
+        ThemeInfo.__init__(self, *args, **kwargs)
+        self._sound_index = 0
+
+    def next_theme_sound(self):
+        if len(self.theme_sounds) <= 0:
+            raise ValueError("Theme has no sounds")
+        res = self.theme_sounds[self._sound_index]
+        self._sound_index = (self._sound_index + 1) % len(self.theme_sounds)
+        return res
+
     def get_info(self) -> ThemeInfo:
         return self
 

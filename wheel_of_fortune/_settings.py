@@ -50,7 +50,7 @@ class SettingsManager:
             _LOGGER.info("Save settings (%s)" % (self._filename))
             os.replace(self._filename, "%s.backup" % (self._filename))
             async with aiofiles.open(self._filename, mode="w") as f:
-                await f.write(json.dumps(self._data, indent=4))
+                await f.write(json.dumps(self._data, indent=4, ensure_ascii=False))
             self._saved = True
 
     async def maintain(self):

@@ -151,7 +151,7 @@ export const ThemeInfo = z.object({
   image_url: z.string(),
   based_on: z.array(z.string()),
   startup_sound: z.string(),
-  theme_sound: z.string(),
+  theme_sounds: z.array(z.string()),
   poweroff_sound: z.string(),
   // startup_led_preset: z.record(z.string(), LedSegmentStateIn),
   // idle_led_preset: z.record(z.string(), LedSegmentStateIn),

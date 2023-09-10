@@ -17,8 +17,8 @@ __all__ = [
 class SettingsManager:
     def __init__(self, filename):
         self._filename: str = filename
-        self._data: dict[str, Any] = {}
-        self._saved: bool = False
+        self._data: dict[str, Any] | None = None
+        self._saved: bool = True
         self._lock = asyncio.Lock()
 
     async def open(self):
@@ -26,7 +26,9 @@ class SettingsManager:
             _LOGGER.info("Open settings (%s)" % (self._filename))
 
             if not os.path.isfile(self._filename):
-                _LOGGER.warn("Settings file not found: %s", self._filename)
+                _LOGGER.warning(
+                    "Settings file not found, using empty settings: %s", self._filename
+                )
                 self._data = {}
                 self._saved = True
                 return
@@ -41,9 +43,12 @@ class SettingsManager:
 
     async def save(self):
         async with self._lock:
+            if self._data is None:
+                return
             if self._saved:
                 return
             _LOGGER.info("Save settings (%s)" % (self._filename))
+            os.replace(self._filename, "%s.backup" % (self._filename))
             async with aiofiles.open(self._filename, mode="w") as f:
                 await f.write(json.dumps(self._data, indent=4))
             self._saved = True
@@ -64,6 +69,8 @@ class SettingsManager:
 
     @property
     def data(self):
+        if self._data is None:
+            raise ValueError("Settings used before open()")
         return self._data
 
 

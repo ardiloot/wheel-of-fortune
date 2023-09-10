@@ -36,7 +36,10 @@ app.add_middleware(
 )
 
 frontend_path = os.path.join(os.path.dirname(__file__), "frontend", "dist")
-app.mount("/", StaticFiles(directory=frontend_path, html=True), name="frontend")
+if os.path.isdir(frontend_path):
+    app.mount("/", StaticFiles(directory=frontend_path, html=True), name="frontend")
+else:
+    _LOGGER.warning("frontend path does not exist: %s" % (frontend_path))
 
 
 @app.on_event("startup")

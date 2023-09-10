@@ -124,41 +124,25 @@ class ServoController:
             await asyncio.sleep(100.0)
 
     async def move_to_pos(
-        self, names: list[str], target_pos: float, duration_secs: float = 2.0
+        self, target_pos: float, motor_names: list[str] | None = None
     ):
         _LOGGER.info(
-            "move to pos: %s, target: %.3f, duration %.3f s"
-            % (names, target_pos, duration_secs)
+            "move to pos: motors: %s, target: %.3f" % (motor_names, target_pos)
         )
-        if len(names) == 0:
-            return
 
-        selected_motors = {}
-        start_positions = {}
-        for name in names:
-            if name not in self._motors:
-                _LOGGER.warn("unknown servo name: %s" % (name))
-                continue
-            motor = self._motors[name]
-            selected_motors[name] = motor
-            start_positions[name] = motor.get_state().pos
+        if motor_names is None:
+            selected_motors = self._motors
+        else:
+            selected_motors = {}
+            for name in motor_names:
+                if name not in self._motors:
+                    _LOGGER.warning("unknown servo name: %s" % (name))
+                    continue
+                selected_motors[name] = self._motors[name]
 
-        step_rate_hz = 5.0
-        steps = max(1, int(step_rate_hz * duration_secs))
-        for i in range(steps):
-            t0 = self._loop.time()
-            for name, motor in selected_motors.items():
-                motor_step = (target_pos - start_positions[name]) / steps
-                next_pos = start_positions[name] + (i + 1) * motor_step
-                motor.set_state(ServoStateIn(pos=next_pos, detached=False))
-            await self._sync_state()
-            t1 = self._loop.time()
-
-            sleep_dur = max(0.0, duration_secs / steps - (t1 - t0))
-            _LOGGER.debug(
-                "step: %d, sync: %.3f s, sleep: %.3f s" % (i, (t1 - t0), sleep_dur)
-            )
-            await asyncio.sleep(sleep_dur)
+        for name, motor in selected_motors.items():
+            motor.set_state(ServoStateIn(pos=target_pos, detached=False))
+        await self._sync_state()
 
     async def _sync_state(self):
         _LOGGER.info("sync state")

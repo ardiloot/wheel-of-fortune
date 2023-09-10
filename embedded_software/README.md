@@ -265,6 +265,14 @@ sudo systemctl start promtail
 sudo systemctl status promtail
 ```
 
+### Python (optional)
+
+If used for development, install `venv` and `python3-dev`:
+
+```bash
+sudo apt-get install python3.10-venv python3-dev
+```
+
 ## WLED
 
 ```bash

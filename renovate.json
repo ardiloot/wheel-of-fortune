@@ -7,9 +7,6 @@
       ":enableVulnerabilityAlerts"
     ],
     "timezone": "Europe/Tallinn",
-    "schedule": [
-      "before 9am on Sunday"
-    ],
     "ignorePaths": [
         "**/embedded_software/WLED/**"
     ]

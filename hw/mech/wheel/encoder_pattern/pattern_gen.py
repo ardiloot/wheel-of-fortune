@@ -30,7 +30,7 @@ if __name__ == "__main__":
             )
 
     # Speed
-    n_sectors = 128
+    n_sectors = 64
     r_center = r0 + 4 * dr
     r = r_center + 0.5 * dr - 0.5 * pad_r
     width = dr - pad_r

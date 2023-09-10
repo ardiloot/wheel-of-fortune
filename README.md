@@ -16,9 +16,9 @@ pip install -r dev-requirements.txt
 After adding dependency update requirement files by running:
 
 ```bash
-pip-compile --upgrade -o requirements.txt pyproject.toml
-pip-compile --extra dev --upgrade -o dev-requirements.txt pyproject.toml
-pip-sync dev-requirements.txt
+pip-compile --upgrade -o requirements.txt pyproject.toml \
+    && pip-compile --extra dev --upgrade -o dev-requirements.txt pyproject.toml \
+    && pip-sync dev-requirements.txt
 ```
 
 ## Run backend

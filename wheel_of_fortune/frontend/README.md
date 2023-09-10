@@ -34,3 +34,11 @@ npm run dev
 nvm use
 npm run build
 ```
+
+## Updating packages
+
+```bash
+npm install -g npm-check-updates
+ncu -u
+npm install
+```

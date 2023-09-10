@@ -72,7 +72,7 @@ pydantic==2.3.0
     # via
     #   fastapi
     #   pydantic-settings
-pydantic-core==2.6.3
+pydantic-core==2.7.0
     # via pydantic
 pydantic-settings==2.0.3
     # via wheel-of-fortune (pyproject.toml)

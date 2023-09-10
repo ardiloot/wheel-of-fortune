@@ -7,6 +7,10 @@
       ":enableVulnerabilityAlerts"
     ],
     "timezone": "Europe/Tallinn",
+    "enabledManagers": [
+        "docker",
+        "ci"
+    ],
     "ignorePaths": [
         "**/embedded_software/WLED/**"
     ]

@@ -23,7 +23,7 @@ Power wires lead to `voltage converter` module and data wire is connected to `WL
 
 ![](imgs/backlight%20leds.png)
 
-# Logo and wheel LEDs
+## Logo and wheel LEDs
 
 Inside the center logo assembly there are two additional LED strips. Logo LED strip is used as a backlight to the logo and wheel LED strip is illuminating the front of the wheel.
 

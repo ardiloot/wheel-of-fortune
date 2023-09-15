@@ -29,6 +29,7 @@
         "levelname",
         "mantine",
         "mergedeep",
+        "pinout",
         "poweroff",
         "pydantic",
         "pygame",

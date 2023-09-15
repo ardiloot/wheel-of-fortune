@@ -10,7 +10,7 @@ In the following chapters each submodule is separately described together with i
 ![Wiring diagram](imgs/wiring%20diagram.png)
 
 
-## Backlight LEDS
+## Backlight LEDs
 
 A long led strip attached to the side of the backplate:
 * Model: `WS2812 5V`
@@ -70,6 +70,20 @@ Module is powered from `power relay` module (20 V). On the image a custom power 
 
 ![](imgs/audio%20module.png)
 
+## Compute module
+
+Compute module contains two sub-modules:
+1. Orange Pi 3 LTS compute board
+2. Olimex ESP32 POE
+
+Orange Pi is the main compute unit of the system. It is powered from 5V and it has encoder module connected to its GPIO pins. Also, it is connected to the power switch to for shutdown signal. Note, that poweroff pin needs pull-up resistor.
+
+ESP32 unit runs modified WLED software and is responsible for controlling LED strips and servo motors. It is powered by 5V and it has 3 PWM outputs for servo motors and 2 outputs for controlling LED strips. For ESP32 pinout see [here](olimex%20esp32%20pinout.pdf).
+
+Two units are connected together with short Ethernet cable.
+
+![](imgs/compute%20module.png)
+
 ## Voltage converter
 
 Almost all electronics are running on 5 V and this module is responsible for providing enough 5 V power. As LED strips can be power hungry (full brightness at white color) then this power module must be rated to 15 A (realistic max usage around 12 A).
@@ -93,21 +107,6 @@ There is a separate wiring diagram for power relay module in the bottom right co
 
 
 ![](imgs/relay%20module.png)
-
-## Compute module
-
-Compute module contains two sub-modules:
-1. Orange Pi 3 LTS compute board
-2. Olimex ESP32 POE
-
-Orange Pi is the main compute unit of the system. It is powered from 5V and it has encoder module connected to its GPIO pins. Also, it is connected to the power switch to for shutdown signal. Note, that poweroff pin needs pull-up resistor.
-
-ESP32 unit runs modified WLED software and is responsible for controlling LED strips and servo motors. It is powered by 5V and it has 3 PWM outputs for servo motors and 2 outputs for controlling LED strips.
-
-Two units are connected together with short Ethernet cable.
-
-
-![](imgs/compute%20module.png)
 
 ## Power supply
 

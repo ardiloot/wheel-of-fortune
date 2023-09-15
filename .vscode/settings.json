@@ -38,6 +38,7 @@
         "SUNXI",
         "tabler",
         "uvicorn",
+        "WAGO",
         "wled"
     ]
 }

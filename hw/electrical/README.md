@@ -12,10 +12,7 @@ In the following chapters each submodule is separately described together with i
 
 ## Backlight LEDs
 
-A long led strip attached to the side of the backplate:
-* Model: `WS2812 5V`
-* Number of LEDs: 133
-* LEDs per meter: 60
+A long led strip attached to the side of the backplate.
 
 As LED strip can draw considerable amount of current (6.7 A), it is advised to power the LED strip form two distinct points (e.g. 1/4 and 3/4). Thick wires should be used (0.75 mm<sup>2</sup>). It is easiest to just solder power wires to the LED strip, but use of connectors is also possible if needed.
 

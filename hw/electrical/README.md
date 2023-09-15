@@ -1,8 +1,6 @@
 
 # Electrical design
 
-## Wiring diagram
-
 [Wiring diagram](wiring%20diagram.pdf) of the Wheel of Fortune shows how to wire together different modules of the system (displayed as rectangles with round edges). It tries to follow the physical layout of the components if possible. Different wiring colors show different purpose of the wires and are described in the legend. All connectors are displayed from the "top view" (wires going into the screen).
 
 In the following chapters each submodule is separately described together with its connections.

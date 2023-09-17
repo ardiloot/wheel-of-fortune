@@ -11,7 +11,7 @@
 
 ![](imgs/wheel%20drawing.png)
 
-[PDF](backplate/wheel%20drawing.pdf)
+[PDF](wheel/wheel%20drawing.pdf)
 
 ## 3D printed parts
 

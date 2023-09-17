@@ -1,5 +1,19 @@
 
-# 3D printed parts
+# Mechanical design
+
+## Backplate
+
+![](imgs/backplate%20drawing.png)
+
+[PDF](backplate/backplate%20drawing.pdf)
+
+## Wheel
+
+![](imgs/wheel%20drawing.png)
+
+[PDF](backplate/wheel%20drawing.pdf)
+
+## 3D printed parts
 
 * Printer: Ender-3 V2 Trianglelab DDB Extruder V2.0 + BLTouch)
 * Slicer: Ultimaker Cura 4.11.0

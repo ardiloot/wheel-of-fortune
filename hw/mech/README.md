@@ -77,13 +77,57 @@ Last step of the wheel assembly is to write names to different sectors to your l
 
 ## Backplate assembly
 
-First step is to cut out backplate. This is one of the two pieces made out of wood. Use 18 mm thick plywood / particle board to cut out a circle with 700 mm diameter. As backplate has many holes for mounting sub-assemblies and for passing wires it is advised to print out [drawing](backplate/backplate%20drawing.pdf) to `A0` sized paper and use it as a stencil. This is probably the easiest way to accurately drill/saw all the necessary holes. Also, the stencil can be used in assembly phase to mount all the sub-assemblies correctly.
-
-NB: all/most smaller holes do not need to be drilled, as they are just position markers for wood screws.
+![](imgs/backplate%20drawing.png)
 
 [Drawing PDF](backplate/backplate%20drawing.pdf)
 
-![](imgs/backplate%20drawing.png)
+[Assembly 3D model](backplate/backplate%20assembly.STL)
+
+### Cut out backplate
+
+Use 18 mm thick plywood / particle board to cut out a circle with 700 mm diameter. As backplate has many holes for mounting sub-assemblies and for passing wires it is advised to print out [drawing](backplate/backplate%20drawing.pdf) to `A0` sized paper and use it as a stencil. This is probably the easiest way to accurately drill/saw all the necessary holes. Also, the stencil can be used in assembly phase to mount all the sub-assemblies correctly.
+
+NB: all/most smaller holes do not need to be drilled, as they are just position markers for wood screws.
+
+
+
+### Linear actuator sub-assembly
+
+
+### Limit wheel sub-assembly
+
+
+### Encoder sub-assembly
+
+
+### Compute sub-assembly
+
+
+### DC converter sub-assembly
+
+
+### Power relay sub-assembly
+
+
+### Amplifier sub-assembly
+
+
+### Flipper sub-assembly
+
+
+
+### Power switch sub-assembly
+
+
+### Speakers
+
+
+## Cover logo assembly
+
+[Assembly 3D model](cover/cover%20assembly.STL)
+
+
+## Final assembly
 
 
 

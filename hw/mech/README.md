@@ -34,6 +34,7 @@ Flexible parts (TPU):
 ![](imgs/wheel%20drawing.png)
 
 [Drawing PDF](wheel/wheel%20drawing.pdf)
+
 [Assembly 3D model](wheel/wheel%20assembly.STL)
 
 ### Cut out the wheel

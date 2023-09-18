@@ -109,6 +109,8 @@ It uses 3D printer pulley wheels and custom 3D printed mount. Consult [BOM](../b
 
 ### Encoder sub-assembly
 
+Encoder sub-assembly if for attaching encoder PCB to the backplate.
+
 [3D printed parts](backplate/encoder)
 
 [Assembly 3D model](backplate/encoder/encoder%20assembly.STL)
@@ -117,15 +119,43 @@ It uses 3D printer pulley wheels and custom 3D printed mount. Consult [BOM](../b
 
 ### Compute sub-assembly
 
+Compute sub-assembly holds Orange Pi 3 LTS and Olimex ESP32 POE boards. 
+
+[3D printed parts](backplate/compute)
+
+[Assembly 3D model](backplate/compute/compute%20assembly.STL)
+
+![](imgs/compute%20module.png)
 
 ### DC converter sub-assembly
 
+DC converter module is for mounting the main DC voltage converter (20 to 5 V). Works as a main power distribution box, as almost everything is powered by 5 V.
+
+[3D printed parts](backplate/dc%20converter)
+
+[Assembly 3D model](backplate/dc%20converter/dc%20converter%20assembly.STL)
+
+![](imgs/dc%20converter%20module.png)
 
 ### Power relay sub-assembly
 
+Power relay module is the main distribution box for 20 V and it also is responsible for switching off the wheel electronics with delay to allow graceful shutdown of the Orange PI board.
+
+[3D printed parts](backplate/power%20relay)
+
+[Assembly 3D model](backplate/power%20relay/power%20relay%20assembly.STL)
+
+![](imgs/power%20relay%20module.png)
 
 ### Amplifier sub-assembly
 
+Mounts sound amplifer and ground loop isolator.
+
+[3D printed parts](backplate/amplifier/)
+
+[Assembly 3D model](backplate/amplifier/amplifier%20assembly.STL)
+
+![](imgs/audio%20module.png)
 
 ### Flipper sub-assembly
 

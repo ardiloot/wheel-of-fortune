@@ -96,9 +96,24 @@ NB: all/most smaller holes do not need to be drilled, as they are just position 
 
 ### Limit wheel sub-assembly
 
+There are 6 limit wheels for stopping the wheel if it is bent by using considerable about of force. In other words, they are only for limiting the movement of the wheel in extreme cases to avoid damaging other components between the wheel and the backplate.
+
+It uses 3D printer pulley wheels and custom 3D printed mount. Consult [BOM](../bom.pdf) for details.
+
+[3D printed parts](backplate/limit%20wheel/limit%20wheel%20assembly.STL)
+
+[Assembly 3D model](backplate/limit%20wheel/limit%20wheel%20assembly.STL)
+
+![](imgs/limit%20wheel.png)
+
 
 ### Encoder sub-assembly
 
+[3D printed parts](backplate/encoder)
+
+[Assembly 3D model](backplate/encoder/encoder%20assembly.STL)
+
+![](imgs/encoder.png)
 
 ### Compute sub-assembly
 

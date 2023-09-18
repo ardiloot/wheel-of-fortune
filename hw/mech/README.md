@@ -3,7 +3,7 @@
 
 This file contains documentation for the mechanical design. It is structured as a step-by-step guide to fabricate all necessary components and assemble them together.
 
-NB: Not all details are included in this guide, please consult with the [bill of materials (BOM)](../bom.pdf) and 3D models for complete information.
+NB: Not all details are included in this guide, please consult with the [bill of materials (BOM)](../bom/bom.pdf) and 3D models for complete information.
 
 ## 3D printed parts
 
@@ -60,7 +60,7 @@ Use waterproof permanent marker to draw lines between sectors.
 
 ### Attach sector separation rods
 
-Attach rods between sectors. Consult [BOM](../bom.pdf) for details.
+Attach rods between sectors. Consult [BOM](../bom/bom.pdf) for details.
 
 
 ### Bearing hub
@@ -69,7 +69,7 @@ First, print extension to the bearing hub [STL](wheel/bearing%20hub%20ext.STL) a
 
 Secondly, drill 4 holes into a large washer (`DIN125 M33`) for M5 countersunk heads. Use [drill aid](wheel/drill%20aid%202.STL) (needs `605zz 5x14x5mm` bearings or similar, 4 pcs)
 
-Finally, insert two `SKF6201` (or similar) bearings into the bearing hub and attach them to the wheel by 4 screws (details in [BOM](../bom.pdf)).
+Finally, insert two `SKF6201` (or similar) bearings into the bearing hub and attach them to the wheel by 4 screws (details in [BOM](../bom/bom.pdf)).
 
 ### Finishing up
 
@@ -98,7 +98,7 @@ NB: all/most smaller holes do not need to be drilled, as they are just position 
 
 There are 6 limit wheels for stopping the wheel if it is bent by using considerable about of force. In other words, they are only for limiting the movement of the wheel in extreme cases to avoid damaging other components between the wheel and the backplate.
 
-It uses 3D printer pulley wheels and custom 3D printed mount. Consult [BOM](../bom.pdf) for details.
+It uses 3D printer pulley wheels and custom 3D printed mount. Consult [BOM](../bom/bom.pdf) for details.
 
 [3D printed parts](backplate/limit%20wheel/limit%20wheel%20assembly.STL)
 

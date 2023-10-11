@@ -32,7 +32,7 @@ class Config(BaseSettings):
         ServoConfig(name="right", mount_angle=math.radians(-135)),
         ServoConfig(name="left", mount_angle=math.radians(135)),
     ]
-    servo_zero_duty: float = 0.086
+    servo_zero_duty: float = 0.0912
     servo_full_duty: float = 0.0516
     servo_mount_duty: float = 0.0473
 

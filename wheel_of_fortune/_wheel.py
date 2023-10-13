@@ -4,6 +4,7 @@ import logging
 import importlib.metadata
 from enum import Enum
 from typing import Callable
+from ._utils import gather_or_cancel
 from ._config import Config
 from ._settings import SettingsManager, Settings
 from ._encoder import Encoder
@@ -232,7 +233,7 @@ class Wheel:
 
     async def maintain(self):
         _LOGGER.info("maintain...")
-        await asyncio.gather(
+        await gather_or_cancel(
             self._settings_mgr.maintain(),
             self._encoder.maintain(),
             self._telemetry.maintain(),

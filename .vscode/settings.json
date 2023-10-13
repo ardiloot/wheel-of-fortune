@@ -20,6 +20,8 @@
         "aiofiles",
         "aiohttp",
         "coloredlogs",
+        "coro",
+        "coros",
         "dpulses",
         "dtime",
         "fastapi",

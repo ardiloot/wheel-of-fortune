@@ -342,7 +342,11 @@ class Wheel:
 
     async def _task_standby(self):
         await self._leds.set_state(LedsStateIn(segments=self._theme.standby_led_preset))
+        counter = 0
         while True:
+            counter += 1
+            if counter % 120 == 0:
+                _LOGGER.info("standby heartbeat")
             await asyncio.sleep(1.0)
 
     async def _task_spinning(self):

@@ -1,5 +1,7 @@
 import { IconVolume2 } from '@tabler/icons-react';
 import { Slider, rem } from '@mantine/core';
+import { useCallback, useState } from 'react';
+import { throttle } from 'lodash';
 
 export interface VolumeSliderProps {
   channelName: string;
@@ -9,8 +11,12 @@ export interface VolumeSliderProps {
 }
 
 export default function VolumeSlider({ channelName, volume, setVolume, setVolumeEnd }: VolumeSliderProps) {
-  const volumePercent = Math.round(100 * volume);
+  const [latestValue, setLatestValue] = useState<number>(0);
+  const [active, setActive] = useState<boolean>(false);
+  const throttledSetVolume = useCallback(throttle(setVolumeEnd, 1000), []);
 
+  const volumePercent = active ? latestValue : Math.round(100 * volume);
+  
   return (
     <Slider
       size={5}
@@ -19,8 +25,17 @@ export default function VolumeSlider({ channelName, volume, setVolume, setVolume
       label={(value) => `${channelName} ${value}%`}
       thumbChildren={<IconVolume2 size="1.5rem" />}
       value={volumePercent}
-      onChange={(value) => setVolume(value / 100)}
-      onChangeEnd={(value) => setVolumeEnd(value / 100)}
+      onChange={(value) => {
+        setLatestValue(value);
+        setActive(true);
+        setVolume(value / 100);
+        throttledSetVolume(value / 100);
+      }}
+      onChangeEnd={(value) => {
+        setLatestValue(value);
+        setActive(false);
+        setVolumeEnd(value / 100);
+      }}
       thumbSize={25}
       styles={{
         thumb: {

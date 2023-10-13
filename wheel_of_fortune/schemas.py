@@ -33,8 +33,8 @@ class ServoState(BaseModel):
 
 
 class ServoStateIn(BaseModel):
-    pos: float | None = Field(ge=-0.3, le=1.3, examples=[0.5])
-    detached: bool = False
+    pos: float | None = Field(default=None, ge=-0.3, le=1.3, examples=[0.5])
+    detached: bool | None = None
 
 
 class ServoInfo(BaseModel):
@@ -42,6 +42,7 @@ class ServoInfo(BaseModel):
     zero_duty: float
     full_duty: float
     mount_duty: float
+    mount_pos: float
 
 
 class ServosState(BaseModel):

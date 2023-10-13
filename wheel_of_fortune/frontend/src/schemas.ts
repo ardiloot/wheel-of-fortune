@@ -36,6 +36,7 @@ export const ServoInfo = z.object({
   zero_duty: z.number(),
   full_duty: z.number(),
   mount_duty: z.number(),
+  mount_pos: z.number(),
 });
 export type ServoInfo = z.infer<typeof ServoInfo>;
 

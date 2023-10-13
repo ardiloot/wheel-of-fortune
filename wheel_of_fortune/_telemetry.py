@@ -61,10 +61,9 @@ class Telemetry:
     def _task_finished(self, task):
         try:
             task.result()
-        except asyncio.TimeoutError:
+        except Exception:
             _LOGGER.error(
-                "Timeout, discard datapoint (%d in queue)"
-                % (len(self._background_tasks))
+                "Error, discard datapoint (%d in queue)" % (len(self._background_tasks))
             )
         finally:
             self._background_tasks.discard(task)

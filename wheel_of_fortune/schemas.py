@@ -162,6 +162,7 @@ class ThemeInfo(BaseModel):
     startup_led_preset: dict[str, LedSegmentStateIn]
     idle_led_preset: dict[str, LedSegmentStateIn]
     spinning_led_preset: dict[str, LedSegmentStateIn]
+    standby_led_preset: dict[str, LedSegmentStateIn]
     poweroff_led_preset: dict[str, LedSegmentStateIn]
 
 

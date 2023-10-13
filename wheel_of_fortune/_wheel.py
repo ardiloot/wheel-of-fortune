@@ -40,6 +40,7 @@ class TaskType(Enum):
     IDLE = "idle"
     SPINNING = "spinning"
     STOPPED = "stopped"
+    STANDBY = "standby"
     POWEROFF = "poweroff"
     UNKNOWN = "unknown"
 
@@ -261,6 +262,7 @@ class Wheel:
                 TaskType.IDLE: self._task_idle,
                 TaskType.SPINNING: self._task_spinning,
                 TaskType.STOPPED: self._task_stopped,
+                TaskType.STANDBY: self._task_standby,
                 TaskType.POWEROFF: self._task_poweroff,
             }[task]()
             _LOGGER.info("start task: %s" % (task))
@@ -330,6 +332,14 @@ class Wheel:
             counter += 1
             if counter % 120 == 0:
                 _LOGGER.info("idle heartbeat")
+
+            if counter > 240:
+                self._schedule_task(TaskType.STANDBY)
+
+    async def _task_standby(self):
+        await self._leds.set_state(LedsStateIn(segments=self._theme.standby_led_preset))
+        while True:
+            await asyncio.sleep(1.0)
 
     async def _task_spinning(self):
         start_state = self._encoder.get_state()

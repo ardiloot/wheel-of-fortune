@@ -130,7 +130,7 @@ services:
 
   telegraf:
     container_name: telegraf
-    image: telegraf:1.28.1
+    image: telegraf:1.28.2
     user: "0:281"
     volumes:
       - ./config/telegraf/telegraf.conf:/etc/telegraf/telegraf.conf:ro

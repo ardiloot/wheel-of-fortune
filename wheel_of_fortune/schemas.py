@@ -198,6 +198,7 @@ class WheelState(BaseModel):
 
 
 class WheelStateIn(BaseModel):
+    active_task: str | None = None
     theme_id: str | None = None
     sectors: dict[int, SectorStateIn] = {}
     servos: ServosStateIn | None = None

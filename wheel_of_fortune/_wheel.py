@@ -165,8 +165,12 @@ class Wheel:
             self._active_task.cancel()
 
     async def set_state(self, state: WheelStateIn):
+        if state.active_task is not None:
+            _LOGGER.info("activate task: %s" % (state.active_task))
+            self._schedule_task(TaskType(state.active_task))
+
         if state.theme_id is not None:
-            _LOGGER.info("activate_theme: %s" % (state.theme_id))
+            _LOGGER.info("activate theme: %s" % (state.theme_id))
             if state.theme_id in self._themes:
                 self._theme_id = state.theme_id
             else:

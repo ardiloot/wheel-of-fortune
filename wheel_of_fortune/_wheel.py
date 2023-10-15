@@ -307,13 +307,6 @@ class Wheel:
             if not success:
                 raise RuntimeError("ERROR cancelling task")
 
-    def _reload_task(self):
-        _LOGGER.info("reload task")
-        if self._active_task is not None and not self._active_task.done():
-            success = self._active_task.cancel()
-            if not success:
-                raise RuntimeError("ERROR cancelling task")
-
     async def _task_startup(self):
         await asyncio.gather(
             self._leds.set_state(LedsStateIn(segments=self._theme.startup_led_preset)),

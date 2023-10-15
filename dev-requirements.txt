@@ -6,17 +6,17 @@
 #
 aiocsv==1.2.4
     # via influxdb-client
-aiodns==3.0.0
+aiodns==3.1.0
     # via wheel-of-fortune (pyproject.toml)
 aiofiles==23.2.1
     # via wheel-of-fortune (pyproject.toml)
-aiohttp==3.8.5
+aiohttp==3.8.6
     # via
     #   influxdb-client
     #   wheel-of-fortune (pyproject.toml)
 aiosignal==1.3.1
     # via aiohttp
-annotated-types==0.5.0
+annotated-types==0.6.0
     # via pydantic
 anyio==3.7.1
     # via
@@ -27,15 +27,15 @@ async-timeout==4.0.3
     # via aiohttp
 attrs==23.1.0
     # via aiohttp
-black==23.9.0
+black==23.9.1
     # via wheel-of-fortune (pyproject.toml)
 build==1.0.3
     # via pip-tools
 certifi==2023.7.22
     # via influxdb-client
-cffi==1.15.1
+cffi==1.16.0
     # via pycares
-charset-normalizer==3.2.0
+charset-normalizer==3.3.0
     # via aiohttp
 click==8.1.7
     # via
@@ -48,7 +48,7 @@ exceptiongroup==1.1.3
     # via
     #   anyio
     #   pytest
-fastapi==0.103.1
+fastapi==0.103.2
     # via wheel-of-fortune (pyproject.toml)
 flake8==6.1.0
     # via wheel-of-fortune (pyproject.toml)
@@ -66,7 +66,7 @@ idna==3.4
     # via
     #   anyio
     #   yarl
-influxdb-client[async]==1.37.0
+influxdb-client[async]==1.38.0
     # via wheel-of-fortune (pyproject.toml)
 iniconfig==2.0.0
     # via pytest
@@ -82,7 +82,7 @@ mypy-extensions==1.0.0
     # via black
 opi-gpio==0.5.2
     # via wheel-of-fortune (pyproject.toml)
-packaging==23.1
+packaging==23.2
     # via
     #   black
     #   build
@@ -91,21 +91,21 @@ pathspec==0.11.2
     # via black
 pip-tools==7.3.0
     # via wheel-of-fortune (pyproject.toml)
-platformdirs==3.10.0
+platformdirs==3.11.0
     # via black
 pluggy==1.3.0
     # via pytest
-pycares==4.3.0
+pycares==4.4.0
     # via aiodns
-pycodestyle==2.11.0
+pycodestyle==2.11.1
     # via flake8
 pycparser==2.21
     # via cffi
-pydantic==2.3.0
+pydantic==2.4.2
     # via
     #   fastapi
     #   pydantic-settings
-pydantic-core==2.6.3
+pydantic-core==2.10.1
     # via pydantic
 pydantic-settings==2.0.3
     # via wheel-of-fortune (pyproject.toml)
@@ -113,7 +113,7 @@ pydub==0.25.1
     # via wheel-of-fortune (pyproject.toml)
 pyflakes==3.1.0
     # via flake8
-pygame==2.5.1
+pygame==2.5.2
     # via wheel-of-fortune (pyproject.toml)
 pyproject-hooks==1.0.0
     # via build
@@ -145,7 +145,7 @@ tomli==2.0.1
     #   pip-tools
     #   pyproject-hooks
     #   pytest
-typing-extensions==4.7.1
+typing-extensions==4.8.0
     # via
     #   black
     #   fastapi
@@ -153,13 +153,13 @@ typing-extensions==4.7.1
     #   pydantic-core
     #   reactivex
     #   uvicorn
-urllib3==2.0.4
+urllib3==2.0.6
     # via influxdb-client
 uvicorn[standard]==0.23.2
     # via wheel-of-fortune (pyproject.toml)
-uvloop==0.17.0
+uvloop==0.18.0
     # via uvicorn
-watchfiles==0.20.0
+watchfiles==0.21.0
     # via uvicorn
 websockets==11.0.3
     # via uvicorn

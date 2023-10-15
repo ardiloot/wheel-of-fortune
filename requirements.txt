@@ -6,17 +6,17 @@
 #
 aiocsv==1.2.4
     # via influxdb-client
-aiodns==3.0.0
+aiodns==3.1.0
     # via wheel-of-fortune (pyproject.toml)
 aiofiles==23.2.1
     # via wheel-of-fortune (pyproject.toml)
-aiohttp==3.8.5
+aiohttp==3.8.6
     # via
     #   influxdb-client
     #   wheel-of-fortune (pyproject.toml)
 aiosignal==1.3.1
     # via aiohttp
-annotated-types==0.5.0
+annotated-types==0.6.0
     # via pydantic
 anyio==3.7.1
     # via
@@ -29,9 +29,9 @@ attrs==23.1.0
     # via aiohttp
 certifi==2023.7.22
     # via influxdb-client
-cffi==1.15.1
+cffi==1.16.0
     # via pycares
-charset-normalizer==3.2.0
+charset-normalizer==3.3.0
     # via aiohttp
 click==8.1.7
     # via uvicorn
@@ -39,7 +39,7 @@ coloredlogs==15.0.1
     # via wheel-of-fortune (pyproject.toml)
 exceptiongroup==1.1.3
     # via anyio
-fastapi==0.103.1
+fastapi==0.103.2
     # via wheel-of-fortune (pyproject.toml)
 frozenlist==1.4.0
     # via
@@ -55,7 +55,7 @@ idna==3.4
     # via
     #   anyio
     #   yarl
-influxdb-client[async]==1.37.0
+influxdb-client[async]==1.38.0
     # via wheel-of-fortune (pyproject.toml)
 mergedeep==1.3.4
     # via wheel-of-fortune (pyproject.toml)
@@ -65,19 +65,19 @@ multidict==6.0.4
     #   yarl
 opi-gpio==0.5.2
     # via wheel-of-fortune (pyproject.toml)
-pycares==4.3.0
+pycares==4.4.0
     # via aiodns
 pycparser==2.21
     # via cffi
-pydantic==2.3.0
+pydantic==2.4.2
     # via
     #   fastapi
     #   pydantic-settings
-pydantic-core==2.6.3
+pydantic-core==2.10.1
     # via pydantic
 pydantic-settings==2.0.3
     # via wheel-of-fortune (pyproject.toml)
-pygame==2.5.1
+pygame==2.5.2
     # via wheel-of-fortune (pyproject.toml)
 python-dateutil==2.8.2
     # via influxdb-client
@@ -97,20 +97,20 @@ sniffio==1.3.0
     # via anyio
 starlette==0.27.0
     # via fastapi
-typing-extensions==4.7.1
+typing-extensions==4.8.0
     # via
     #   fastapi
     #   pydantic
     #   pydantic-core
     #   reactivex
     #   uvicorn
-urllib3==2.0.4
+urllib3==2.0.6
     # via influxdb-client
 uvicorn[standard]==0.23.2
     # via wheel-of-fortune (pyproject.toml)
-uvloop==0.17.0
+uvloop==0.18.0
     # via uvicorn
-watchfiles==0.20.0
+watchfiles==0.21.0
     # via uvicorn
 websockets==11.0.3
     # via uvicorn

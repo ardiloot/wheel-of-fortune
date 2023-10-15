@@ -281,7 +281,7 @@ Setup Kopia to backup to remote repository ([docs](https://kopia.io/docs/reposit
 
 ```bash
 sudo su
-kopia repository connect server --url https://example.com:51515 --server-cert-fingerprint=[REPLACE]
+kopia repository connect server --url https://int.example.com:51515 --server-cert-fingerprint=[REPLACE]
 kopia snapshot create /home/orangepi/data
 ```
 

@@ -38,6 +38,13 @@ npm run build
 ## Updating packages
 
 ```bash
+npm update
+npm install
+```
+
+or to also update (`package.json`) file
+
+```bash
 npm install -g npm-check-updates
 ncu -u
 npm install

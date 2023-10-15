@@ -33,8 +33,8 @@ class ServoState(BaseModel):
 
 
 class ServoStateIn(BaseModel):
-    pos: float | None = Field(ge=-0.3, le=1.3, examples=[0.5])
-    detached: bool = False
+    pos: float | None = Field(default=None, ge=-0.3, le=1.3, examples=[0.5])
+    detached: bool | None = None
 
 
 class ServoInfo(BaseModel):
@@ -42,6 +42,7 @@ class ServoInfo(BaseModel):
     zero_duty: float
     full_duty: float
     mount_duty: float
+    mount_pos: float
 
 
 class ServosState(BaseModel):
@@ -162,6 +163,7 @@ class ThemeInfo(BaseModel):
     startup_led_preset: dict[str, LedSegmentStateIn]
     idle_led_preset: dict[str, LedSegmentStateIn]
     spinning_led_preset: dict[str, LedSegmentStateIn]
+    standby_led_preset: dict[str, LedSegmentStateIn]
     poweroff_led_preset: dict[str, LedSegmentStateIn]
 
 
@@ -197,6 +199,7 @@ class WheelState(BaseModel):
 
 
 class WheelStateIn(BaseModel):
+    active_task: str | None = None
     theme_id: str | None = None
     sectors: dict[int, SectorStateIn] = {}
     servos: ServosStateIn | None = None

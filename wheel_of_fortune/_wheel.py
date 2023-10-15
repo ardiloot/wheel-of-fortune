@@ -4,6 +4,7 @@ import logging
 import importlib.metadata
 from enum import Enum
 from typing import Callable
+from ._utils import gather_or_cancel
 from ._config import Config
 from ._settings import SettingsManager, Settings
 from ._encoder import Encoder
@@ -40,6 +41,7 @@ class TaskType(Enum):
     IDLE = "idle"
     SPINNING = "spinning"
     STOPPED = "stopped"
+    STANDBY = "standby"
     POWEROFF = "poweroff"
     UNKNOWN = "unknown"
 
@@ -110,6 +112,7 @@ class Wheel:
         )
 
         self._active_task: asyncio.Task | None = None
+        self._cancelling_active_task: bool = False
         self._next_task: TaskType = TaskType.STARTUP
 
         themes_file = os.path.join(config.data_dir, "themes.yaml")
@@ -164,8 +167,12 @@ class Wheel:
             self._active_task.cancel()
 
     async def set_state(self, state: WheelStateIn):
+        if state.active_task is not None:
+            _LOGGER.info("activate task: %s" % (state.active_task))
+            self._schedule_task(TaskType(state.active_task))
+
         if state.theme_id is not None:
-            _LOGGER.info("activate_theme: %s" % (state.theme_id))
+            _LOGGER.info("activate theme: %s" % (state.theme_id))
             if state.theme_id in self._themes:
                 self._theme_id = state.theme_id
             else:
@@ -227,7 +234,7 @@ class Wheel:
 
     async def maintain(self):
         _LOGGER.info("maintain...")
-        await asyncio.gather(
+        await gather_or_cancel(
             self._settings_mgr.maintain(),
             self._encoder.maintain(),
             self._telemetry.maintain(),
@@ -261,6 +268,7 @@ class Wheel:
                 TaskType.IDLE: self._task_idle,
                 TaskType.SPINNING: self._task_spinning,
                 TaskType.STOPPED: self._task_stopped,
+                TaskType.STANDBY: self._task_standby,
                 TaskType.POWEROFF: self._task_poweroff,
             }[task]()
             _LOGGER.info("start task: %s" % (task))
@@ -278,12 +286,19 @@ class Wheel:
                 await self._active_task
             except asyncio.CancelledError:
                 cancelled = True
-                pass
+                if self._cancelling_active_task:
+                    # planned task cancel
+                    self._cancelling_active_task = False
+                else:
+                    # unplanned cancel (i.e. shutdown signal)
+                    break
 
             if cancelled:
                 _LOGGER.info("task was cancelled: %s" % (self._cur_task))
             else:
                 _LOGGER.info("task finished: %s" % (self._cur_task))
+
+        _LOGGER.info("maintain loop finished")
 
     def _schedule_task(self, task: TaskType):
         if task == self._cur_task:
@@ -296,13 +311,7 @@ class Wheel:
         _LOGGER.info("_schedule_task %s -> %s:" % (self._cur_task, task))
         self._next_task = task
         if self._active_task is not None and not self._active_task.done():
-            success = self._active_task.cancel()
-            if not success:
-                raise RuntimeError("ERROR cancelling task")
-
-    def _reload_task(self):
-        _LOGGER.info("reload task")
-        if self._active_task is not None and not self._active_task.done():
+            self._cancelling_active_task = True
             success = self._active_task.cancel()
             if not success:
                 raise RuntimeError("ERROR cancelling task")
@@ -330,6 +339,18 @@ class Wheel:
             counter += 1
             if counter % 120 == 0:
                 _LOGGER.info("idle heartbeat")
+
+            if counter > 60:
+                self._schedule_task(TaskType.STANDBY)
+
+    async def _task_standby(self):
+        await self._leds.set_state(LedsStateIn(segments=self._theme.standby_led_preset))
+        counter = 0
+        while True:
+            counter += 1
+            if counter % 120 == 0:
+                _LOGGER.info("standby heartbeat")
+            await asyncio.sleep(1.0)
 
     async def _task_spinning(self):
         start_state = self._encoder.get_state()

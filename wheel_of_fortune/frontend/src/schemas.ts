@@ -36,6 +36,7 @@ export const ServoInfo = z.object({
   zero_duty: z.number(),
   full_duty: z.number(),
   mount_duty: z.number(),
+  mount_pos: z.number(),
 });
 export type ServoInfo = z.infer<typeof ServoInfo>;
 
@@ -45,7 +46,7 @@ export const ServosState = z.object({
 export type ServosState = z.infer<typeof ServosState>;
 
 export const ServosStateIn = z.object({
-  motors: z.record(z.string(), ServoState).default({}),
+  motors: z.record(z.string(), ServoStateIn).default({}),
 });
 export type ServosStateIn = z.infer<typeof ServosStateIn>;
 

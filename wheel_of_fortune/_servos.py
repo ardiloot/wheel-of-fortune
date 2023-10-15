@@ -45,6 +45,7 @@ class ServoMotor:
             zero_duty=self._zero_duty,
             full_duty=self._full_duty,
             mount_duty=self._mount_duty,
+            mount_pos=self._duty_to_pos(self._mount_duty) or 1.0,
         )
 
     def get_duty(self):

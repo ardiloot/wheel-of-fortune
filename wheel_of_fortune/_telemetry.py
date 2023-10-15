@@ -45,6 +45,10 @@ class Telemetry:
             return
         if self._config.influxdb_bucket is None or self._config.influxdb_org is None:
             return
+        if len(self._background_tasks) > 1000:
+            _LOGGER.error(
+                "Queue full (%d), discard data point" % (len(self._background_tasks))
+            )
 
         point.tag("name", self._config.name)
         point.tag("host", self._hostname)
@@ -61,10 +65,9 @@ class Telemetry:
     def _task_finished(self, task):
         try:
             task.result()
-        except asyncio.TimeoutError:
+        except Exception:
             _LOGGER.error(
-                "Timeout, discard datapoint (%d in queue)"
-                % (len(self._background_tasks))
+                "Error, discard datapoint (%d in queue)" % (len(self._background_tasks))
             )
         finally:
             self._background_tasks.discard(task)

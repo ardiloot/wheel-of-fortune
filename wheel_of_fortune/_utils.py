@@ -24,6 +24,16 @@ def encode_gray_code(num: int) -> int:
     return num ^ (num >> 1)
 
 
+async def gather_or_cancel(*coros, **kwargs):
+    tasks = [asyncio.create_task(coro) for coro in coros]
+    try:
+        return await asyncio.gather(*tasks, **kwargs)
+    except BaseException as e:
+        for task in tasks:
+            task.cancel()
+        raise e
+
+
 class AsyncTimer:
     def __init__(self, timeout: float, callback):
         self._callback: Callable[[], None] = callback

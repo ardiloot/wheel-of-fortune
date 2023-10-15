@@ -265,6 +265,68 @@ sudo systemctl start promtail
 sudo systemctl status promtail
 ```
 
+### Setup Kopia (optional)
+
+Install Kopia by following steps from [their webpage](https://kopia.io/docs/installation/#linux-installation-using-apt-debian-ubuntu):
+
+```bash
+curl -s https://kopia.io/signing-key | sudo gpg --dearmor -o /etc/apt/keyrings/kopia-keyring.gpg
+echo "deb [signed-by=/etc/apt/keyrings/kopia-keyring.gpg] http://packages.kopia.io/apt/ stable main" | sudo tee /etc/apt/sources.list.d/kopia.list
+sudo apt update
+sudo apt install kopia
+```
+
+Setup Kopia to backup to remote repository ([docs](https://kopia.io/docs/repository-server/#on-client-computer)):
+
+
+```bash
+sudo su
+kopia repository connect server --url https://int.example.com:51515 --server-cert-fingerprint=[REPLACE]
+kopia snapshot create /home/orangepi/data
+```
+
+Create service to make daily backups:
+
+`/etc/systemd/system/kopia.service:`
+
+```
+[Unit]
+Description=Kopia backup
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+PrivateTmp=true
+Environment="HOME=/root"
+ExecStart=/usr/bin/kopia snapshot create --all
+```
+
+
+`/etc/systemd/system/kopia.timer:`
+
+```
+[Unit]
+Description=Run kopia backup
+
+[Timer]
+OnCalendar=daily
+Persistent=true
+Unit=kopia.service
+
+[Install]
+WantedBy=timers.target
+```
+
+To enable the service, run:
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable kopia
+sudo systemctl start kopia
+sudo systemctl status kopia
+```
+
 ### Python (optional)
 
 If used for development, install `venv` and `python3-dev`:

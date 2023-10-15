@@ -212,7 +212,7 @@ export default function App() {
                   },
                 });
               }}
-              setVolumeEnd={(volume) => {
+              setVolumeThrottled={(volume) => {
                 wsSetState({ soundsystem: { channels: { [channelName]: { volume: volume } } } });
               }}
             />
@@ -226,7 +226,7 @@ export default function App() {
                 brightness: brightness,
               });
             }}
-            setBrightnessEnd={(brightness) => {
+            setBrightnessThrottled={(brightness) => {
               wsSetState({ leds: { brightness: brightness } });
             }}
           />
@@ -238,6 +238,10 @@ export default function App() {
             info={info}
             updateSector={(index, state) => {
               wsSetState({ sectors: { [index]: state } });
+            }}
+            updateServo={(name, state) => {
+              console.log('updateServo', name, state);
+              wsSetState({ servos: { motors: { [name]: state } } });
             }}
           />
         </Container>

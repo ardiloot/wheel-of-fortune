@@ -75,7 +75,7 @@ services:
 
   wheel_of_fortune:
     container_name: wheel_of_fortune
-    image: ghcr.io/ardiloot/wheel-of-fortune:v0.1.7
+    image: ghcr.io/ardiloot/wheel-of-fortune:v0.1.9
     volumes:
       - /sys:/sys           # required to control GPIO
       - ${DATA_DIR}/wheel-of-fortune:/app/data

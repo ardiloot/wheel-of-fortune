@@ -201,3 +201,21 @@ Add Loki data source: Administration -> Data sources -> Add data source -> Loki:
 
 - Name: Loki
 - URL: http://loki:3100
+
+## Configure kopia
+
+For the first start, add `--tls-generate-cert` option to the command to automatically generate TLS certs.
+
+Create repository:
+
+```bash
+docker exec -it kopia kopia repository create filesystem --path=/repository
+```
+
+Add user for Wheel of Fortune:
+
+```bash
+docker exec -it kopia kopia server user add root@wheel-of-fortune
+```
+
+Dashboard is located at https://int.example.com:51515

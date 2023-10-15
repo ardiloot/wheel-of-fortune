@@ -152,3 +152,29 @@ services:
       - INFLUXDB_ORG=${TELEGRAF_INFLUXDB_ORG}
       - INFLUXDB_BUCKET=${TELEGRAF_INFLUXDB_BUCKET}
     restart: unless-stopped
+
+  kopia:
+    image: kopia/kopia:0.14
+    container_name: kopia
+    hostname: ${HOSTNAME}
+    command:
+      - server
+      - start
+      # - --tls-generate-cert  # Comment it in for the first start
+      - --tls-cert-file=/certs/kopia.cert
+      - --tls-key-file=/certs/kopia.key
+      - --address=0.0.0.0:51515
+      - --server-username=${KOPIA_SERVER_USERNAME}
+      - --server-password=${KOPIA_SERVER_PASSWORD}
+    ports:
+      - 51515:51515
+    volumes:
+      - ${DATA_DIR}/kopia/certs:/certs
+      - ${DATA_DIR}/kopia/repository:/repository
+      - ${DATA_DIR}/kopia/config:/app/config
+      - ${DATA_DIR}/kopia/cache:/app/cache
+      - ${DATA_DIR}/kopia/logs:/app/logs
+    environment:
+      - KOPIA_PASSWORD=${KOPIA_PASSWORD}
+    restart: "unless-stopped"
+

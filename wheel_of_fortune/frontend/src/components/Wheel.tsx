@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import SectorEditModal from './SectorEditModal';
-import { EncoderState, SectorState, SectorStateIn, ServosState, WheelInfo } from '../schemas';
+import { EncoderState, SectorState, SectorStateIn, ServoStateIn, ServosState, WheelInfo } from '../schemas';
 import SvgFlipper from './SvgFlipper';
 import SvgLogo from './SvgLogo';
 import SvgLedGlow from './SvgLedGlow';
 import SvgWheel from './SvgWheel';
 import SvgServo from './SvgServo';
+import ServoEditModal from './ServoEditModal';
 
 export interface WheelProps {
   sectors: Array<SectorState>;
@@ -13,10 +14,12 @@ export interface WheelProps {
   servosState: ServosState;
   info: WheelInfo;
   updateSector: (index: number, state: SectorStateIn) => void;
+  updateServo: (name: string, state: ServoStateIn) => void;
 }
 
-export default function Wheel({ sectors, encoderState, servosState, info, updateSector }: WheelProps) {
+export default function Wheel({ sectors, encoderState, servosState, info, updateSector, updateServo }: WheelProps) {
   const [editSectorIndex, setEditSectorIndex] = useState<number | null>(null);
+  const [editServoName, setEditServoName] = useState<string | null>(null);
   const angularWidth = (2.0 * Math.PI) / Math.max(1, sectors.length);
   const curWheelAngle = angularWidth * encoderState.sector;
 
@@ -44,6 +47,7 @@ export default function Wheel({ sectors, encoderState, servosState, info, update
               servoState={servoState}
               onClick={() => {
                 console.log('servo', name, servoState, servoInfo);
+                setEditServoName(name);
               }}
             />
           );
@@ -66,13 +70,13 @@ export default function Wheel({ sectors, encoderState, servosState, info, update
           ]}
         />
 
-        <SvgLogo radius={110} />
+        <SvgLogo radius={110} text={'-LOGO-'} />
 
         <SvgFlipper x={0} y={-460} />
       </svg>
 
       <SectorEditModal
-        key={editSectorIndex}
+        key={'sector_' + editSectorIndex}
         sectors={sectors}
         sectorIndex={editSectorIndex}
         onClose={() => {
@@ -83,6 +87,17 @@ export default function Wheel({ sectors, encoderState, servosState, info, update
           updateSector(index, state);
         }}
         availableEffects={info.effects}
+      />
+
+      <ServoEditModal
+        key={'servo_' + editServoName}
+        name={editServoName}
+        servosState={servosState}
+        servosInfo={info.servos}
+        updateServo={updateServo}
+        onClose={() => {
+          setEditServoName(null);
+        }}
       />
     </>
   );

@@ -46,7 +46,7 @@ export const ServosState = z.object({
 export type ServosState = z.infer<typeof ServosState>;
 
 export const ServosStateIn = z.object({
-  motors: z.record(z.string(), ServoState).default({}),
+  motors: z.record(z.string(), ServoStateIn).default({}),
 });
 export type ServosStateIn = z.infer<typeof ServosStateIn>;
 

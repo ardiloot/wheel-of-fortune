@@ -239,6 +239,10 @@ export default function App() {
             updateSector={(index, state) => {
               wsSetState({ sectors: { [index]: state } });
             }}
+            updateServo={(name, state) => {
+              console.log('updateServo', name, state);
+              wsSetState({ servos: { motors: { [name]: state } } });
+            }}
           />
         </Container>
       </MantineProvider>

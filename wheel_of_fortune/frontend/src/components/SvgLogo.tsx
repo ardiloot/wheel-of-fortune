@@ -1,8 +1,9 @@
 export interface SvgLogoProps {
   radius: number;
+  text: string;
 }
 
-export default function SvgLogo({ radius }: SvgLogoProps) {
+export default function SvgLogo({ radius, text }: SvgLogoProps) {
   return (
     <>
       <defs>
@@ -13,7 +14,7 @@ export default function SvgLogo({ radius }: SvgLogoProps) {
         <mask id="logo">
           <circle fill="white" cx={0} cy={0} r={500} />
           <text x="0" y="0" fontSize="45" fill="black" textAnchor="middle" alignmentBaseline="middle" fontWeight="bold">
-            -LOGO-
+            {text}
           </text>
         </mask>
       </defs>

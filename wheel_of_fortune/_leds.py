@@ -189,7 +189,7 @@ class LedController:
         state = {
             "on": int_brightness > 0,
             "bri": int_brightness,
-            "transition": 500,
+            "transition": 5,  # one unit us 100 ms
         }
 
         if sync_segments:

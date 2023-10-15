@@ -112,6 +112,7 @@ class Wheel:
         )
 
         self._active_task: asyncio.Task | None = None
+        self._cancelling_active_task: bool = False
         self._next_task: TaskType = TaskType.STARTUP
 
         themes_file = os.path.join(config.data_dir, "themes.yaml")
@@ -285,12 +286,19 @@ class Wheel:
                 await self._active_task
             except asyncio.CancelledError:
                 cancelled = True
-                pass
+                if self._cancelling_active_task:
+                    # planned task cancel
+                    self._cancelling_active_task = False
+                else:
+                    # unplanned cancel (i.e. shutdown signal)
+                    break
 
             if cancelled:
                 _LOGGER.info("task was cancelled: %s" % (self._cur_task))
             else:
                 _LOGGER.info("task finished: %s" % (self._cur_task))
+
+        _LOGGER.info("maintain loop finished")
 
     def _schedule_task(self, task: TaskType):
         if task == self._cur_task:
@@ -303,6 +311,7 @@ class Wheel:
         _LOGGER.info("_schedule_task %s -> %s:" % (self._cur_task, task))
         self._next_task = task
         if self._active_task is not None and not self._active_task.done():
+            self._cancelling_active_task = True
             success = self._active_task.cancel()
             if not success:
                 raise RuntimeError("ERROR cancelling task")
@@ -331,7 +340,7 @@ class Wheel:
             if counter % 120 == 0:
                 _LOGGER.info("idle heartbeat")
 
-            if counter > 240:
+            if counter > 60:
                 self._schedule_task(TaskType.STANDBY)
 
     async def _task_standby(self):

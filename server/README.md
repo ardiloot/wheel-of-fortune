@@ -8,6 +8,7 @@ The aim of this server is to collect logs & telemetry and provide VPN network fo
 2.  Server for storing telemetry (Influx)
 3.  Dashboards for logs and telemetry (Grafana)
 4.  VPN network for remote access (WireGuard)
+5.  Backup repository (Kopia)
 
 Following services are exposed through Traefik reverse proxy:
 
@@ -16,6 +17,7 @@ Following services are exposed through Traefik reverse proxy:
 - https://loki.int.example.com - Loki API
 - https://grafana.int.example.com - Grafana dashboards
 - https://librespeed.int.example.com - Speedtest for testing connection
+- https://int.example.com:51515 - Kopia
 
 Throughout this document, `example.com` is use as a example domain name. All services are accessible only over VPN.
 

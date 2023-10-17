@@ -142,6 +142,9 @@ class Wheel:
             else:
                 _LOGGER.warning("unknown theme id: %s" % (theme_id))
 
+        if "standby_timer" in self._settings:
+            self._standby_timer = self._settings["standby_timer"]
+
         for sector in self._sectors:
             sector.init()
 

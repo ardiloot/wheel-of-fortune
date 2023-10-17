@@ -202,7 +202,7 @@ class WheelState(BaseModel):
 class WheelStateIn(BaseModel):
     active_task: str | None = None
     theme_id: str | None = None
-    standby_timer: float | None = Field(default=None, ge=0, examples=[600])
+    standby_timer: float | None = Field(default=None, examples=[600])
     sectors: dict[int, SectorStateIn] = {}
     servos: ServosStateIn | None = None
     leds: LedsStateIn | None = None

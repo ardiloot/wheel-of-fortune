@@ -352,7 +352,7 @@ class Wheel:
             if counter % 120 == 0:
                 _LOGGER.info("idle heartbeat")
 
-            if counter >= self._standby_timer:
+            if self._standby_timer >= 0.0 and counter >= self._standby_timer:
                 self._schedule_task(TaskType.STANDBY)
 
     async def _task_standby(self):

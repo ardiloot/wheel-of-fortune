@@ -94,6 +94,7 @@ class LedsState(BaseModel):
 class LedsStateIn(BaseModel):
     brightness: float | None = Field(default=None, ge=0.0, le=1.0, examples=[0.5])
     segments: dict[str, LedSegmentStateIn] | None = None
+    transition_ms: float = 0.0
 
 
 class LedsInfo(BaseModel):

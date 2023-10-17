@@ -87,7 +87,7 @@ export default function ServoEditModal({ name, servosInfo, updateServo, onClose 
         <Alert
           variant="light"
           color={showWarning ? 'orange' : 'blue'}
-          title="Info"
+          title={showWarning ? 'Warning' : 'Info'}
           icon={showWarning ? <IconAlertTriangle /> : <IconInfoCircle />}
         >
           {getInfoMessage()}

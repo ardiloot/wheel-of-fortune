@@ -238,7 +238,7 @@ export default function App() {
               });
             }}
             setBrightnessThrottled={(brightness) => {
-              wsSetState({ leds: { brightness: brightness, transition_ms: 500 } });
+              wsSetState({ leds: { brightness: brightness, transition_ms: 50 } });
             }}
           />
 

@@ -92,7 +92,6 @@ export default function Wheel({ sectors, encoderState, servosState, info, update
       <ServoEditModal
         key={'servo_' + editServoName}
         name={editServoName}
-        servosState={servosState}
         servosInfo={info.servos}
         updateServo={updateServo}
         onClose={() => {

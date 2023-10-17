@@ -41,12 +41,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-frontend_path = os.path.join(os.path.dirname(__file__), "frontend", "dist")
-if os.path.isdir(frontend_path):
-    app.mount("/", StaticFiles(directory=frontend_path, html=True), name="frontend")
-else:
-    _LOGGER.warning("frontend path does not exist: %s" % (frontend_path))
-
 local_www_path = os.environ.get("LOCAL_WWW_PATH")
 if local_www_path is not None:
     if os.path.isdir(local_www_path):
@@ -58,6 +52,12 @@ if local_www_path is not None:
         )
     else:
         _LOGGER.warning("local www path does not exist: %s" % (local_www_path))
+
+frontend_path = os.path.join(os.path.dirname(__file__), "frontend", "dist")
+if os.path.isdir(frontend_path):
+    app.mount("/", StaticFiles(directory=frontend_path, html=True), name="frontend")
+else:
+    _LOGGER.warning("frontend path does not exist: %s" % (frontend_path))
 
 
 @app.on_event("startup")

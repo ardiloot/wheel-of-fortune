@@ -237,7 +237,7 @@ class Wheel:
             version=VERSION,
             name=self._config.name,
             display_name=self._config.display_name,
-            logo_name=self._config.logo_name,
+            logo_url=self._config.logo_url,
             themes={id: theme.get_info() for id, theme in self._themes.items()},
             effects={id: effect.get_info() for id, effect in self._effects.items()},
             servos=self._servos.get_info(),

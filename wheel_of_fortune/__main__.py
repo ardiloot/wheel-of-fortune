@@ -18,6 +18,12 @@ from fastapi.staticfiles import StaticFiles
 _LOGGER = logging.getLogger(__name__)
 _VERSION = importlib.metadata.version("wheel_of_fortune")
 
+coloredlogs.install(
+    level="debug",
+    fmt="%(asctime)s %(name)s:%(lineno)d %(levelname)s %(message)s",
+    milliseconds=True,
+)
+
 app = FastAPI(docs_url="/api/v1/docs", openapi_url="/api/v1/openapi.json")
 
 app.include_router(encoder.router)
@@ -34,6 +40,16 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+local_www_path = os.environ.get("LOCAL_WWW_PATH")
+if local_www_path is not None:
+    if os.path.isdir(local_www_path):
+        _LOGGER.info("local www path: %s" % (local_www_path))
+        app.mount(
+            "/local", StaticFiles(directory=local_www_path, html=True), name="local"
+        )
+    else:
+        _LOGGER.warning("local www path does not exist: %s" % (local_www_path))
 
 frontend_path = os.path.join(os.path.dirname(__file__), "frontend", "dist")
 if os.path.isdir(frontend_path):
@@ -56,10 +72,4 @@ async def api_shutdown_event():
 
 
 if __name__ == "__main__":
-    coloredlogs.install(
-        level="debug",
-        fmt="%(asctime)s %(name)s:%(lineno)d %(levelname)s %(message)s",
-        milliseconds=True,
-    )
-
     uvicorn.run(app, host="0.0.0.0", port=8000)

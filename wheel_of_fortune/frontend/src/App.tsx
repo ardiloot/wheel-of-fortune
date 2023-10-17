@@ -71,6 +71,7 @@ export default function App() {
     version: '',
     name: '',
     display_name: '',
+    logo_url: 'logos/logo.svg',
     themes: {},
     effects: {},
     servos: {
@@ -227,7 +228,7 @@ export default function App() {
               });
             }}
             setBrightnessThrottled={(brightness) => {
-              wsSetState({ leds: { brightness: brightness } });
+              wsSetState({ leds: { brightness: brightness, transition_ms: 50 } });
             }}
           />
 

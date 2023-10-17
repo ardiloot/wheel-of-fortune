@@ -1,9 +1,9 @@
 export interface SvgLogoProps {
   radius: number;
-  text: string;
+  url: string;
 }
 
-export default function SvgLogo({ radius, text }: SvgLogoProps) {
+export default function SvgLogo({ radius, url }: SvgLogoProps) {
   return (
     <>
       <defs>
@@ -13,9 +13,7 @@ export default function SvgLogo({ radius, text }: SvgLogoProps) {
         </radialGradient>
         <mask id="logo">
           <circle fill="white" cx={0} cy={0} r={500} />
-          <text x="0" y="0" fontSize="45" fill="black" textAnchor="middle" alignmentBaseline="middle" fontWeight="bold">
-            {text}
-          </text>
+          <image x="-110" y="-110" width="220" height="220" href={url} />
         </mask>
       </defs>
 

@@ -70,8 +70,7 @@ export default function Wheel({ sectors, encoderState, servosState, info, update
           ]}
         />
 
-        <SvgLogo radius={110} text={'-LOGO-'} />
-
+        <SvgLogo radius={110} url={info.logo_url} />
         <SvgFlipper x={0} y={-460} />
       </svg>
 
@@ -92,7 +91,6 @@ export default function Wheel({ sectors, encoderState, servosState, info, update
       <ServoEditModal
         key={'servo_' + editServoName}
         name={editServoName}
-        servosState={servosState}
         servosInfo={info.servos}
         updateServo={updateServo}
         onClose={() => {

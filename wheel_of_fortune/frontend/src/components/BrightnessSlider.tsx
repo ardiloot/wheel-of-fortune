@@ -24,13 +24,13 @@ export default function BrightnessSlider({ brightness, setBrightness, setBrightn
   return (
     <Slider
       size={5}
-      mt="lg"
-      mb="lg"
+      mt="xl"
+      mb="xl"
       thumbChildren={<IconSun size="1.5rem" />}
       value={active ? latestValue : Math.round(100 * brightness)}
       onChange={(value) => setValue(value, true)}
       onChangeEnd={(value) => setValue(value, false)}
-      thumbSize={25}
+      thumbSize={30}
       styles={{
         thumb: {
           borderWidth: rem(1),

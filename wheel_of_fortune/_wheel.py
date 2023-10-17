@@ -118,6 +118,7 @@ class Wheel:
         themes_file = os.path.join(config.data_dir, "themes.yaml")
         self._themes = load_themes(themes_file)
         self._theme_id: str = list(self._themes.keys())[0]
+        self._standby_timer: float = 600
 
         effects_file = os.path.join(config.data_dir, "effects.yaml")
         self._effects = load_effects(effects_file)
@@ -184,6 +185,16 @@ class Wheel:
                 )
             )
 
+        if state.standby_timer is not None:
+            _LOGGER.info("set stadby timer: %s" % (state.standby_timer))
+            self._standby_timer = state.standby_timer
+            self._settings.set("standby_timer", self._standby_timer)
+            self._publish_update(
+                WheelStateUpdate(
+                    standby_timer=self._standby_timer,
+                )
+            )
+
         if len(state.sectors) > 0:
             for index, sector_state in state.sectors.items():
                 if index < 0 or index >= len(self._sectors):
@@ -210,6 +221,7 @@ class Wheel:
         return WheelState(
             active_task=self._cur_task.value,
             theme_id=self._theme_id,
+            standby_timer=self._standby_timer,
             sectors=[sector.get_state() for sector in self._sectors],
             encoder=self._encoder.get_state(),
             servos=self._servos.get_state(),
@@ -340,7 +352,7 @@ class Wheel:
             if counter % 120 == 0:
                 _LOGGER.info("idle heartbeat")
 
-            if counter > 60:
+            if counter >= self._standby_timer:
                 self._schedule_task(TaskType.STANDBY)
 
     async def _task_standby(self):

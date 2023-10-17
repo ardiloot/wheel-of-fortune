@@ -48,7 +48,7 @@ if local_www_path is not None:
         for fname in os.listdir(local_www_path):
             _LOGGER.info("file: %s" % (fname))
         app.mount(
-            "/local/", StaticFiles(directory=local_www_path, html=True), name="local"
+            "/local", StaticFiles(directory=local_www_path, html=True), name="local"
         )
     else:
         _LOGGER.warning("local www path does not exist: %s" % (local_www_path))

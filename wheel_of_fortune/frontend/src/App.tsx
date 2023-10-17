@@ -1,13 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import {
-  ColorScheme,
-  ColorSchemeProvider,
-  Container,
-  LoadingOverlay,
-  MantineProvider,
-  Title,
-  useMantineTheme,
-} from '@mantine/core';
+import { ColorScheme, ColorSchemeProvider, Container, LoadingOverlay, MantineProvider, Title } from '@mantine/core';
 import { Notifications, notifications } from '@mantine/notifications';
 import { useLocalStorage } from '@mantine/hooks';
 import { IconCheck, IconX } from '@tabler/icons-react';
@@ -50,7 +42,6 @@ export default function App() {
 
   const [connectionStatus, setConnectionStatus] = useState<number>(ReconnectingWebSocket.CLOSED);
   const [activeThemeId, setActiveThemeId] = useState<string>('');
-  const [standbyTimer, setStandbyTimer] = useState<number>(600);
   const [sectors, setSectors] = useState<Array<SectorState>>([]);
   const [encoderState, setEncoderState] = useState<EncoderState>({
     sector: 0,
@@ -177,8 +168,6 @@ export default function App() {
     };
     ws.current.send(JSON.stringify(newState));
   }
-
-  const theme = useMantineTheme();
 
   return (
     <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>

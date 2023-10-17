@@ -69,7 +69,7 @@ class LedSegment:
 
     def compile_state(self) -> dict[str, int | float | str | list]:
         def to_rgb(h: str) -> tuple[int, int, int]:
-            return tuple(int(h[i : i + 2], 16) for i in (1, 3, 5))  # noqa: E203
+            return tuple(int(h[i : i + 2], 16) for i in (1, 3, 5))  # type: ignore
 
         def normalize(v: float) -> int:
             return int(max(0, min(255, round(255 * v))))
@@ -157,7 +157,10 @@ class LedController:
             for name, segment in self._segments.items():
                 params = state.segments.get(name, LedSegmentStateIn(enabled=False))
                 segment.set_state(params)
-        await self._sync_state(sync_segments=state.segments is not None)
+        await self._sync_state(
+            sync_segments=state.segments is not None,
+            transition_ms=state.transition_ms,
+        )
 
     def get_state(self) -> LedsState:
         return LedsState(
@@ -181,7 +184,7 @@ class LedController:
             #     _LOGGER.info("led state: %s" % (state))
             await asyncio.sleep(100.0)
 
-    async def _sync_state(self, sync_segments=True):
+    async def _sync_state(self, sync_segments=True, transition_ms=0.0):
         if self._session is None:
             raise ConnectionError("Session is not opened.")
 
@@ -189,7 +192,7 @@ class LedController:
         state = {
             "on": int_brightness > 0,
             "bri": int_brightness,
-            "transition": 2,  # one unit us 100 ms
+            "transition": int(round(transition_ms / 100.0)),  # one unit us 100 ms
         }
 
         if sync_segments:

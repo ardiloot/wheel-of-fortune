@@ -51,19 +51,16 @@ export default function ServoEditModal({ name, servosInfo, updateServo, onClose 
     if (curCommand == MotorCommand.GotoZero) {
       return 'Logo will move to zero position (hidden position)';
     } else if (curCommand == MotorCommand.GotoFull) {
-      return 'Logo will move to 100% position (display position)';
+      return 'Will move to 100% position (display position)';
     } else if (curCommand == MotorCommand.Unmount) {
-      return 'Command is used to remove side logo. It will command logo to move out and then releases the logo.';
+      return 'Commands logo to move out and then releases the logo. NB: logo might fall down';
     } else if (curCommand == MotorCommand.Mount) {
-      return (
-        'Command is used to attach side logo. ' +
-        'Motor will move to mount position, stay for 10 seconds and then move back to zero.'
-      );
+      return 'Motor will move to mount position, stay for 10 seconds and then move back to zero.';
     }
     return 'No information is available';
   }
 
-  const showWarning = curCommand != MotorCommand.GotoZero;
+  const showWarning = curCommand == MotorCommand.Mount || curCommand == MotorCommand.Unmount;
   return (
     <Modal
       opened={name !== null}

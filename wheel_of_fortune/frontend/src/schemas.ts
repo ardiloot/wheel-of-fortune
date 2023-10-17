@@ -81,6 +81,7 @@ export type LedsState = z.infer<typeof LedsState>;
 
 export const LedsStateIn = z.object({
   brightness: z.number().optional(),
+  transition_ms: z.number().optional(),
 });
 export type LedsStateIn = z.infer<typeof LedsStateIn>;
 
@@ -185,6 +186,7 @@ export type EffectInfo = z.infer<typeof EffectInfo>;
 export const WheelState = z.object({
   active_task: z.string().optional(),
   theme_id: z.string(),
+  standby_timer: z.number(),
   sectors: z.array(SectorState),
   encoder: EncoderState,
   leds: LedsState,
@@ -195,6 +197,7 @@ export type WheelState = z.infer<typeof WheelState>;
 
 export const WheelStateIn = z.object({
   theme_id: z.string().optional(),
+  standby_timer: z.number().optional(),
   sectors: z.record(z.number().int(), SectorStateIn).optional(),
   leds: LedsStateIn.optional(),
   servos: ServosStateIn.optional(),
@@ -205,6 +208,7 @@ export type WheelStateIn = z.infer<typeof WheelStateIn>;
 export const WheelStateUpdate = z.object({
   active_task: z.string().optional(),
   theme_id: z.string().optional(),
+  standby_timer: z.number().optional(),
   sectors: z.array(SectorState).optional(),
   encoder: EncoderState.optional(),
   servos: ServosState.optional(),

@@ -25,14 +25,14 @@ export default function VolumeSlider({ channelName, volume, setVolume, setVolume
   return (
     <Slider
       size={5}
-      mt="lg"
-      mb="lg"
+      mt="xl"
+      mb="xl"
       label={(value) => `${channelName} ${value}%`}
       thumbChildren={<IconVolume2 size="1.5rem" />}
       value={active ? latestValue : Math.round(100 * volume)}
       onChange={(value) => setValue(value, true)}
       onChangeEnd={(value) => setValue(value, false)}
-      thumbSize={25}
+      thumbSize={30}
       styles={{
         thumb: {
           borderWidth: rem(1),

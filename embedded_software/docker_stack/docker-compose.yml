@@ -75,7 +75,7 @@ services:
 
   wheel_of_fortune:
     container_name: wheel_of_fortune
-    image: ghcr.io/ardiloot/wheel-of-fortune:v0.1.10.dev20-g1c707fa
+    image: ghcr.io/ardiloot/wheel-of-fortune:v0.1.10
     volumes:
       - /sys:/sys           # required to control GPIO
       - ${DATA_DIR}/wheel-of-fortune:/app/data
@@ -92,7 +92,7 @@ services:
       - WHEEL_INFLUXDB_TOKEN=${WHEEL_INFLUXDB_TOKEN}
       - WHEEL_INFLUXDB_ORG=${WHEEL_INFLUXDB_ORG}
       - WHEEL_INFLUXDB_BUCKET=${WHEEL_INFLUXDB_BUCKET}
-      - LOCAL_WWW_PATH=/app/data/www
+      - LOCAL_WWW_PATH=/app/data/www/
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.wheel-of-fortune.rule=Host(`$DOMAIN_NAME`) || Host(`$INTERNAL_DOMAIN_NAME`)"

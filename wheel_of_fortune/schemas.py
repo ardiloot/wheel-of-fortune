@@ -191,6 +191,7 @@ class EffectInfo(BaseModel):
 class WheelState(BaseModel):
     active_task: str
     theme_id: str
+    standby_timer: float
     sectors: list[SectorState]
     encoder: EncoderState
     servos: ServosState
@@ -201,6 +202,7 @@ class WheelState(BaseModel):
 class WheelStateIn(BaseModel):
     active_task: str | None = None
     theme_id: str | None = None
+    standby_timer: float | None = Field(default=None, examples=[600])
     sectors: dict[int, SectorStateIn] = {}
     servos: ServosStateIn | None = None
     leds: LedsStateIn | None = None
@@ -210,6 +212,7 @@ class WheelStateIn(BaseModel):
 class WheelStateUpdate(BaseModel):
     active_task: str | None = None
     theme_id: str | None = None
+    standby_timer: float | None = None
     sectors: list[SectorState] | None = None
     encoder: EncoderState | None = None
     servos: ServosState | None = None

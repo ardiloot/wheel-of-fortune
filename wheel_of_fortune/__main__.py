@@ -50,7 +50,9 @@ else:
 local_www_path = os.environ.get("LOCAL_WWW_PATH")
 if local_www_path is not None:
     if os.path.isdir(local_www_path):
-        _LOGGER.warning("local www path: %s" % (local_www_path))
+        _LOGGER.info("local www path: %s" % (local_www_path))
+        for fname in os.listdir(local_www_path):
+            _LOGGER.info("file: %s" % (fname))
         app.mount(
             "/local/", StaticFiles(directory=local_www_path, html=True), name="local"
         )

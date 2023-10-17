@@ -47,13 +47,15 @@ if os.path.isdir(frontend_path):
 else:
     _LOGGER.warning("frontend path does not exist: %s" % (frontend_path))
 
-logos_path = os.environ.get("LOGOS_PATH")
-if logos_path is not None:
-    if os.path.isdir(logos_path):
-        _LOGGER.warning("logos path: %s" % (logos_path))
-        app.mount("/logos/", StaticFiles(directory=logos_path, html=True), name="logos")
+local_www_path = os.environ.get("LOCAL_WWW_PATH")
+if local_www_path is not None:
+    if os.path.isdir(local_www_path):
+        _LOGGER.warning("local www path: %s" % (local_www_path))
+        app.mount(
+            "/local/", StaticFiles(directory=local_www_path, html=True), name="local"
+        )
     else:
-        _LOGGER.warning("logos path does not exist: %s" % (logos_path))
+        _LOGGER.warning("local www path does not exist: %s" % (local_www_path))
 
 
 @app.on_event("startup")

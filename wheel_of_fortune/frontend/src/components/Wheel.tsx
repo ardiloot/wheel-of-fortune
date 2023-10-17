@@ -70,7 +70,7 @@ export default function Wheel({ sectors, encoderState, servosState, info, update
           ]}
         />
 
-        <SvgLogo radius={110} logo_name={info.logo_name} />
+        <SvgLogo radius={110} url={info.logo_url} />
         <SvgFlipper x={0} y={-460} />
       </svg>
 

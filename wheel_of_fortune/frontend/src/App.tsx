@@ -1,5 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
-import { ColorScheme, ColorSchemeProvider, Container, LoadingOverlay, MantineProvider, Title } from '@mantine/core';
+import {
+  ColorScheme,
+  ColorSchemeProvider,
+  Container,
+  LoadingOverlay,
+  MantineProvider,
+  Text,
+  Title,
+} from '@mantine/core';
 import { Notifications, notifications } from '@mantine/notifications';
 import { useLocalStorage } from '@mantine/hooks';
 import { IconCheck, IconX } from '@tabler/icons-react';
@@ -239,6 +247,9 @@ export default function App() {
               wsSetState({ servos: { motors: { [name]: state } } });
             }}
           />
+          <Text pt="xl" ta="center" size="xs" color="gray">
+            {info?.name}, wheel-of-fortune: {info?.version}, WLED: {info?.leds?.version}
+          </Text>
         </Container>
       </MantineProvider>
     </ColorSchemeProvider>

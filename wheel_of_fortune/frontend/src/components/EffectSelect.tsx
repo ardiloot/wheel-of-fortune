@@ -1,6 +1,7 @@
 import { EffectInfo } from '../schemas';
 import { forwardRef } from 'react';
 import { Group, Avatar, Text, Select, ColorSwatch } from '@mantine/core';
+import { resolveLocalUrl } from '../utils';
 
 interface ItemProps extends React.ComponentPropsWithoutRef<'div'> {
   image: string;
@@ -39,7 +40,7 @@ export default function EffectSelect({ activeEffectId, availableEffects, setEffe
   const data = Object.keys(availableEffects).map((effectId) => {
     const effect = availableEffects[effectId];
     return {
-      image: effect.image_url,
+      image: resolveLocalUrl(effect.image_url),
       value: effectId,
       label: effect.name,
       description: effect.description,
@@ -52,7 +53,9 @@ export default function EffectSelect({ activeEffectId, availableEffects, setEffe
   return (
     <Select
       label="Effect:"
-      icon={<Avatar size="1.5rem" src={activeEffect?.image_url} />}
+      icon={
+        <Avatar size="1.5rem" src={activeEffect !== undefined ? resolveLocalUrl(activeEffect.image_url) : undefined} />
+      }
       itemComponent={SelectItem}
       value={activeEffectId}
       data={data}

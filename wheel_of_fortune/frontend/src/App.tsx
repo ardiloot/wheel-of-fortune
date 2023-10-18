@@ -71,7 +71,7 @@ export default function App() {
     version: '',
     name: '',
     display_name: '',
-    logo_url: 'logos/logo.svg',
+    logo_url: 'logo.svg',
     themes: {},
     effects: {},
     servos: {

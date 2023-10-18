@@ -1,3 +1,13 @@
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+
+export function resolveLocalUrl(url: string): string {
+  if (BACKEND_URL !== undefined && url.startsWith('local/')) {
+    return BACKEND_URL + url;
+  } else {
+    return url;
+  }
+}
+
 export function toXY(radius: number, angle: number): { x: number; y: number } {
   // 0 deg = upwards
   // 90 deg = to right

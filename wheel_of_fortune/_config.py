@@ -21,7 +21,7 @@ class WLedSegmentConfig(BaseSettings):
 class Config(BaseSettings):
     name: str = "wheel-of-fortune"
     display_name: str = "Wheel of Fortune"
-    logo_url: str = "logo_url"
+    logo_url: str = "local/logo.svg"
     data_dir: str = "./data"
     num_sectors: int = 16
 

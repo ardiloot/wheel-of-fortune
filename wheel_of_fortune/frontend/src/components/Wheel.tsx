@@ -7,6 +7,7 @@ import SvgLedGlow from './SvgLedGlow';
 import SvgWheel from './SvgWheel';
 import SvgServo from './SvgServo';
 import ServoEditModal from './ServoEditModal';
+import { resolveLocalUrl } from '../utils';
 
 export interface WheelProps {
   sectors: Array<SectorState>;
@@ -46,7 +47,6 @@ export default function Wheel({ sectors, encoderState, servosState, info, update
               servoInfo={servoInfo}
               servoState={servoState}
               onClick={() => {
-                console.log('servo', name, servoState, servoInfo);
                 setEditServoName(name);
               }}
             />
@@ -70,7 +70,7 @@ export default function Wheel({ sectors, encoderState, servosState, info, update
           ]}
         />
 
-        <SvgLogo radius={110} url={info.logo_url} />
+        <SvgLogo radius={110} url={resolveLocalUrl(info.logo_url)} />
         <SvgFlipper x={0} y={-460} />
       </svg>
 

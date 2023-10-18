@@ -1,6 +1,7 @@
 import { ThemeInfo } from '../schemas';
 import { forwardRef } from 'react';
 import { Group, Avatar, Text, Select } from '@mantine/core';
+import { resolveLocalUrl } from '../utils';
 
 interface ItemProps extends React.ComponentPropsWithoutRef<'div'> {
   image: string;
@@ -33,7 +34,7 @@ export default function ThemeSelect({ activeThemeId, availableThemes, setActiveT
   const data = Object.keys(availableThemes).map((themeId) => {
     const theme = availableThemes[themeId];
     return {
-      image: theme.image_url,
+      image: resolveLocalUrl(theme.image_url),
       value: themeId,
       label: theme.name,
       description: theme.description,
@@ -45,7 +46,9 @@ export default function ThemeSelect({ activeThemeId, availableThemes, setActiveT
   return (
     <Select
       label="Theme:"
-      icon={<Avatar size="1.5rem" src={activeTheme?.image_url} />}
+      icon={
+        <Avatar size="1.5rem" src={activeTheme !== undefined ? resolveLocalUrl(activeTheme.image_url) : undefined} />
+      }
       itemComponent={SelectItem}
       value={activeThemeId}
       data={data}

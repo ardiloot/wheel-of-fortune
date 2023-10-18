@@ -47,7 +47,6 @@ export default function Wheel({ sectors, encoderState, servosState, info, update
               servoInfo={servoInfo}
               servoState={servoState}
               onClick={() => {
-                console.log('servo', name, servoState, servoInfo);
                 setEditServoName(name);
               }}
             />

@@ -120,12 +120,10 @@ export default function App() {
     };
     wsConn.onmessage = (e) => {
       const message = JSON.parse(e.data);
-      console.log('ws message', message);
 
       if (message.cmd === 'init') {
         const packet = WsInitPacket.parse(message);
         const state = packet.state;
-        console.log('state', state);
 
         setActiveThemeId(state.theme_id);
         setSectors(state.sectors);
@@ -135,12 +133,10 @@ export default function App() {
         setSoundsystemState(state.soundsystem);
 
         const info = packet.info;
-        console.log('info', info);
         setInfo(info);
       } else if (message.cmd === 'update') {
         const packet = WsUpdatePacket.parse(message);
         const update = packet.update;
-        console.log('update', update);
         if (update.theme_id !== undefined) setActiveThemeId(update.theme_id);
         if (update.sectors !== undefined) setSectors(update.sectors);
         if (update.encoder !== undefined) setEncoderState(update.encoder);
@@ -190,7 +186,6 @@ export default function App() {
             activeThemeId={activeThemeId}
             availableThemes={info?.themes || {}}
             setActiveThemeId={(themeId) => {
-              console.log('set theme:', themeId);
               setActiveThemeId(themeId);
               wsSetState({ theme_id: themeId });
             }}
@@ -241,7 +236,6 @@ export default function App() {
               wsSetState({ sectors: { [index]: state } });
             }}
             updateServo={(name, state) => {
-              console.log('updateServo', name, state);
               wsSetState({ servos: { motors: { [name]: state } } });
             }}
           />

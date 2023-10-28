@@ -154,7 +154,7 @@ services:
     restart: unless-stopped
 
   kopia:
-    image: kopia/kopia:0.14
+    image: kopia/kopia:0.15
     container_name: kopia
     hostname: ${HOSTNAME}
     command:

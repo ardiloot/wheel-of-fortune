@@ -1,4 +1,4 @@
-FROM node:20.8.0-slim AS node_builder
+FROM node:20.10.0-slim AS node_builder
 WORKDIR /app
 COPY wheel_of_fortune/frontend/package.json wheel_of_fortune/frontend/package-lock.json /app/
 RUN npm ci

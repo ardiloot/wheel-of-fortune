@@ -17,5 +17,12 @@
     ],
     "ignorePaths": [
         "**/embedded_software/WLED/**"
+    ],
+    "packageRules": [
+        {
+          "matchPaths": ["Dockerfile"],
+          "matchUpdateTypes": ["major", "minor"],
+          "enabled": false
+        }
     ]
   }

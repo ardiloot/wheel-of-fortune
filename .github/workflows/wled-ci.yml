@@ -69,13 +69,13 @@ jobs:
         WLED_RELEASE: True
       run: pio run -e ${{ matrix.environment }}
       working-directory: embedded_software/WLED
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: firmware-${{ matrix.environment }}
         path: |
           embedded_software/WLED/build_output/firmware/*.bin
           embedded_software/WLED/build_output/firmware/*.gz
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       if: startsWith(github.ref, 'refs/tags/')
       with:
         name: firmware-release

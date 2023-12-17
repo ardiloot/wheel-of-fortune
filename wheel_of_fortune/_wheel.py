@@ -388,7 +388,7 @@ class Wheel:
             end_sector_name = self._sectors[end_state.sector].name
 
             _LOGGER.info(
-                "Spin ended: %d -> %d (%s), sectors: %d, duration %.1fs, avg_rpm: %.2f"
+                "Spin ended: %d -> %d (%s), sectors: %d, duration %.1fs, avg_rpm: %.2f, standstill: %d"
                 % (
                     start_state.sector,
                     end_state.sector,
@@ -396,6 +396,7 @@ class Wheel:
                     total_sectors,
                     duration,
                     avg_rpm,
+                    end_state.standstill,
                 )
             )
 

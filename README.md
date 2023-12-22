@@ -3,6 +3,18 @@
 
 ## Overview
 
+An over-engineered Wheel of Fortune. The main features are:
+* 3 LED strips with individually controllable LEDs (WLED)
+* absolute position optical encoder for wheel position (position depended effects)
+* 3 linear servo motors for displaying effect logos
+* Orange PI 3 LTS based compute unit
+* ESP32 based LED and servo motor controller
+* Amplified sound system for theme and effect sound
+* Node (React + Mantine) app for configuration
+* Server stack for metrics, monitoring and backup
+
+Here only general overview of the system is given. For detailed instructions how to build the system, see following readme files:
+
 1. [Mechanical setup](tree/main/hw/mech)
 1. [Electrical setup](tree/main/hw/electrical)
 1. [Embedded software](tree/main/hw/embedded_software)
@@ -13,8 +25,8 @@
 ## Development
 
 Code is split to two main parts:
-1. Python backend (FastAPI)
-2. Node frontend (React + Mantine)
+1. [Python backend](tree/main/wheel_of_fortune) (FastAPI)
+1. [Node frontend](tree/readme/wheel_of_fortune/frontend) (React + Mantine)
 
 Finally, frontend static HTML + Javascript files are backed into backend Python package and served via backend FastAPI server. 
 

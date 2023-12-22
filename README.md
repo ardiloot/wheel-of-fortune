@@ -3,13 +3,13 @@
 
 ## Overview
 
-An over-engineered Wheel of Fortune. The main features are:
+An over-engineered DIY version of Wheel of Fortune (Wheel or Prizes). The main features are:
 * 3 LED strips with individually controllable LEDs (WLED)
-* absolute position optical encoder for wheel position (position depended effects)
 * 3 linear servo motors for displaying effect logos
-* Orange PI 3 LTS based compute unit
-* ESP32 based LED and servo motor controller
+* absolute position optical encoder for wheel position (position depended effects)
 * Amplified sound system for theme and effect sound
+* ESP32 based LED and servo motor controller
+* Orange PI 3 LTS based compute unit
 * Node (React + Mantine) app for configuration
 * Server stack for metrics, monitoring and backup
 

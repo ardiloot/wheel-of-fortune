@@ -30,8 +30,8 @@ For detailed instructions how to build the system, see following readme files:
 
 1. [Mechanical setup](hw/mech)
 1. [Electrical setup](hw/electrical)
-1. [Embedded software](hw/embedded_software)
-1. [Server software](hw/server)
+1. [Embedded software](embedded_software)
+1. [Server software](server)
 
 
 

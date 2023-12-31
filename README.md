@@ -22,18 +22,18 @@ An over-engineered DIY version of Wheel of Fortune (Wheel or Prizes). The main f
 
 Here only general overview of the system is given. For detailed instructions how to build the system, see following readme files:
 
-1. [Mechanical setup](tree/main/hw/mech)
-1. [Electrical setup](tree/main/hw/electrical)
-1. [Embedded software](tree/main/hw/embedded_software)
-1. [Server software](tree/main/hw/server)
+1. [Mechanical setup](hw/mech)
+1. [Electrical setup](hw/electrical)
+1. [Embedded software](hw/embedded_software)
+1. [Server software](hw/server)
 
 
 
 ## Development
 
 Code is split to two main parts:
-1. [Python backend](tree/main/wheel_of_fortune) (FastAPI)
-1. [Node frontend](tree/readme/wheel_of_fortune/frontend) (React + Mantine)
+1. [Python backend](wheel_of_fortune) (FastAPI)
+1. [Node frontend](wheel_of_fortune/frontend) (React + Mantine)
 
 Finally, frontend static HTML + Javascript files are backed into backend Python package and served via backend FastAPI server. 
 

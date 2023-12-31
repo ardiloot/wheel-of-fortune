@@ -17,6 +17,9 @@ An over-engineered DIY version of Wheel of Fortune (Wheel or Prizes). The main f
 
 ![](imgs/wheel-internal.drawio.png)
 
+![](imgs/services.drawio.png)
+
+
 Here only general overview of the system is given. For detailed instructions how to build the system, see following readme files:
 
 1. [Mechanical setup](tree/main/hw/mech)

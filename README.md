@@ -13,14 +13,20 @@ An over-engineered DIY version of Wheel of Fortune (Wheel or Prizes). The main f
 * Node (React + Mantine) app for configuration
 * Server stack for metrics, monitoring and backup
 
+Outlook:
+
 ![](imgs/wheel-front.png)
 
+Internals:
+
 ![](imgs/wheel-internal.drawio.png)
+
+Services:
 
 ![](imgs/services.drawio.png)
 
 
-Here only general overview of the system is given. For detailed instructions how to build the system, see following readme files:
+For detailed instructions how to build the system, see following readme files:
 
 1. [Mechanical setup](hw/mech)
 1. [Electrical setup](hw/electrical)

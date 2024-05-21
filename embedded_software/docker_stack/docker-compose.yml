@@ -3,7 +3,7 @@ services:
 
   traefik:
     container_name: traefik
-    image: traefik:2.10.7
+    image: traefik:v2.11.3
     command:
       - "--log.level=INFO"
       # Dashboard

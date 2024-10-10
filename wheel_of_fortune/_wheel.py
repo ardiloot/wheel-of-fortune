@@ -326,6 +326,13 @@ class Wheel:
 
         _LOGGER.info("_schedule_task %s -> %s:" % (self._cur_task, task))
         self._next_task = task
+
+        # Never interrupt effect
+        if self._cur_task == TaskType.STOPPED and task == TaskType.SPINNING:
+            _LOGGER.info("Victory effect cannot be interrupted")
+            return
+
+        # Cancel ongoing task to start a new task
         if self._active_task is not None and not self._active_task.done():
             self._cancelling_active_task = True
             success = self._active_task.cancel()

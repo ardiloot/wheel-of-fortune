@@ -1,6 +1,4 @@
-version: '3'
 services:
-
   traefik:
     image: "traefik:v2.11.12"
     container_name: "traefik"
@@ -101,6 +99,13 @@ services:
       - ${DATA_DIR}/grafana:/var/lib/grafana
     environment:
       - GF_SERVER_DOMAIN=grafana.$DOMAIN_NAME
+      - GF_SMTP_ENABLED=${GF_SMTP_ENABLED}
+      - GF_SMTP_HOST=${GF_SMTP_HOST}
+      - GF_SMTP_SKIP_VERIFY=${GF_SMTP_SKIP_VERIFY}
+      - GF_SMTP_USER=${GF_SMTP_USER}
+      - GF_SMTP_PASSWORD=${GF_SMTP_PASSWORD}
+      - GF_SMTP_FROM_ADDRESS=${GF_SMTP_FROM_ADDRESS}
+      - GF_SMTP_FROM_NAME=${GF_SMTP_FROM_ADDRESS}
     depends_on:
       - influxdb
       - loki

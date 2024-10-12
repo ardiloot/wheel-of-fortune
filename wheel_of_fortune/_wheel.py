@@ -477,6 +477,11 @@ class Wheel:
     def _encoder_update(self, state: EncoderState):
         if state.standstill:
             self._schedule_task(TaskType.STOPPED)
+        elif self._cur_task == TaskType.STOPPED:
+            # Do not start a new spinning task if playing effect is in action
+            _LOGGER.info(
+                "wheel moved while playing effect: sector: %d" % (state.sector)
+            )
         else:
             self._schedule_task(TaskType.SPINNING)
 

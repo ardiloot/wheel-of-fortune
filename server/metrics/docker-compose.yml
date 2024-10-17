@@ -78,7 +78,7 @@ services:
 
   loki:
     container_name: loki
-    image: grafana/loki:2.9.10
+    image: grafana/loki:3.2.1
     volumes:
       - ./config/loki/config.yaml:/etc/loki/loki-config.yaml
       - ${DATA_DIR}/loki:/loki

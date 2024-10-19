@@ -25,7 +25,7 @@ class Encoder:
         self._encoder_pins: list[str] = ["PH3", "PH4", "PH6", "PH5"]
         self._speed_pin: str = "PL10"
         self._pulses_per_rev: float = 128.0
-        self._standstill_timeout = 2.0
+        self._standstill_timeout = 1.0
 
         self._encoder_state: list[bool] = []
         self._total_sector_count: int = 0

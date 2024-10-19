@@ -477,6 +477,13 @@ class Wheel:
     def _encoder_update(self, state: EncoderState):
         if state.standstill:
             self._schedule_task(TaskType.STOPPED)
+        elif self._cur_task == TaskType.STOPPED and state.rpm < 3.0:
+            # Ignore low speed spinning if wheel is playing effect
+            # (Only high speed spinning will interrupt playing effect)
+            _LOGGER.info(
+                "wheel moved slowly while playing effect: sector: %d, rmp: %.2f"
+                % (state.sector, state.rpm)
+            )
         else:
             self._schedule_task(TaskType.SPINNING)
 

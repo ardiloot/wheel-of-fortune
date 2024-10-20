@@ -118,7 +118,7 @@ services:
 
   promtail:
     container_name: promtail
-    image: grafana/promtail:3.2.0 
+    image: grafana/promtail:3.2.1 
     volumes:
       - /var/log:/var/log:ro
       - /run/log/journal/:/run/log/journal:ro

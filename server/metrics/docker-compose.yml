@@ -54,7 +54,7 @@ services:
     restart: unless-stopped
 
   librespeed:
-    image: ghcr.io/linuxserver/librespeed:5.5.1
+    image: ghcr.io/linuxserver/librespeed:6.1.0
     container_name: librespeed
     labels:
       - "traefik.enable=true"

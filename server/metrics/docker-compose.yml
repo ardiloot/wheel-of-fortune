@@ -64,7 +64,7 @@ services:
     restart: unless-stopped
     
   influxdb:
-    image: influxdb:2.7.12
+    image: influxdb:2.8.0
     container_name: influxdb
     volumes:
       - ${DATA_DIR}/influxdb2/data:/var/lib/influxdb2

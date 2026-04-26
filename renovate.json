@@ -1,7 +1,7 @@
 {
     "$schema": "https://docs.renovatebot.com/renovate-schema.json",
     "extends": [
-      "config:base",
+      "config:recommended",
       ":prConcurrentLimit20",
       ":prHourlyLimitNone",
       ":enableVulnerabilityAlerts"
@@ -20,7 +20,9 @@
     ],
     "packageRules": [
         {
-          "matchPaths": ["Dockerfile"],
+          "matchFileNames": [
+                "Dockerfile"
+            ],
           "matchUpdateTypes": ["major", "minor"],
           "enabled": false
         }

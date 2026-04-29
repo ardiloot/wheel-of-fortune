@@ -22,7 +22,7 @@ jobs:
           ${{ runner.os }}-pip-
     - uses: actions/setup-python@v6
       with:
-        python-version: '3.9'
+        python-version: '3.14'
     - name: Install PlatformIO
       run: pip install -r requirements.txt
       working-directory: embedded_software/WLED
@@ -60,7 +60,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v6
       with:
-        python-version: '3.9'
+        python-version: '3.14'
     - name: Install PlatformIO
       run: pip install -r requirements.txt
       working-directory: embedded_software/WLED

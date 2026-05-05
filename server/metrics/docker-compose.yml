@@ -1,6 +1,6 @@
 services:
   traefik:
-    image: "traefik:v3.6.14"
+    image: "traefik:v3.7.0"
     container_name: "traefik"
     command:
       - "--log.level=INFO"
